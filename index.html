@@ -75,3 +75,30 @@ document.getElementById('reset').onclick=fit;
 function resize(){let w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()} addEventListener('resize',resize); resize();
 renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
 </script></body></html>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  const panel=document.querySelector('aside');
+  const view=document.getElementById('view');
+
+  if(panel){
+    const btn=document.createElement('button');
+    btn.textContent='表示パネルを閉じる';
+    btn.style.position='fixed';
+    btn.style.top='70px';
+    btn.style.right='10px';
+    btn.style.zIndex='9999';
+
+    btn.onclick=()=>{
+      const hidden=panel.style.display==='none';
+      panel.style.display=hidden?'block':'none';
+      btn.textContent=hidden?'表示パネルを閉じる':'表示パネルを開く';
+    };
+
+    document.body.appendChild(btn);
+  }
+
+  if(view){
+    view.style.touchAction='none';
+  }
+});
+</script>

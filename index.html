@@ -43,7 +43,7 @@ const host=document.getElementById('view'), scene=new THREE.Scene(); scene.backg
 const camera=new THREE.PerspectiveCamera(38,1,.1,2000); camera.position.set(260,-330,180);
 const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); host.prepend(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true;
- controls.touches.ONE = THREE.TOUCH.ROTATE;
+ controls.touches.ONE = THREE.TOUCH.ROTATE;renderer.domElement.style.touchAction='none';
 scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
 const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);
 let objects={}, boneOpacity=.28;

@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>身体の地図｜3D Prototype 0.2</title>
+<title>身体の地図｜3D Prototype 0.3</title>
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#222}
 *{box-sizing:border-box} body{margin:0;background:#f6f3ed}
@@ -19,7 +19,7 @@ input[type=range]{width:100%}
 </style>
 </head>
 <body>
-<header><b>施術者のための身体の地図</b><div class="sub">右股関節・深層外旋筋群｜3D Prototype 0.2</div></header>
+<header><b>施術者のための身体の地図</b><div class="sub">右股関節・深層外旋筋群｜3D Prototype 0.3</div></header>
 <main><div id="view"><div class="hint">ドラッグ：回転　ピンチ/ホイール：拡大縮小</div></div>
 <aside>
 <h2>表示を重ねる・外す</h2>
@@ -56,7 +56,7 @@ function materialize(o,isBone){
 }
 new GLTFLoader().load('./body_map_prototype02_web_v0.1.glb',g=>{
  scene.add(g.scene);
- g.scene.children.forEach(o=>{
+ g.scene.traverse(o=>{
    let key=Object.keys(labels).find(k=>o.name.includes(k));
    if(!key) return; objects[key]=o; materialize(o,boneNames.has(key));
  });

@@ -15,7 +15,7 @@ h2{font-size:15px;margin:4px 0 10px}.row{display:flex;gap:8px;margin-bottom:10px
 button{border:1px solid #bbb;background:#fff;border-radius:10px;padding:9px 10px;font-size:13px}
 button.primary{background:#222;color:#fff}.item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee;font-size:13px}
 input[type=range]{width:100%}
-@media(max-width:760px){main{grid-template-columns:1fr;height:calc(100vh - 66px)}aside{position:absolute;right:8px;top:78px;width:230px;max-height:62vh;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.row{flex-wrap:wrap}button{padding:7px 8px}}
+@media(max-width:760px){main{grid-template-columns:1fr;height:calc(100dvh - 66px)}#view{overflow:hidden}aside{position:fixed;right:8px;top:112px;width:min(230px,calc(100vw - 16px));max-height:calc(100dvh - 128px);border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002;z-index:20}.row{flex-wrap:wrap}button{padding:7px 8px}}
 </style>
 </head>
 <body>

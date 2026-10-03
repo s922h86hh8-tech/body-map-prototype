@@ -9,7 +9,7 @@
 header{padding:14px 16px;background:#fff;border-bottom:1px solid #ddd}
 header b{font-size:18px}.sub{font-size:12px;color:#666;margin-top:3px}
 main{display:grid;grid-template-columns:1fr 310px;height:calc(100vh - 66px)}
-#view{min-width:0;position:relative}.hint{position:absolute;left:12px;bottom:12px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}
+#view{min-width:0;position:relative}.hint{position:absolute;left:12px;bottom:70px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}.modebar{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;gap:8px;padding:7px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.modebar button{min-width:92px}.modebar button.active{background:#222;color:#fff;border-color:#222}
 aside{background:#fff;padding:14px;overflow:auto;border-left:1px solid #ddd}
 h2{font-size:15px;margin:4px 0 10px}.row{display:flex;gap:8px;margin-bottom:10px}
 button{border:1px solid #bbb;background:#fff;border-radius:10px;padding:9px 10px;font-size:13px}
@@ -27,7 +27,7 @@ input[type=range]{width:100%}
 <div id="items"></div>
 <h2>骨の透明度</h2><input id="opacity" type="range" min="0" max="1" step=".05" value=".28">
 <div class="row" style="margin-top:12px"><button id="reset">視点を戻す</button></div>
-</aside></main>
+</aside></main><div class="modebar" aria-label="3D操作"><button id="lock" class="active" aria-pressed="true">🔒 固定中</button><button id="rotate" class="active" aria-pressed="true">↻ 回転中</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -43,7 +43,25 @@ const host=document.getElementById('view'), scene=new THREE.Scene(); scene.backg
 const camera=new THREE.PerspectiveCamera(38,1,.1,2000); camera.position.set(260,-330,180);
 const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); host.prepend(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true;
- controls.touches.ONE = THREE.TOUCH.ROTATE;renderer.domElement.style.touchAction='none';
+controls.enablePan=false;
+controls.touches.ONE=THREE.TOUCH.ROTATE;
+controls.touches.TWO=THREE.TOUCH.DOLLY_ROTATE;
+renderer.domElement.style.touchAction='none';
+const lockBtn=document.getElementById('lock'), rotateBtn=document.getElementById('rotate');
+let positionLocked=true, rotationEnabled=true;
+function syncModes(){
+ controls.enablePan=!positionLocked;
+ controls.enableRotate=rotationEnabled;
+ lockBtn.classList.toggle('active',positionLocked);
+ lockBtn.setAttribute('aria-pressed',String(positionLocked));
+ lockBtn.textContent=positionLocked?'🔒 固定中':'🔓 固定解除';
+ rotateBtn.classList.toggle('active',rotationEnabled);
+ rotateBtn.setAttribute('aria-pressed',String(rotationEnabled));
+ rotateBtn.textContent=rotationEnabled?'↻ 回転中':'↻ 回転OFF';
+}
+lockBtn.onclick=()=>{positionLocked=!positionLocked;syncModes()};
+rotateBtn.onclick=()=>{rotationEnabled=!rotationEnabled;syncModes()};
+syncModes();
 scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
 const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);
 let objects={}, boneOpacity=.28;

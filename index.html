@@ -9,13 +9,13 @@
 header{padding:14px 16px;background:#fff;border-bottom:1px solid #ddd}
 header b{font-size:18px}.sub{font-size:12px;color:#666;margin-top:3px}
 main{display:grid;grid-template-columns:1fr 310px;height:calc(100vh - 66px)}
-#view{min-width:0;position:relative}.hint{position:absolute;left:12px;bottom:12px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}
+#view{min-width:0;position:relative;overflow:hidden;touch-action:none}.hint{position:absolute;left:12px;bottom:12px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}
 aside{background:#fff;padding:14px;overflow:auto;border-left:1px solid #ddd}
 h2{font-size:15px;margin:4px 0 10px}.row{display:flex;gap:8px;margin-bottom:10px}
 button{border:1px solid #bbb;background:#fff;border-radius:10px;padding:9px 10px;font-size:13px}
 button.primary{background:#222;color:#fff}.item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee;font-size:13px}
 input[type=range]{width:100%}
-@media(max-width:760px){main{grid-template-columns:1fr;height:calc(100vh - 66px)}aside{position:absolute;right:8px;top:78px;width:230px;max-height:62vh;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.row{flex-wrap:wrap}button{padding:7px 8px}}
+@media(max-width:760px){main{grid-template-columns:1fr;height:calc(100dvh - 66px)}aside{position:absolute;right:8px;top:78px;width:230px;max-height:62dvh;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.row{flex-wrap:wrap}button{padding:7px 8px}}
 </style>
 </head>
 <body>
@@ -42,7 +42,7 @@ const boneNames=new Set(["right_hip_bone","right_femur"]);
 const host=document.getElementById('view'), scene=new THREE.Scene(); scene.background=new THREE.Color(0xf6f3ed);
 const camera=new THREE.PerspectiveCamera(38,1,.1,2000); camera.position.set(260,-330,180);
 const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); host.prepend(renderer.domElement);
-const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true;
+const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.enablePan=false; controls.touches.ONE=THREE.TOUCH.ROTATE; controls.touches.TWO=THREE.TOUCH.DOLLY_ROTATE;
 scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
 const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);
 let objects={}, boneOpacity=.28;

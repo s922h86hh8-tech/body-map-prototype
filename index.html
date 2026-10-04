@@ -235,27 +235,22 @@ function resize(){let w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,
 renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
 </script>
 <script>
-document.addEventListener('DOMContentLoaded',()=>{
+(()=>{
   const panel=document.querySelector('aside');
   const tab=document.getElementById('panelTab');
+  const closeBtn=document.getElementById('panelHide');
   const view=document.getElementById('view');
-
-  if(panel&&tab){
-    const closeBtn=document.getElementById('panelHide');
-
-    const closePanel=()=>{
+  if(panel&&tab&&closeBtn){
+    closeBtn.addEventListener('click',()=>{
       panel.classList.add('panel-hidden');
       tab.classList.add('show');
-      tab.textContent='‹';
-    };
-    const openPanel=()=>{
+    });
+    tab.addEventListener('click',()=>{
       panel.classList.remove('panel-hidden');
       tab.classList.remove('show');
-    };
-    closeBtn.addEventListener('click',closePanel);
-    tab.addEventListener('click',openPanel);
+    });
   }
-
   if(view) view.style.touchAction='none';
-});
+})();
+</script>
 </body></html>

@@ -92,7 +92,19 @@ function materialize(o,isBone){
    }
  }})
 }
-new GLTFLoader().load('./body_map_prototype02_web_v0.1.glb',g=>{
+// Anatomy asset source can be switched here after license/asset validation.
+const MODEL_URL='./body_map_prototype02_web_v0.1.glb';
+const FULL_SKELETON_URL='https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/skeleton.glb';
+const loader=new GLTFLoader();
+
+// Preflight only: verify the full skeleton can be fetched/decoded without replacing the current model.
+loader.load(FULL_SKELETON_URL,g=>{
+ console.info('[BodyMap] full skeleton preflight OK',g.scene);
+},undefined,e=>{
+ console.warn('[BodyMap] full skeleton preflight failed',e);
+});
+
+loader.load(MODEL_URL,g=>{
  scene.add(g.scene);
  g.scene.traverse(o=>{
    let key=Object.keys(labels).find(k=>o.name.includes(k));

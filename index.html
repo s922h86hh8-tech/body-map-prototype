@@ -229,7 +229,11 @@ loader.load(MODEL_URL,g=>{
 });
 document.getElementById('bones').onclick=()=>Object.entries(objects).forEach(([k,o])=>o.visible=boneNames.has(k));
 document.getElementById('all').onclick=()=>Object.values(objects).forEach(o=>o.visible=true);
-document.getElementById('opacity').oninput=e=>{boneOpacity=+e.target.value; boneNames.forEach(k=>objects[k]?.traverse(x=>{if(x.isMesh)x.material.opacity=boneOpacity}))};
+document.getElementById('opacity').oninput=e=>{
+ boneOpacity=+e.target.value;
+ boneNames.forEach(k=>objects[k]?.traverse(x=>{if(x.isMesh){x.material.transparent=true;x.material.opacity=boneOpacity;x.material.needsUpdate=true}}));
+ fullSkeleton?.traverse(x=>{if(x.isMesh){x.material.transparent=true;x.material.opacity=boneOpacity;x.material.needsUpdate=true}});
+};
 document.getElementById('reset').onclick=fit;
 function resize(){let w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()} addEventListener('resize',resize); resize();
 renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
@@ -242,12 +246,12 @@ renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)})
   const view=document.getElementById('view');
   if(panel&&tab&&closeBtn){
     closeBtn.addEventListener('click',()=>{
-      panel.classList.add('panel-hidden');
-      tab.classList.add('show');
+      panel.style.transform='translateX(calc(100vw + 24px))';
+      tab.style.display='block';
     });
     tab.addEventListener('click',()=>{
-      panel.classList.remove('panel-hidden');
-      tab.classList.remove('show');
+      panel.style.transform='translateX(0)';
+      tab.style.display='none';
     });
   }
   if(view) view.style.touchAction='none';

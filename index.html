@@ -98,8 +98,24 @@ const FULL_SKELETON_URL='https://raw.githubusercontent.com/JohanBellander/BodyEx
 const loader=new GLTFLoader();
 
 // Preflight only: verify the full skeleton can be fetched/decoded without replacing the current model.
+let fullSkeleton=null;
 loader.load(FULL_SKELETON_URL,g=>{
- console.info('[BodyMap] full skeleton preflight OK',g.scene);
+ fullSkeleton=g.scene;
+ fullSkeleton.visible=false;
+ scene.add(fullSkeleton);
+ console.info('[BodyMap] full skeleton preflight OK',fullSkeleton);
+ const btn=document.createElement('button');
+ btn.id='fullSkeletonTest';
+ btn.textContent='全身骨格テスト';
+ btn.title='全身骨格の読み込み確認用';
+ document.querySelector('aside')?.appendChild(btn);
+ btn.onclick=()=>{
+   const show=!fullSkeleton.visible;
+   fullSkeleton.visible=show;
+   Object.values(objects).forEach(o=>o.visible=!show);
+   btn.textContent=show?'元のモデルに戻す':'全身骨格テスト';
+   if(show) fit();
+ };
 },undefined,e=>{
  console.warn('[BodyMap] full skeleton preflight failed',e);
 });

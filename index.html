@@ -53,6 +53,8 @@ function syncModes(){
  controls.enablePan=!positionLocked;
  controls.enableRotate=rotationEnabled;
  controls.touches.ONE=positionLocked?THREE.TOUCH.ROTATE:THREE.TOUCH.PAN;
+ controls.mouseButtons.LEFT=positionLocked?THREE.MOUSE.ROTATE:THREE.MOUSE.PAN;
+ controls.screenSpacePanning=true;
  lockBtn.classList.toggle('active',positionLocked);
  lockBtn.setAttribute('aria-pressed',String(positionLocked));
  lockBtn.textContent=positionLocked?'🔒 固定中':'🔓 固定解除';
@@ -60,7 +62,12 @@ function syncModes(){
  rotateBtn.setAttribute('aria-pressed',String(rotationEnabled));
  rotateBtn.textContent=rotationEnabled?'↻ 回転中':'↻ 回転OFF';
 }
-lockBtn.onclick=()=>{positionLocked=!positionLocked;syncModes()};
+lockBtn.onclick=()=>{
+ positionLocked=!positionLocked;
+ controls.enabled=false;
+ syncModes();
+ requestAnimationFrame(()=>{controls.enabled=true});
+};
 rotateBtn.onclick=()=>{rotationEnabled=!rotationEnabled;syncModes()};
 syncModes();
 scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));

@@ -87,7 +87,7 @@ function bindVertical(id,dir){
  b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture?.(e.pointerId);moveVertical(dir);timer=setInterval(()=>moveVertical(dir),55)});
  b.addEventListener('pointerup',stop); b.addEventListener('pointercancel',stop); b.addEventListener('pointerleave',stop);
 }
-bindVertical('moveUp',1); bindVertical('moveDown',-1);
+bindVertical('moveUp',-1); bindVertical('moveDown',1);
 syncModes();
 scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
 const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);

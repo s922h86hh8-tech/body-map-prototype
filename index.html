@@ -9,7 +9,7 @@
 header{padding:14px 16px;background:#fff;border-bottom:1px solid #ddd}
 header b{font-size:18px}.sub{font-size:12px;color:#666;margin-top:3px}
 main{display:grid;grid-template-columns:1fr 310px;height:calc(100vh - 66px)}
-#view{min-width:0;position:relative}.hint{position:absolute;left:12px;bottom:70px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}.modebar{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;gap:8px;padding:7px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.modebar button{min-width:92px}.modebar button.active{background:#222;color:#fff;border-color:#222}.verticalbar{position:fixed;right:12px;top:42%;transform:translateY(-50%);z-index:31;display:flex;flex-direction:column;gap:6px;padding:7px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.verticalbar button{width:48px;height:48px;padding:0;font-size:22px;touch-action:none}
+#view{min-width:0;position:relative}.hint{position:absolute;left:12px;bottom:70px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}.modebar{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;gap:8px;padding:7px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.modebar button{min-width:92px}.modebar button.active{background:#222;color:#fff;border-color:#222}.verticalbar{position:fixed;right:12px;top:42%;transform:translateY(-50%);z-index:31;display:grid;grid-template-columns:44px 44px 44px;grid-template-rows:44px 44px 44px;gap:3px;padding:6px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.verticalbar button{width:44px;height:44px;padding:0;font-size:21px;touch-action:none}.verticalbar #moveUp{grid-column:2;grid-row:1}.verticalbar #moveLeft{grid-column:1;grid-row:2}.verticalbar #moveRight{grid-column:3;grid-row:2}.verticalbar #moveDown{grid-column:2;grid-row:3}
 aside{background:#fff;padding:14px;overflow:auto;border-left:1px solid #ddd}
 h2{font-size:15px;margin:4px 0 10px}.row{display:flex;gap:8px;margin-bottom:10px}
 button{border:1px solid #bbb;background:#fff;border-radius:10px;padding:9px 10px;font-size:13px}
@@ -27,7 +27,7 @@ input[type=range]{width:100%}
 <div id="items"></div>
 <h2>骨の透明度</h2><input id="opacity" type="range" min="0" max="1" step=".05" value=".28">
 <div class="row" style="margin-top:12px"><button id="reset">視点を戻す</button></div>
-</aside></main><div class="verticalbar" aria-label="上下位置"><button id="moveUp" aria-label="上へ移動">↑</button><button id="moveDown" aria-label="下へ移動">↓</button></div><div class="modebar" aria-label="3D操作"><button id="lock" class="active" aria-pressed="true">🔒 固定中</button><button id="rotate" class="active" aria-pressed="true">↻ 回転中</button></div>
+</aside></main><div class="verticalbar" aria-label="人体位置"><button id="moveUp" aria-label="上へ移動">↑</button><button id="moveLeft" aria-label="左へ移動">←</button><button id="moveRight" aria-label="右へ移動">→</button><button id="moveDown" aria-label="下へ移動">↓</button></div><div class="modebar" aria-label="3D操作"><button id="lock" class="active" aria-pressed="true">🔒 固定中</button><button id="rotate" class="active" aria-pressed="true">↻ 回転中</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -88,6 +88,23 @@ function bindVertical(id,dir){
  b.addEventListener('pointerup',stop); b.addEventListener('pointercancel',stop); b.addEventListener('pointerleave',stop);
 }
 bindVertical('moveUp',-1); bindVertical('moveDown',1);
+function moveHorizontal(dir){
+ const amount=moveStep()*dir;
+ const right=new THREE.Vector3();
+ camera.getWorldDirection(right);
+ right.cross(camera.up).normalize().multiplyScalar(amount);
+ controls.target.add(right);
+ camera.position.add(right);
+ controls.update();
+}
+function bindHorizontal(id,dir){
+ const b=document.getElementById(id);
+ let timer=null;
+ const stop=()=>{if(timer){clearInterval(timer);timer=null}};
+ b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture?.(e.pointerId);moveHorizontal(dir);timer=setInterval(()=>moveHorizontal(dir),55)});
+ b.addEventListener('pointerup',stop); b.addEventListener('pointercancel',stop); b.addEventListener('pointerleave',stop);
+}
+bindHorizontal('moveLeft',-1); bindHorizontal('moveRight',1);
 syncModes();
 scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
 const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);

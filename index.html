@@ -95,6 +95,7 @@ function materialize(o,isBone){
 // Anatomy asset source can be switched here after license/asset validation.
 const MODEL_URL='./body_map_prototype02_web_v0.1.glb';
 const FULL_SKELETON_URL='https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/skeleton.glb';
+const FULL_ANATOMY_URL='https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/anatomy.glb';
 const loader=new GLTFLoader();
 
 // Preflight only: verify the full skeleton can be fetched/decoded without replacing the current model.
@@ -119,6 +120,36 @@ loader.load(FULL_SKELETON_URL,g=>{
 },undefined,e=>{
  console.warn('[BodyMap] full skeleton preflight failed',e);
 });
+
+let fullAnatomy=null;
+loader.load(FULL_ANATOMY_URL,g=>{
+ fullAnatomy=g.scene;
+ fullAnatomy.visible=false;
+ scene.add(fullAnatomy);
+ const wanted=['right_gluteus_maximus','right_gluteus_medius','right_gluteus_minimus','right_piriformis','right_obturator_internus','right_obturator_externus','right_gemellus_superior','right_gemellus_inferior','right_quadratus_femoris','right_tensor_fasciae_latae','right_rectus_femoris','right_vastus_lateralis','right_vastus_medialis','right_vastus_intermedius','right_sartorius','right_adductor_longus','right_adductor_brevis','right_adductor_magnus','right_semitendinosus','right_semimembranosus','long_head_of_right_biceps_femoris','short_head_of_right_biceps_femoris'];
+ let kept=0;
+ fullAnatomy.traverse(o=>{
+   if(!o.isMesh)return;
+   const n=(o.name||'').toLowerCase();
+   const keep=wanted.some(w=>n.includes(w));
+   o.visible=keep;
+   if(keep)kept++;
+ });
+ console.info('[BodyMap] right hip/thigh muscle test ready',kept);
+ const btn=document.createElement('button');
+ btn.id='hipMuscleTest';
+ btn.textContent='右股関節・大腿筋テスト';
+ btn.title='右股関節から大腿の筋群をまとめて確認';
+ document.querySelector('aside')?.appendChild(btn);
+ btn.onclick=()=>{
+   const show=!fullAnatomy.visible;
+   fullAnatomy.visible=show;
+   if(fullSkeleton) fullSkeleton.visible=show;
+   Object.values(objects).forEach(o=>o.visible=!show);
+   btn.textContent=show?'元のモデルに戻す':'右股関節・大腿筋テスト';
+   if(show) fit();
+ };
+},undefined,e=>console.warn('[BodyMap] anatomy test load failed',e));
 
 loader.load(MODEL_URL,g=>{
  scene.add(g.scene);

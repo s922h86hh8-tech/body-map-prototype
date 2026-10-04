@@ -138,7 +138,6 @@ const loader=new GLTFLoader();
 let fullSkeleton=null;
 loader.load(FULL_SKELETON_URL,g=>{
  fullSkeleton=g.scene;
- fullSkeleton.rotation.x=-Math.PI/2;
  fullSkeleton.visible=false;
  fullSkeleton.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xd8d2c7,roughness:.72,metalness:0,transparent:true,opacity:.32,side:THREE.DoubleSide})}});
  scene.add(fullSkeleton);
@@ -162,7 +161,6 @@ loader.load(FULL_SKELETON_URL,g=>{
 let fullAnatomy=null;
 loader.load(FULL_ANATOMY_URL,g=>{
  fullAnatomy=g.scene;
- fullAnatomy.rotation.x=-Math.PI/2;
  fullAnatomy.visible=false;
  fullAnatomy.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xb76555,roughness:.72,metalness:0,side:THREE.DoubleSide})}});
  scene.add(fullAnatomy);

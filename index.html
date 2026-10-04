@@ -71,7 +71,7 @@ lockBtn.onclick=()=>{
 rotateBtn.onclick=()=>{rotationEnabled=!rotationEnabled;syncModes()};
 const moveStep=()=>{
  const d=camera.position.distanceTo(controls.target);
- return Math.max(d*.055,.35);
+ return Math.max(d*.0183,.12);
 };
 function moveVertical(dir){
  const amount=moveStep()*dir;
@@ -104,7 +104,7 @@ function bindHorizontal(id,dir){
  b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture?.(e.pointerId);moveHorizontal(dir);timer=setInterval(()=>moveHorizontal(dir),55)});
  b.addEventListener('pointerup',stop); b.addEventListener('pointercancel',stop); b.addEventListener('pointerleave',stop);
 }
-bindHorizontal('moveLeft',-1); bindHorizontal('moveRight',1);
+bindHorizontal('moveLeft',1); bindHorizontal('moveRight',-1);
 syncModes();
 scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
 const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);

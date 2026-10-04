@@ -129,9 +129,26 @@ scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
 const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);
 let objects={}, boneOpacity=.28;
 
+function visibleBounds(){
+ const box=new THREE.Box3(), tmp=new THREE.Box3();
+ scene.updateMatrixWorld(true);
+ scene.traverse(o=>{
+  if(!o.isMesh||!o.visible)return;
+  let p=o.parent,shown=true;
+  while(p&&p!==scene){if(!p.visible){shown=false;break}p=p.parent}
+  if(!shown)return;
+  if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();
+  tmp.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld); box.union(tmp);
+ });
+ return box;
+}
 function fit(){
- const box=new THREE.Box3().setFromObject(scene), c=box.getCenter(new THREE.Vector3()), s=box.getSize(new THREE.Vector3()).length();
- controls.target.copy(c); camera.position.copy(c).add(new THREE.Vector3(s*.75,-s*.95,s*.55)); camera.near=s/1000; camera.far=s*10; camera.updateProjectionMatrix(); controls.update();
+ const box=visibleBounds(); if(box.isEmpty())return;
+ const c=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+ const maxDim=Math.max(size.x,size.y,size.z),fov=THREE.MathUtils.degToRad(camera.fov);
+ const dist=(maxDim*.62)/Math.tan(fov/2);
+ controls.target.copy(c); camera.up.set(0,0,1); camera.position.set(c.x,c.y-dist,c.z);
+ camera.near=Math.max(dist/1000,.01);camera.far=Math.max(dist*10,100);camera.updateProjectionMatrix();controls.update();
 }
 function materialize(o,isBone){
  o.traverse(x=>{if(x.isMesh){

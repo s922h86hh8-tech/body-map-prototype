@@ -170,6 +170,32 @@ const FULL_SKELETON_URL='https://raw.githubusercontent.com/JohanBellander/BodyEx
 const FULL_ANATOMY_URL='https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/anatomy.glb';
 const loader=new GLTFLoader();
 
+// BodyParts3D -> Three.js: X=left/right, Z=up, -Y=front/back.
+let bpCenter=null,bpScale=null,fullSkeletonReady=false,fullAnatomyReady=false,fullBodyFitted=false;
+function transformBP3D(root,center,scale){
+ root.updateMatrixWorld(true);
+ root.traverse(o=>{
+  if(!o.isMesh)return;
+  const g=o.geometry.clone();
+  const a=g.attributes.position;
+  for(let i=0;i<a.count;i++){
+   const x=a.getX(i),y=a.getY(i),z=a.getZ(i);
+   a.setXYZ(i,(x-center.x)*scale,(z-center.z)*scale,-(y-center.y)*scale);
+  }
+  if(g.attributes.normal){
+   const n=g.attributes.normal;
+   for(let i=0;i<n.count;i++){const x=n.getX(i),y=n.getY(i),z=n.getZ(i);n.setXYZ(i,x,z,-y)}
+   n.needsUpdate=true;
+  }
+  a.needsUpdate=true; g.computeBoundingBox(); g.computeBoundingSphere();
+  o.geometry=g; o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);
+ });
+}
+function fitFullBodyWhenReady(){
+ if(!fullSkeletonReady||!fullAnatomyReady||fullBodyFitted)return;
+ fullBodyFitted=true; requestAnimationFrame(()=>requestAnimationFrame(fit));
+}
+
 // Preflight only: verify the full skeleton can be fetched/decoded without replacing the current model.
 let fullSkeleton=null;
 loader.load(FULL_SKELETON_URL,g=>{
@@ -177,6 +203,8 @@ loader.load(FULL_SKELETON_URL,g=>{
  fullSkeleton.visible=false;
  fullSkeleton.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xd8d2c7,roughness:.72,metalness:0,transparent:true,opacity:.32,side:THREE.DoubleSide})}});
  scene.add(fullSkeleton);
+ fullSkeletonReady=true;
+ if(bpCenter&&bpScale){transformBP3D(fullSkeleton,bpCenter,bpScale);fullSkeleton.visible=!!fullAnatomy?.visible;fitFullBodyWhenReady()}
  console.info('[BodyMap] full skeleton preflight OK',fullSkeleton);
  const btn=document.createElement('button');
  btn.id='fullSkeletonTest';
@@ -197,9 +225,16 @@ loader.load(FULL_SKELETON_URL,g=>{
 let fullAnatomy=null;
 loader.load(FULL_ANATOMY_URL,g=>{
  fullAnatomy=g.scene;
+ const rawBox=new THREE.Box3().setFromObject(fullAnatomy);
+ bpCenter=rawBox.getCenter(new THREE.Vector3());
+ const rawSize=rawBox.getSize(new THREE.Vector3());
+ bpScale=30/Math.max(rawSize.z,1e-6);
+ transformBP3D(fullAnatomy,bpCenter,bpScale);
+ if(fullSkeletonReady)transformBP3D(fullSkeleton,bpCenter,bpScale);
  fullAnatomy.visible=false;
  fullAnatomy.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xb76555,roughness:.72,metalness:0,side:THREE.DoubleSide})}});
  scene.add(fullAnatomy);
+ fullAnatomyReady=true;
  const wanted=['right_gluteus_maximus','right_gluteus_medius','right_gluteus_minimus','right_piriformis','right_obturator_internus','right_obturator_externus','right_gemellus_superior','right_gemellus_inferior','right_quadratus_femoris','right_tensor_fasciae_latae','right_rectus_femoris','right_vastus_lateralis','right_vastus_medialis','right_vastus_intermedius','right_sartorius','right_adductor_longus','right_adductor_brevis','right_adductor_magnus','right_semitendinosus','right_semimembranosus','long_head_of_right_biceps_femoris','short_head_of_right_biceps_femoris'];
  let kept=0;
  fullAnatomy.traverse(o=>{
@@ -214,7 +249,7 @@ loader.load(FULL_ANATOMY_URL,g=>{
  fullAnatomy.visible=true;
  if(fullSkeleton) fullSkeleton.visible=true;
  Object.values(objects).forEach(o=>o.visible=false);
- requestAnimationFrame(()=>fit());
+ fitFullBodyWhenReady();
  const btn=document.createElement('button');
  btn.id='hipMuscleTest';
  btn.textContent='右股関節・大腿筋テスト';
@@ -242,7 +277,7 @@ loader.load(MODEL_URL,g=>{
    const d=document.createElement('label'); d.className='item'; d.innerHTML=`<span>${v}</span><input type="checkbox" checked>`;
    d.querySelector('input').onchange=e=>objects[k].visible=e.target.checked; list.appendChild(d);
  });
- fit();
+ if(!fullAnatomy?.visible) fit();
 });
 document.getElementById('bones').onclick=()=>Object.entries(objects).forEach(([k,o])=>o.visible=boneNames.has(k));
 document.getElementById('all').onclick=()=>Object.values(objects).forEach(o=>o.visible=true);

@@ -145,10 +145,17 @@ function visibleBounds(){
 function fit(){
  const box=visibleBounds(); if(box.isEmpty())return;
  const c=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
- const maxDim=Math.max(size.x,size.y,size.z),fov=THREE.MathUtils.degToRad(camera.fov);
- const dist=(maxDim*.62)/Math.tan(fov/2);
- controls.target.copy(c); camera.up.set(0,0,1); camera.position.set(c.x,c.y-dist,c.z);
- camera.near=Math.max(dist/1000,.01);camera.far=Math.max(dist*10,100);camera.updateProjectionMatrix();controls.update();
+ const vfov=THREE.MathUtils.degToRad(camera.fov);
+ const hfov=2*Math.atan(Math.tan(vfov/2)*Math.max(camera.aspect,.01));
+ const distH=(size.y*.5)/Math.tan(vfov/2);
+ const distW=(size.x*.5)/Math.tan(hfov/2);
+ const dist=Math.max(distH,distW,size.z*.8)*1.18;
+ controls.target.copy(c);
+ camera.up.set(0,1,0);
+ // Converted BP3D is Y-up. Look straight at the body along +Z.
+ camera.position.set(c.x,c.y,c.z+dist);
+ camera.near=Math.max(dist/1000,.01);camera.far=Math.max(dist*12,100);
+ camera.updateProjectionMatrix();controls.update();
 }
 function materialize(o,isBone){
  o.traverse(x=>{if(x.isMesh){
@@ -177,19 +184,19 @@ function transformBP3D(root,center,scale){
  root.traverse(o=>{
   if(!o.isMesh)return;
   const g=o.geometry.clone();
-  const a=g.attributes.position;
-  for(let i=0;i<a.count;i++){
-   const x=a.getX(i),y=a.getY(i),z=a.getZ(i);
-   a.setXYZ(i,(x-center.x)*scale,(z-center.z)*scale,-(y-center.y)*scale);
+  // Bake any GLTF node transform before converting BP3D axes.
+  g.applyMatrix4(o.matrixWorld);
+  const p=g.attributes.position;
+  for(let i=0;i<p.count;i++){
+   const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+   p.setXYZ(i,(x-center.x)*scale,(z-center.z)*scale,-(y-center.y)*scale);
   }
-  if(g.attributes.normal){
-   const n=g.attributes.normal;
-   for(let i=0;i<n.count;i++){const x=n.getX(i),y=n.getY(i),z=n.getZ(i);n.setXYZ(i,x,z,-y)}
-   n.needsUpdate=true;
-  }
-  a.needsUpdate=true; g.computeBoundingBox(); g.computeBoundingSphere();
-  o.geometry=g; o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);
+  p.needsUpdate=true;
+  // Recompute normals after axis conversion to avoid inherited orientation errors.
+  g.deleteAttribute('normal'); g.computeVertexNormals(); g.computeBoundingBox(); g.computeBoundingSphere();
+  o.geometry=g; o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);o.updateMatrix();
  });
+ root.position.set(0,0,0);root.rotation.set(0,0,0);root.scale.set(1,1,1);root.updateMatrixWorld(true);
 }
 function fitFullBodyWhenReady(){
  if(!fullSkeletonReady||!fullAnatomyReady||fullBodyFitted)return;

@@ -10,12 +10,12 @@ header{padding:14px 16px;background:#fff;border-bottom:1px solid #ddd}
 header b{font-size:18px}.sub{font-size:12px;color:#666;margin-top:3px}
 main{display:grid;grid-template-columns:1fr 310px;height:calc(100vh - 66px)}
 #view{min-width:0;position:relative}.hint{position:absolute;left:12px;bottom:70px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}.modebar{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;gap:8px;padding:7px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.modebar button{min-width:92px}.modebar button.active{background:#222;color:#fff;border-color:#222}.verticalbar{position:fixed;right:12px;top:42%;transform:translateY(-50%);z-index:31;display:grid;grid-template-columns:44px 44px 44px;grid-template-rows:44px 44px 44px;gap:3px;padding:6px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.verticalbar button{width:44px;height:44px;padding:0;font-size:21px;touch-action:none}.verticalbar #moveUp{grid-column:2;grid-row:1}.verticalbar #moveLeft{grid-column:1;grid-row:2}.verticalbar #moveRight{grid-column:3;grid-row:2}.verticalbar #padHandle{grid-column:2;grid-row:2;cursor:grab;font-size:17px;color:#666}.verticalbar #padHandle:active{cursor:grabbing}.verticalbar #moveDown{grid-column:2;grid-row:3}
-aside{background:#fff;padding:14px;overflow:auto;border-left:1px solid #ddd}
+aside{background:#fff;padding:14px;overflow:auto;border-left:1px solid #ddd;transition:transform .24s ease}
 h2{font-size:15px;margin:4px 0 10px}.row{display:flex;gap:8px;margin-bottom:10px}
 button{border:1px solid #bbb;background:#fff;border-radius:10px;padding:9px 10px;font-size:13px}
 button.primary{background:#222;color:#fff}.item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee;font-size:13px}
 input[type=range]{width:100%}
-@media(max-width:760px){main{grid-template-columns:1fr;height:calc(100dvh - 66px)}.verticalbar{right:10px;top:38%}#view{overflow:hidden}aside{position:fixed;left:8px;right:8px;top:auto;bottom:92px;width:auto;max-height:min(36dvh,320px);padding:12px;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002;z-index:20;overflow-y:auto;overscroll-behavior:contain}.scrollcue{display:block}.row{flex-wrap:wrap}button{padding:7px 8px}}
+@media(max-width:760px){main{grid-template-columns:1fr;height:calc(100dvh - 66px)}.verticalbar{right:10px;top:38%}#view{overflow:hidden}aside{position:fixed;left:8px;right:8px;top:auto;bottom:92px;width:auto;max-height:min(22dvh,190px);padding:12px;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002;z-index:20;overflow-y:auto;overscroll-behavior:contain}aside.panel-hidden{transform:translateX(calc(100% + 14px))}.paneltab{position:fixed;right:0;bottom:150px;z-index:25;width:42px;height:54px;border-radius:12px 0 0 12px;font-size:22px;display:none}.paneltab.show{display:block}.scrollcue{display:block}.row{flex-wrap:wrap}button{padding:7px 8px}}
 </style>
 </head>
 <body>
@@ -27,7 +27,7 @@ input[type=range]{width:100%}
 <div id="items"></div>
 <h2>骨の透明度</h2><input id="opacity" type="range" min="0" max="1" step=".05" value=".28">
 <div class="row" style="margin-top:12px"><button id="reset">視点を戻す</button></div>
-</aside></main><div class="verticalbar" aria-label="人体位置"><button id="moveUp" aria-label="上へ移動">↑</button><button id="moveLeft" aria-label="左へ移動">←</button><button id="padHandle" aria-label="方向キーを移動" title="ここをドラッグして方向キーを移動">●</button><button id="moveRight" aria-label="右へ移動">→</button><button id="moveDown" aria-label="下へ移動">↓</button></div><div class="modebar" aria-label="3D操作"><button id="lock" class="active" aria-pressed="true">🔒 固定中</button><button id="rotate" class="active" aria-pressed="true">↻ 回転中</button></div>
+</aside><button id="panelTab" class="paneltab" aria-label="表示パネルを開く">‹</button></main><div class="verticalbar" aria-label="人体位置"><button id="moveUp" aria-label="上へ移動">↑</button><button id="moveLeft" aria-label="左へ移動">←</button><button id="padHandle" aria-label="方向キーを移動" title="ここをドラッグして方向キーを移動">●</button><button id="moveRight" aria-label="右へ移動">→</button><button id="moveDown" aria-label="下へ移動">↓</button></div><div class="modebar" aria-label="3D操作"><button id="lock" class="active" aria-pressed="true">🔒 固定中</button><button id="rotate" class="active" aria-pressed="true">↻ 回転中</button></div>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
@@ -236,42 +236,29 @@ renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)})
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
   const panel=document.querySelector('aside');
+  const tab=document.getElementById('panelTab');
   const view=document.getElementById('view');
 
-  if(panel){
-    const btn=document.createElement('button');
-    btn.textContent='表示パネルを閉じる';
-    btn.style.position='fixed';
-    btn.style.right='10px';
-    btn.style.maxWidth='calc(100vw - 20px)';
-    btn.style.zIndex='9999';
+  if(panel&&tab){
+    const closeBtn=document.createElement('button');
+    closeBtn.textContent='表示パネルをしまう ›';
+    closeBtn.style.width='100%';
+    closeBtn.style.marginTop='8px';
+    panel.appendChild(closeBtn);
 
-    const placePanelButton=()=>{
-      if(panel.style.display==='none'){
-        btn.style.top='auto';
-        btn.style.bottom='92px';
-      }else{
-        const r=panel.getBoundingClientRect();
-        btn.style.top='auto';
-        btn.style.bottom=Math.max(92,window.innerHeight-r.top+8)+'px';
-      }
+    const closePanel=()=>{
+      panel.classList.add('panel-hidden');
+      tab.classList.add('show');
+      tab.textContent='‹';
     };
-
-    btn.onclick=()=>{
-      const hidden=panel.style.display==='none';
-      panel.style.display=hidden?'block':'none';
-      btn.textContent=hidden?'表示パネルを閉じる':'表示パネルを開く';
-      requestAnimationFrame(placePanelButton);
+    const openPanel=()=>{
+      panel.classList.remove('panel-hidden');
+      tab.classList.remove('show');
     };
-
-    document.body.appendChild(btn);
-    placePanelButton();
-    addEventListener('resize',placePanelButton);
+    closeBtn.addEventListener('click',closePanel);
+    tab.addEventListener('click',openPanel);
   }
 
-  if(view){
-    view.style.touchAction='none';
-  }
+  if(view) view.style.touchAction='none';
 });
-</script>
 </body></html>

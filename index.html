@@ -104,7 +104,7 @@ function bindHorizontal(id,dir){
  b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture?.(e.pointerId);moveHorizontal(dir);timer=setInterval(()=>moveHorizontal(dir),55)});
  b.addEventListener('pointerup',stop); b.addEventListener('pointercancel',stop); b.addEventListener('pointerleave',stop);
 }
-bindHorizontal('moveLeft',-1); bindHorizontal('moveRight',1);
+bindHorizontal('moveLeft',1); bindHorizontal('moveRight',-1);
 syncModes();
 scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
 const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);
@@ -138,6 +138,7 @@ const loader=new GLTFLoader();
 let fullSkeleton=null;
 loader.load(FULL_SKELETON_URL,g=>{
  fullSkeleton=g.scene;
+ fullSkeleton.rotation.x=-Math.PI/2;
  fullSkeleton.visible=false;
  fullSkeleton.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xd8d2c7,roughness:.72,metalness:0,transparent:true,opacity:.32,side:THREE.DoubleSide})}});
  scene.add(fullSkeleton);
@@ -161,6 +162,7 @@ loader.load(FULL_SKELETON_URL,g=>{
 let fullAnatomy=null;
 loader.load(FULL_ANATOMY_URL,g=>{
  fullAnatomy=g.scene;
+ fullAnatomy.rotation.x=-Math.PI/2;
  fullAnatomy.visible=false;
  fullAnatomy.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xb76555,roughness:.72,metalness:0,side:THREE.DoubleSide})}});
  scene.add(fullAnatomy);

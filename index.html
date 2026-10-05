@@ -289,7 +289,14 @@ loader.load(FULL_ANATOMY_URL,g=>{
  ['flexor_digitorum_brevis','短趾屈筋'],['flexor_accessorius','足底方形筋'],['abductor_digiti_minimi','小趾外転筋'],
  ['rectus_abdominis','腹直筋'],['external_oblique','外腹斜筋'],['internal_oblique','内腹斜筋'],['transversus_abdominis','腹横筋'],
  ['psoas_major','大腰筋'],['psoas_minor','小腰筋'],['iliacus','腸骨筋'],['rhomboid_major','大菱形筋'],['rhomboid_minor','小菱形筋'],
- ['levator_scapulae','肩甲挙筋'],['platysma','広頸筋'],['masseter','咬筋'],['temporalis','側頭筋'],['lumbrical','虫様筋']
+ ['levator_scapulae','肩甲挙筋'],['platysma','広頸筋'],['masseter','咬筋'],['temporalis','側頭筋'],
+ ['plantaris','足底筋'],['flexor_digiti_minimi_brevis','短小趾屈筋'],['extensor_digitorum_longus','長趾伸筋'],
+ ['flexor_digitorum_longus','長趾屈筋'],['extensor_hallucis_longus','長母趾伸筋'],['flexor_hallucis_longus','長母趾屈筋'],
+ ['fibularis_longus','長腓骨筋'],['fibularis_brevis','短腓骨筋'],['peroneus_longus','長腓骨筋'],['peroneus_brevis','短腓骨筋'],
+ ['popliteus','膝窩筋'],['extensor_digitorum_brevis','短趾伸筋'],['extensor_hallucis_brevis','短母趾伸筋'],
+ ['flexor_carpi_radialis','橈側手根屈筋'],['flexor_carpi_ulnaris','尺側手根屈筋'],['extensor_carpi_ulnaris','尺側手根伸筋'],
+ ['extensor_carpi_radialis_longus','長橈側手根伸筋'],['extensor_carpi_radialis_brevis','短橈側手根伸筋'],
+ ['palmaris_longus','長掌筋'],['lumbrical','虫様筋']
  ];
  function normName(raw){return raw.toLowerCase().replace(/[ -]+/g,'_')}
  function japaneseName(raw){
@@ -297,7 +304,7 @@ loader.load(FULL_ANATOMY_URL,g=>{
   for(const [en,jp] of jpTerms)if(n.includes(en))return jp;
   return raw.replace(/_/g,' ');
  }
- function sideName(raw){const n=normName(raw);if(n.includes('left'))return '左｜';if(n.includes('right'))return '右｜';return ''}
+ function sideName(raw){const n=normName(raw);if(/(^|_)left(_|$)/.test(n))return '左｜';if(/(^|_)right(_|$)/.test(n))return '右｜';return ''}
  const deepRe=/piriformis|obturator|gemellus|quadratus_femoris|gluteus_minimus|supraspinatus|infraspinatus|subscapularis|teres_minor|rhomboid|multifidus|intercost|psoas|iliacus|popliteus|interosse|lumbrical|pronator_quadratus/i;
  const middleRe=/gluteus_medius|erector_spinae|serratus|brachialis|soleus|vastus_intermedius/i;
  const groups=new Map(regionDefs.map(([n])=>[n,[]]));groups.set('その他',[]);

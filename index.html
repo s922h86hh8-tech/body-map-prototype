@@ -274,33 +274,26 @@ loader.load(FULL_ANATOMY_URL,g=>{
  ['足',/foot|abductor[ _]hallucis|adductor[ _]hallucis|flexor[ _]hallucis[ _]brevis|flexor[ _]digitorum[ _]brevis|flexor[ _]accessorius|plantar[ _]ligament|abductor[ _]digiti[ _]minimi|flexor[ _]digiti[ _]minimi/i]
  ];
  const jpTerms=[
- ['sternocleidomastoid','胸鎖乳突筋'],['trapezius','僧帽筋'],['latissimus_dorsi','広背筋'],['deltoid','三角筋'],
- ['supraspinatus','棘上筋'],['infraspinatus','棘下筋'],['subscapularis','肩甲下筋'],['teres_major','大円筋'],['teres_minor','小円筋'],
- ['pectoralis_major','大胸筋'],['pectoralis_minor','小胸筋'],['serratus_anterior','前鋸筋'],['biceps_brachii','上腕二頭筋'],
- ['triceps_brachii','上腕三頭筋'],['brachialis','上腕筋'],['brachioradialis','腕橈骨筋'],['pronator_teres','円回内筋'],
- ['pronator_quadratus','方形回内筋'],['supinator','回外筋'],['gluteus_maximus','大殿筋'],['gluteus_medius','中殿筋'],
- ['gluteus_minimus','小殿筋'],['piriformis','梨状筋'],['obturator_internus','内閉鎖筋'],['obturator_externus','外閉鎖筋'],
- ['gemellus_superior','上双子筋'],['gemellus_inferior','下双子筋'],['quadratus_femoris','大腿方形筋'],['tensor_fasciae_latae','大腿筋膜張筋'],
- ['rectus_femoris','大腿直筋'],['vastus_lateralis','外側広筋'],['vastus_medialis','内側広筋'],['vastus_intermedius','中間広筋'],
- ['sartorius','縫工筋'],['adductor_longus','長内転筋'],['adductor_brevis','短内転筋'],['adductor_magnus','大内転筋'],
- ['gracilis','薄筋'],['semitendinosus','半腱様筋'],['semimembranosus','半膜様筋'],['biceps_femoris','大腿二頭筋'],
- ['gastrocnemius','腓腹筋'],['soleus','ヒラメ筋'],['tibialis_anterior','前脛骨筋'],['tibialis_posterior','後脛骨筋'],
- ['abductor_hallucis','母趾外転筋'],['adductor_hallucis','母趾内転筋'],['flexor_hallucis_brevis','短母趾屈筋'],
- ['flexor_digitorum_brevis','短趾屈筋'],['flexor_accessorius','足底方形筋'],['abductor_digiti_minimi','小趾外転筋'],
- ['rectus_abdominis','腹直筋'],['external_oblique','外腹斜筋'],['internal_oblique','内腹斜筋'],['transversus_abdominis','腹横筋'],
- ['psoas_major','大腰筋'],['psoas_minor','小腰筋'],['iliacus','腸骨筋'],['rhomboid_major','大菱形筋'],['rhomboid_minor','小菱形筋'],
- ['levator_scapulae','肩甲挙筋'],['platysma','広頸筋'],['masseter','咬筋'],['temporalis','側頭筋'],
- ['plantaris','足底筋'],['flexor_digiti_minimi_brevis','短小趾屈筋'],['extensor_digitorum_longus','長趾伸筋'],
- ['flexor_digitorum_longus','長趾屈筋'],['extensor_hallucis_longus','長母趾伸筋'],['flexor_hallucis_longus','長母趾屈筋'],
- ['fibularis_longus','長腓骨筋'],['fibularis_brevis','短腓骨筋'],['peroneus_longus','長腓骨筋'],['peroneus_brevis','短腓骨筋'],
- ['popliteus','膝窩筋'],['extensor_digitorum_brevis','短趾伸筋'],['extensor_hallucis_brevis','短母趾伸筋'],
- ['flexor_carpi_radialis','橈側手根屈筋'],['flexor_carpi_ulnaris','尺側手根屈筋'],['extensor_carpi_ulnaris','尺側手根伸筋'],
- ['extensor_carpi_radialis_longus','長橈側手根伸筋'],['extensor_carpi_radialis_brevis','短橈側手根伸筋'],
- ['palmaris_longus','長掌筋'],['lumbrical','虫様筋']
+ ['sternocleidomastoid','胸鎖乳突筋'],['platysma','広頸筋'],['digastric','顎二腹筋'],['mylohyoid','顎舌骨筋'],['geniohyoid','オトガイ舌骨筋'],['sternohyoid','胸骨舌骨筋'],['sternothyroid','胸骨甲状筋'],['thyrohyoid','甲状舌骨筋'],['omohyoid','肩甲舌骨筋'],['stylohyoid','茎突舌骨筋'],
+ ['splenius_capitis','頭板状筋'],['splenius_cervicis','頸板状筋'],['longus_capitis','頭長筋'],['longus_colli','頸長筋'],['scalenus_anterior','前斜角筋'],['scalenus_medius','中斜角筋'],['scalenus_posterior','後斜角筋'],
+ ['rectus_capitis_anterior','前頭直筋'],['rectus_capitis_lateralis','外側頭直筋'],['rectus_capitis_posterior_major','大後頭直筋'],['rectus_capitis_posterior_minor','小後頭直筋'],
+ ['masseter','咬筋'],['temporalis','側頭筋'],['medial_pterygoid','内側翼突筋'],['lateral_pterygoid','外側翼突筋'],['frontalis','前頭筋'],['orbicularis_oculi','眼輪筋'],['orbicularis_oris','口輪筋'],['zygomaticus_major','大頬骨筋'],['zygomaticus_minor','小頬骨筋'],['levator_labii_superioris','上唇挙筋'],['depressor_labii_inferioris','下唇下制筋'],['depressor_anguli_oris','口角下制筋'],['risorius','笑筋'],['mentalis','オトガイ筋'],['procerus','鼻根筋'],['nasalis','鼻筋'],['corrugator_supercilii','皺眉筋'],
+ ['trapezius','僧帽筋'],['latissimus_dorsi','広背筋'],['rhomboid_major','大菱形筋'],['rhomboid_minor','小菱形筋'],['levator_scapulae','肩甲挙筋'],['multifidus','多裂筋'],['rotatores','回旋筋'],['iliocostalis','腸肋筋'],['longissimus','最長筋'],['spinalis','棘筋'],['semispinalis','半棘筋'],['interspinal','棘間筋'],['intertransvers','横突間筋'],['serratus_posterior_superior','上後鋸筋'],['serratus_posterior_inferior','下後鋸筋'],
+ ['deltoid','三角筋'],['supraspinatus','棘上筋'],['infraspinatus','棘下筋'],['subscapularis','肩甲下筋'],['teres_major','大円筋'],['teres_minor','小円筋'],['subclavius','鎖骨下筋'],
+ ['pectoralis_major','大胸筋'],['pectoralis_minor','小胸筋'],['serratus_anterior','前鋸筋'],['external_intercostal','外肋間筋'],['internal_intercostal','内肋間筋'],['innermost_intercostal','最内肋間筋'],['diaphragm','横隔膜'],['transversus_thoracis','胸横筋'],
+ ['rectus_abdominis','腹直筋'],['external_oblique','外腹斜筋'],['internal_oblique','内腹斜筋'],['transversus_abdominis','腹横筋'],['quadratus_lumborum','腰方形筋'],
+ ['biceps_brachii','上腕二頭筋'],['triceps_brachii','上腕三頭筋'],['brachialis','上腕筋'],['coracobrachialis','烏口腕筋'],['anconeus','肘筋'],['brachioradialis','腕橈骨筋'],
+ ['pronator_teres','円回内筋'],['pronator_quadratus','方形回内筋'],['supinator','回外筋'],['flexor_carpi_radialis','橈側手根屈筋'],['flexor_carpi_ulnaris','尺側手根屈筋'],['palmaris_longus','長掌筋'],['flexor_digitorum_superficialis','浅指屈筋'],['flexor_digitorum_profundus','深指屈筋'],['flexor_pollicis_longus','長母指屈筋'],['extensor_carpi_radialis_longus','長橈側手根伸筋'],['extensor_carpi_radialis_brevis','短橈側手根伸筋'],['extensor_carpi_ulnaris','尺側手根伸筋'],['extensor_digitorum','総指伸筋'],['extensor_digiti_minimi','小指伸筋'],['extensor_indicis','示指伸筋'],['abductor_pollicis_longus','長母指外転筋'],['extensor_pollicis_longus','長母指伸筋'],['extensor_pollicis_brevis','短母指伸筋'],
+ ['abductor_pollicis_brevis','短母指外転筋'],['flexor_pollicis_brevis','短母指屈筋'],['opponens_pollicis','母指対立筋'],['adductor_pollicis','母指内転筋'],['lumbrical','虫様筋'],['palmar_interosse','掌側骨間筋'],['dorsal_interosse','背側骨間筋'],
+ ['gluteus_maximus','大殿筋'],['gluteus_medius','中殿筋'],['gluteus_minimus','小殿筋'],['piriformis','梨状筋'],['obturator_internus','内閉鎖筋'],['obturator_externus','外閉鎖筋'],['gemellus_superior','上双子筋'],['gemellus_inferior','下双子筋'],['quadratus_femoris','大腿方形筋'],['tensor_fasciae_latae','大腿筋膜張筋'],['psoas_major','大腰筋'],['iliacus','腸骨筋'],['pectineus','恥骨筋'],['coccygeus','尾骨筋'],['iliococcygeus','腸骨尾骨筋'],['pubococcygeus','恥骨尾骨筋'],['puborectalis','恥骨直腸筋'],['external_anal_sphincter','外肛門括約筋'],
+ ['rectus_femoris','大腿直筋'],['vastus_lateralis','外側広筋'],['vastus_medialis','内側広筋'],['vastus_intermedius','中間広筋'],['sartorius','縫工筋'],['adductor_longus','長内転筋'],['adductor_brevis','短内転筋'],['adductor_magnus','大内転筋'],['adductor_minimus','小内転筋'],['gracilis','薄筋'],['semitendinosus','半腱様筋'],['semimembranosus','半膜様筋'],['biceps_femoris','大腿二頭筋'],
+ ['gastrocnemius','腓腹筋'],['soleus','ヒラメ筋'],['plantaris','足底筋'],['popliteus','膝窩筋'],['tibialis_anterior','前脛骨筋'],['tibialis_posterior','後脛骨筋'],['fibularis_longus','長腓骨筋'],['fibularis_brevis','短腓骨筋'],['fibularis_tertius','第三腓骨筋'],['flexor_digitorum_longus','長趾屈筋'],['flexor_hallucis_longus','長母趾屈筋'],['extensor_digitorum_longus','長趾伸筋'],['extensor_hallucis_longus','長母趾伸筋'],
+ ['abductor_hallucis','母趾外転筋'],['adductor_hallucis','母趾内転筋'],['flexor_hallucis_brevis','短母趾屈筋'],['flexor_digitorum_brevis','短趾屈筋'],['flexor_accessorius','足底方形筋'],['abductor_digiti_minimi','小趾外転筋'],['flexor_digiti_minimi_brevis','短小趾屈筋'],['opponens_digiti_minimi','小趾対立筋'],['plantar_interosse','底側骨間筋'],
+ ['calcaneal_tendon','踵骨腱（アキレス腱）'],['iliotibial_tract','腸脛靱帯'],['thoracolumbar_fascia','胸腰筋膜'],['interosseous_membrane','骨間膜'],['flexor_retinaculum','屈筋支帯'],['long_plantar_ligament','長足底靱帯']
  ];
  function normName(raw){return raw.toLowerCase().replace(/[ -]+/g,'_')}
  function japaneseName(raw){
-  let n=normName(raw).replace(/^left_/,'').replace(/^right_/,'').replace(/_left$/,'').replace(/_right$/,'');
+  const n=normName(raw);
   for(const [en,jp] of jpTerms)if(n.includes(en))return jp;
   return raw.replace(/_/g,' ');
  }

@@ -261,7 +261,7 @@ loader.load(FULL_ANATOMY_URL,g=>{
  const muscleMeshes=[];
  const regionDefs=[
   ['頸部',/neck|cervic|sternocleidomastoid|scalene|longus_capitis|longus_coll/i],
-  ['肩部',/deltoid|rotator|supraspinatus|infraspinatus|subscapularis|teres_|shoulder/i],
+  ['肩部',/deltoid|supraspinatus|infraspinatus|subscapularis|teres_|shoulder/i],
   ['胸部',/pector|intercost|serratus_anterior|thorac/i],
   ['背部',/trapezius|latissimus|rhomboid|erector_spinae|multifidus|back/i],
   ['腰部',/quadratus_lumborum|psoas|iliacus|lumbar/i],
@@ -273,40 +273,39 @@ loader.load(FULL_ANATOMY_URL,g=>{
   ['下腿',/gastrocnemius|soleus|tibialis|fibularis|perone|popliteus|lower_leg/i],
   ['足',/foot|halluc|digitorum|plantar|pedis/i]
  ];
- const groups=new Map(regionDefs.map(([n])=>[n,[]])); groups.set('その他',[]);
- function regionFor(name){
-  for(const [label,re] of regionDefs)if(re.test(name))return label;
-  return 'その他';
- }
+ const deepRe=/piriformis|obturator|gemellus|quadratus_femoris|gluteus_minimus|supraspinatus|infraspinatus|subscapularis|teres_minor|rhomboid|multifidus|intercost|psoas|iliacus|popliteus|interosse|lumbrical|pronator_quadratus/i;
+ const middleRe=/gluteus_medius|erector_spinae|serratus|brachialis|soleus|vastus_intermedius/i;
+ const groups=new Map(regionDefs.map(([n])=>[n,[]]));groups.set('その他',[]);
+ function regionFor(name){for(const [label,re] of regionDefs)if(re.test(name))return label;return 'その他'}
+ function layerFor(name){return deepRe.test(name)?'深層':middleRe.test(name)?'中間層':'表層'}
  fullAnatomy.traverse(o=>{
-   if(!o.isMesh)return;
-   muscleMeshes.push(o);
-   const raw=o.name||'名称未設定', region=regionFor(raw);
-   const d=document.createElement('label'); d.className='item muscleHidden'; d.dataset.region=region;
-   const s=document.createElement('span'); s.textContent=raw.replace(/_/g,' ');
-   const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=true;
-   cb.addEventListener('change',()=>{o.visible=cb.checked});
-   d.append(s,cb); muscleItems.appendChild(d); groups.get(region).push(d);
+  if(!o.isMesh)return;
+  muscleMeshes.push(o);
+  const raw=o.name||'名称未設定',region=regionFor(raw),layer=layerFor(raw);
+  const d=document.createElement('label');d.className='item muscleHidden';d.dataset.region=region;d.dataset.layer=layer;
+  const s=document.createElement('span');s.textContent=raw.replace(/_/g,' ');
+  const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.addEventListener('change',()=>{o.visible=cb.checked});
+  d.append(s,cb);muscleItems.appendChild(d);groups.get(region).push({el:d,mesh:o,layer});
  });
  let activeRegion=null;
  function showRegion(region){
-  activeRegion=activeRegion===region?null:region;
-  muscleItems.querySelectorAll('.item').forEach(x=>x.classList.toggle('muscleHidden',!activeRegion||x.dataset.region!==activeRegion));
+  activeRegion=activeRegion===region?null:region; muscleItems.innerHTML='';
   muscleRegions.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.region===activeRegion));
+  if(!activeRegion)return;
+  const entries=groups.get(activeRegion)||[];
+  ['表層','中間層','深層'].forEach(layer=>{
+   const layerEntries=entries.filter(x=>x.layer===layer);if(!layerEntries.length)return;
+   const head=document.createElement('label');head.className='item muscleGroupTitle';
+   const title=document.createElement('span');title.textContent=layer+'（'+layerEntries.length+'）';
+   const master=document.createElement('input');master.type='checkbox';master.checked=layerEntries.every(x=>x.mesh.visible);
+   master.onchange=()=>{layerEntries.forEach(x=>{x.mesh.visible=master.checked;x.el.querySelector('input').checked=master.checked})};
+   head.append(title,master);muscleItems.appendChild(head);
+   layerEntries.forEach(x=>{x.el.classList.remove('muscleHidden');muscleItems.appendChild(x.el)});
+  });
  }
- groups.forEach((items,label)=>{
-  if(!items.length)return;
-  const btn=document.createElement('button');btn.className='regionBtn';btn.dataset.region=label;
-  btn.textContent=label+'（'+items.length+'）';btn.onclick=()=>showRegion(label);muscleRegions.appendChild(btn);
- });
- document.getElementById('musclesOn').onclick=()=>{
-   muscleMeshes.forEach(o=>o.visible=true);
-   muscleItems.querySelectorAll('input').forEach(x=>x.checked=true);
- };
- document.getElementById('musclesOff').onclick=()=>{
-   muscleMeshes.forEach(o=>o.visible=false);
-   muscleItems.querySelectorAll('input').forEach(x=>x.checked=false);
- };
+ groups.forEach((items,label)=>{if(!items.length)return;const btn=document.createElement('button');btn.className='regionBtn';btn.dataset.region=label;btn.textContent=label+'（'+items.length+'）';btn.onclick=()=>showRegion(label);muscleRegions.appendChild(btn)});
+ document.getElementById('musclesOn').onclick=()=>{muscleMeshes.forEach(o=>o.visible=true);groups.forEach(es=>es.forEach(x=>x.el.querySelector('input').checked=true));if(activeRegion){const r=activeRegion;activeRegion=null;showRegion(r)}};
+ document.getElementById('musclesOff').onclick=()=>{muscleMeshes.forEach(o=>o.visible=false);groups.forEach(es=>es.forEach(x=>x.el.querySelector('input').checked=false));if(activeRegion){const r=activeRegion;activeRegion=null;showRegion(r)}};
  // Promote the validated whole skeleton + full skeletal-muscle anatomy to the default prototype view.
  fullAnatomy.visible=true;
  if(fullSkeleton) fullSkeleton.visible=true;

@@ -16,6 +16,7 @@ button{border:1px solid #bbb;background:#fff;border-radius:10px;padding:9px 10px
 button.primary{background:#222;color:#fff}.item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee;font-size:13px}
 input[type=range]{width:100%}
 @media(max-width:760px){main{grid-template-columns:1fr;height:calc(100dvh - 66px)}.verticalbar{right:10px;top:38%}#view{overflow:hidden}aside{position:fixed;left:8px;right:8px;top:auto;bottom:92px;width:auto;max-height:min(22dvh,190px);padding:12px;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002;z-index:20;overflow-y:auto;overscroll-behavior:contain}aside.panel-hidden{transform:translateX(calc(100% + 18px))}.paneltab{position:fixed;right:0;bottom:150px;z-index:40;width:44px;height:58px;border-radius:12px 0 0 12px;font-size:24px;display:none;background:#fff}.paneltab.show{display:block}.panelhide{position:sticky;top:0;float:right;z-index:3;margin:-5px -5px 6px 8px;padding:6px 9px;font-size:12px;background:#fff;border:1px solid #aaa}.scrollcue{display:block}.row{flex-wrap:wrap}button{padding:7px 8px}}
+ .regionGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}.regionBtn{text-align:left}.regionBtn.active{font-weight:700;border-color:#555}.muscleGroupTitle{font-size:12px;font-weight:700;margin:8px 0 4px}.muscleHidden{display:none!important}
 </style>
 </head>
 <body>
@@ -28,6 +29,7 @@ input[type=range]{width:100%}
 <div id="items"></div>
 <h2>骨格筋</h2>
 <div class="row"><button id="musclesOn" class="primary">筋肉すべて</button><button id="musclesOff">筋肉を外す</button></div>
+<div id="muscleRegions" class="regionGrid"></div>
 <div id="muscleItems"></div>
 <h2>骨の透明度</h2><input id="opacity" type="range" min="0" max="1" step=".05" value=".28">
 <div class="row" style="margin-top:12px"><button id="reset">視点を戻す</button></div>
@@ -255,16 +257,47 @@ loader.load(FULL_ANATOMY_URL,g=>{
  });
  console.info('[BodyMap] full skeletal-muscle anatomy ready',kept);
  const muscleItems=document.getElementById('muscleItems');
+ const muscleRegions=document.getElementById('muscleRegions');
  const muscleMeshes=[];
+ const regionDefs=[
+  ['頸部',/neck|cervic|sternocleidomastoid|scalene|longus_capitis|longus_coll/i],
+  ['肩部',/deltoid|rotator|supraspinatus|infraspinatus|subscapularis|teres_|shoulder/i],
+  ['胸部',/pector|intercost|serratus_anterior|thorac/i],
+  ['背部',/trapezius|latissimus|rhomboid|erector_spinae|multifidus|back/i],
+  ['腰部',/quadratus_lumborum|psoas|iliacus|lumbar/i],
+  ['殿部',/glute|piriformis|obturator|gemellus|quadratus_femoris/i],
+  ['上腕',/biceps_brachii|triceps_brachii|brachialis|coracobrachialis|upper_arm/i],
+  ['前腕',/flexor_|extensor_|pronator|supinator|forearm/i],
+  ['手',/hand|lumbrical|interosse|thenar|hypothenar|pollic|digiti|minimi|retinaculum/i],
+  ['大腿',/femor|adductor|sartorius|gracilis|semitendinosus|semimembranosus|vastus|thigh/i],
+  ['下腿',/gastrocnemius|soleus|tibialis|fibularis|perone|popliteus|lower_leg/i],
+  ['足',/foot|halluc|digitorum|plantar|pedis/i]
+ ];
+ const groups=new Map(regionDefs.map(([n])=>[n,[]])); groups.set('その他',[]);
+ function regionFor(name){
+  for(const [label,re] of regionDefs)if(re.test(name))return label;
+  return 'その他';
+ }
  fullAnatomy.traverse(o=>{
    if(!o.isMesh)return;
    muscleMeshes.push(o);
-   const label=(o.name||'名称未設定').replace(/_/g,' ');
-   const d=document.createElement('label'); d.className='item';
-   const s=document.createElement('span'); s.textContent=label;
+   const raw=o.name||'名称未設定', region=regionFor(raw);
+   const d=document.createElement('label'); d.className='item muscleHidden'; d.dataset.region=region;
+   const s=document.createElement('span'); s.textContent=raw.replace(/_/g,' ');
    const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=true;
    cb.addEventListener('change',()=>{o.visible=cb.checked});
-   d.append(s,cb); muscleItems.appendChild(d);
+   d.append(s,cb); muscleItems.appendChild(d); groups.get(region).push(d);
+ });
+ let activeRegion=null;
+ function showRegion(region){
+  activeRegion=activeRegion===region?null:region;
+  muscleItems.querySelectorAll('.item').forEach(x=>x.classList.toggle('muscleHidden',!activeRegion||x.dataset.region!==activeRegion));
+  muscleRegions.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.region===activeRegion));
+ }
+ groups.forEach((items,label)=>{
+  if(!items.length)return;
+  const btn=document.createElement('button');btn.className='regionBtn';btn.dataset.region=label;
+  btn.textContent=label+'（'+items.length+'）';btn.onclick=()=>showRegion(label);muscleRegions.appendChild(btn);
  });
  document.getElementById('musclesOn').onclick=()=>{
    muscleMeshes.forEach(o=>o.visible=true);

@@ -25,8 +25,6 @@ input[type=range]{width:100%}
 <aside>
 <button id="panelHide" class="panelhide" aria-label="表示パネルをしまう">しまう ›</button>
 <h2>表示を重ねる・外す</h2>
-<div class="row"><button id="bones">骨だけ</button><button id="all" class="primary">すべて</button></div>
-<div id="items"></div>
 <h2>骨格筋</h2>
 <div class="row"><button id="musclesOn" class="primary">筋肉すべて</button><button id="musclesOff">筋肉を外す</button></div>
 <div id="muscleRegions" class="regionGrid"></div>
@@ -40,11 +38,6 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
-const labels={
-right_hip_bone:"右寛骨",right_femur:"右大腿骨",right_obturator_internus:"内閉鎖筋",
-right_superior_gemellus:"上双子筋",right_inferior_gemellus:"下双子筋",right_piriformis:"梨状筋",
-right_quadratus_femoris:"大腿方形筋",right_obturator_externus:"外閉鎖筋"};
-const boneNames=new Set(["right_hip_bone","right_femur"]);
 const host=document.getElementById('view'), scene=new THREE.Scene(); scene.background=new THREE.Color(0xf6f3ed);
 const camera=new THREE.PerspectiveCamera(38,1,.1,2000); camera.position.set(260,-330,180);
 const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); host.prepend(renderer.domElement);
@@ -132,7 +125,7 @@ padHandle.addEventListener('pointercancel',endPadDrag);
 syncModes();
 scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
 const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);
-let objects={}, boneOpacity=.28;
+let boneOpacity=.28;
 
 function visibleBounds(){
  const box=new THREE.Box3(), tmp=new THREE.Box3();
@@ -162,22 +155,6 @@ function fit(){
  camera.near=Math.max(dist/1000,.01);camera.far=Math.max(dist*12,100);
  camera.updateProjectionMatrix();controls.update();
 }
-function materialize(o,isBone){
- o.traverse(x=>{if(x.isMesh){
-   x.material=new THREE.MeshStandardMaterial({color:isBone?0xd8d2c7:0xb76555,roughness:.72,metalness:0,transparent:isBone,opacity:isBone?boneOpacity:1,side:THREE.DoubleSide});
-   if(!isBone){
-     const edges=new THREE.LineSegments(
-       new THREE.EdgesGeometry(x.geometry,28),
-       new THREE.LineBasicMaterial({color:0x5f2f29,transparent:true,opacity:.72})
-     );
-     edges.name='muscle_outline_test';
-     edges.renderOrder=3;
-     x.add(edges);
-   }
- }})
-}
-// Anatomy asset source can be switched here after license/asset validation.
-const MODEL_URL='./body_map_prototype02_web_v0.1.glb';
 const FULL_SKELETON_URL='https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/skeleton.glb';
 const FULL_ANATOMY_URL='https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/anatomy.glb';
 const loader=new GLTFLoader();
@@ -208,7 +185,7 @@ function fitFullBodyWhenReady(){
  fullBodyFitted=true; requestAnimationFrame(()=>requestAnimationFrame(fit));
 }
 
-// Preflight only: verify the full skeleton can be fetched/decoded without replacing the current model.
+// Load the full-body skeleton used by the current prototype.
 let fullSkeleton=null;
 loader.load(FULL_SKELETON_URL,g=>{
  fullSkeleton=g.scene;
@@ -217,19 +194,6 @@ loader.load(FULL_SKELETON_URL,g=>{
  scene.add(fullSkeleton);
  fullSkeletonReady=true;
  if(bpCenter&&bpScale){transformBP3D(fullSkeleton,bpCenter,bpScale);fullSkeleton.visible=!!fullAnatomy?.visible;fitFullBodyWhenReady()}
- console.info('[BodyMap] full skeleton preflight OK',fullSkeleton);
- const btn=document.createElement('button');
- btn.id='fullSkeletonTest';
- btn.textContent='全身骨格テスト';
- btn.title='全身骨格の読み込み確認用';
- document.querySelector('aside')?.appendChild(btn);
- btn.onclick=()=>{
-   const show=!fullSkeleton.visible;
-   fullSkeleton.visible=show;
-   Object.values(objects).forEach(o=>o.visible=!show);
-   btn.textContent=show?'元のモデルに戻す':'全身骨格テスト';
-   if(show) fit();
- };
 },undefined,e=>{
  console.warn('[BodyMap] full skeleton preflight failed',e);
 });
@@ -350,42 +314,11 @@ loader.load(FULL_ANATOMY_URL,g=>{
  // Promote the validated whole skeleton + full skeletal-muscle anatomy to the default prototype view.
  fullAnatomy.visible=true;
  if(fullSkeleton) fullSkeleton.visible=true;
- Object.values(objects).forEach(o=>o.visible=false);
  fitFullBodyWhenReady();
- const btn=document.createElement('button');
- btn.id='fullMuscleTest';
- btn.textContent='全身骨格筋';
- btn.title='全身の骨格筋を表示／非表示';
- document.querySelector('aside')?.appendChild(btn);
- btn.onclick=()=>{
-   const show=!fullAnatomy.visible;
-   fullAnatomy.visible=show;
-   if(fullSkeleton) fullSkeleton.visible=show;
-   Object.values(objects).forEach(o=>o.visible=!show);
-   btn.textContent=show?'元のモデルに戻す':'全身骨格筋を表示';
-   if(show) fit();
- };
 },undefined,e=>console.warn('[BodyMap] anatomy test load failed',e));
 
-loader.load(MODEL_URL,g=>{
- scene.add(g.scene);
- g.scene.traverse(o=>{
-   let key=Object.keys(labels).find(k=>o.name.includes(k));
-   if(!key) return; objects[key]=o; materialize(o,boneNames.has(key));
- });
- const list=document.getElementById('items');
- Object.entries(labels).forEach(([k,v])=>{
-   if(!objects[k])return;
-   const d=document.createElement('label'); d.className='item'; d.innerHTML=`<span>${v}</span><input type="checkbox" checked>`;
-   d.querySelector('input').onchange=e=>objects[k].visible=e.target.checked; list.appendChild(d);
- });
- if(!fullAnatomy?.visible) fit();
-});
-document.getElementById('bones').onclick=()=>Object.entries(objects).forEach(([k,o])=>o.visible=boneNames.has(k));
-document.getElementById('all').onclick=()=>Object.values(objects).forEach(o=>o.visible=true);
 document.getElementById('opacity').oninput=e=>{
  boneOpacity=+e.target.value;
- boneNames.forEach(k=>objects[k]?.traverse(x=>{if(x.isMesh){x.material.transparent=true;x.material.opacity=boneOpacity;x.material.needsUpdate=true}}));
  fullSkeleton?.traverse(x=>{if(x.isMesh){x.material.transparent=true;x.material.opacity=boneOpacity;x.material.needsUpdate=true}});
 };
 document.getElementById('reset').onclick=fit;

@@ -273,6 +273,31 @@ loader.load(FULL_ANATOMY_URL,g=>{
  ['下腿',/gastrocnemius|soleus|tibialis|fibularis|peroneus|plantaris|popliteus|flexor[ _]digitorum[ _]longus|flexor[ _]hallucis[ _]longus|extensor[ _]digitorum[ _]longus|extensor[ _]hallucis|calcaneal[ _]tendon/i],
  ['足',/foot|abductor[ _]hallucis|adductor[ _]hallucis|flexor[ _]hallucis[ _]brevis|flexor[ _]digitorum[ _]brevis|flexor[ _]accessorius|plantar[ _]ligament|abductor[ _]digiti[ _]minimi|flexor[ _]digiti[ _]minimi/i]
  ];
+ const jpTerms=[
+ ['sternocleidomastoid','胸鎖乳突筋'],['trapezius','僧帽筋'],['latissimus_dorsi','広背筋'],['deltoid','三角筋'],
+ ['supraspinatus','棘上筋'],['infraspinatus','棘下筋'],['subscapularis','肩甲下筋'],['teres_major','大円筋'],['teres_minor','小円筋'],
+ ['pectoralis_major','大胸筋'],['pectoralis_minor','小胸筋'],['serratus_anterior','前鋸筋'],['biceps_brachii','上腕二頭筋'],
+ ['triceps_brachii','上腕三頭筋'],['brachialis','上腕筋'],['brachioradialis','腕橈骨筋'],['pronator_teres','円回内筋'],
+ ['pronator_quadratus','方形回内筋'],['supinator','回外筋'],['gluteus_maximus','大殿筋'],['gluteus_medius','中殿筋'],
+ ['gluteus_minimus','小殿筋'],['piriformis','梨状筋'],['obturator_internus','内閉鎖筋'],['obturator_externus','外閉鎖筋'],
+ ['gemellus_superior','上双子筋'],['gemellus_inferior','下双子筋'],['quadratus_femoris','大腿方形筋'],['tensor_fasciae_latae','大腿筋膜張筋'],
+ ['rectus_femoris','大腿直筋'],['vastus_lateralis','外側広筋'],['vastus_medialis','内側広筋'],['vastus_intermedius','中間広筋'],
+ ['sartorius','縫工筋'],['adductor_longus','長内転筋'],['adductor_brevis','短内転筋'],['adductor_magnus','大内転筋'],
+ ['gracilis','薄筋'],['semitendinosus','半腱様筋'],['semimembranosus','半膜様筋'],['biceps_femoris','大腿二頭筋'],
+ ['gastrocnemius','腓腹筋'],['soleus','ヒラメ筋'],['tibialis_anterior','前脛骨筋'],['tibialis_posterior','後脛骨筋'],
+ ['abductor_hallucis','母趾外転筋'],['adductor_hallucis','母趾内転筋'],['flexor_hallucis_brevis','短母趾屈筋'],
+ ['flexor_digitorum_brevis','短趾屈筋'],['flexor_accessorius','足底方形筋'],['abductor_digiti_minimi','小趾外転筋'],
+ ['rectus_abdominis','腹直筋'],['external_oblique','外腹斜筋'],['internal_oblique','内腹斜筋'],['transversus_abdominis','腹横筋'],
+ ['psoas_major','大腰筋'],['psoas_minor','小腰筋'],['iliacus','腸骨筋'],['rhomboid_major','大菱形筋'],['rhomboid_minor','小菱形筋'],
+ ['levator_scapulae','肩甲挙筋'],['platysma','広頸筋'],['masseter','咬筋'],['temporalis','側頭筋'],['lumbrical','虫様筋']
+ ];
+ function normName(raw){return raw.toLowerCase().replace(/[ -]+/g,'_')}
+ function japaneseName(raw){
+  let n=normName(raw).replace(/^left_/,'').replace(/^right_/,'').replace(/_left$/,'').replace(/_right$/,'');
+  for(const [en,jp] of jpTerms)if(n.includes(en))return jp;
+  return raw.replace(/_/g,' ');
+ }
+ function sideName(raw){const n=normName(raw);if(n.includes('left'))return '左｜';if(n.includes('right'))return '右｜';return ''}
  const deepRe=/piriformis|obturator|gemellus|quadratus_femoris|gluteus_minimus|supraspinatus|infraspinatus|subscapularis|teres_minor|rhomboid|multifidus|intercost|psoas|iliacus|popliteus|interosse|lumbrical|pronator_quadratus/i;
  const middleRe=/gluteus_medius|erector_spinae|serratus|brachialis|soleus|vastus_intermedius/i;
  const groups=new Map(regionDefs.map(([n])=>[n,[]]));groups.set('その他',[]);

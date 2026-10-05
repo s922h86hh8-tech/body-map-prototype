@@ -260,19 +260,20 @@ loader.load(FULL_ANATOMY_URL,g=>{
  const muscleRegions=document.getElementById('muscleRegions');
  const muscleMeshes=[];
  const regionDefs=[
- ['頸部',/sternocleidomastoid|platysma|digastric|mylohyoid|sternohyoid|omohyoid|thyrohyoid|stylohyoid|splenius|longus[ _](capitis|colli)|scalen|geniohyoid|sternothyroid|rectus[ _]capitis|arytenoid|cricothyroid|frontalis|orbicularis|zygomaticus|labii|anguli|risorius|mentalis|procerus|nasalis|corrugator|temporalis|masseter|pterygoid/i],
+ ['頭部・顔面',/frontalis|orbicularis|zygomaticus|labii|anguli|risorius|mentalis|procerus|nasalis|corrugator|temporalis|masseter|pterygoid|inferior[ _]oblique|superior[ _]oblique|inferior[ _]rectus|superior[ _]rectus|lateral[ _]rectus|medial[ _]rectus|levator[ _]palpebrae|levator[ _]veli[ _]palatini|tensor[ _]veli[ _]palatini/i],
+ ['頸部',/sternocleidomastoid|platysma|digastric|mylohyoid|sternohyoid|omohyoid|thyrohyoid|stylohyoid|splenius|longus[ _](capitis|colli)|scalen|geniohyoid|sternothyroid|rectus[ _]capitis|arytenoid|cricothyroid/i],
  ['肩部',/deltoid|supraspinatus|infraspinatus|subscapularis|teres[ _]|levator[ _]scapulae|subclavius/i],
  ['胸部',/pectoralis|serratus[ _]anterior/i],
  ['背部',/trapezius|latissimus|rhomboid|serratus[ _]posterior|erector|levatores[ _]costarum|iliocostalis|longissimus|spinalis|semispinalis|interspinal|intertransversar|multifidus|rotatores|thoracolumbar[ _]fascia/i],
  ['腰部・腹部',/quadratus[ _]lumborum|external[ _]oblique|internal[ _]oblique|rectus[ _]abdominis|transversus[ _]abdominis|intercostal|diaphragm|transversus[ _]thoracis/i],
  ['殿部・骨盤',/gluteus|piriformis|obturator|iliacus|psoas|quadratus[ _]femoris|tensor[ _]fasciae|gemellus|pectineus|coccygeus|iliococcygeus|pubococcygeus|puborectalis|levator[ _]ani|anal[ _]sphincter/i],
  ['上腕',/biceps[ _]brachii|triceps[ _]brachii|(?<!radio)brachialis|coracobrachialis|anconeus/i],
- ['前腕',/brachioradialis|pronator|supinator|flexor[ _]carpi|extensor[ _]carpi|flexor[ _]digitorum|extensor[ _]digitorum|extensor[ _]indicis|extensor[ _]pollicis|flexor[ _]pollicis[ _]longus|abductor[ _]pollicis[ _]longus|extensor[ _]digiti[ _]minimi|palmaris/i],
- ['手',/hand|opponens[ _](pollicis|digiti)|abductor[ _]pollicis[ _]brevis|flexor[ _]pollicis[ _]brevis|adductor[ _]pollicis|lumbrical|interossei|wrist[ _]retinaculum/i],
+ ['前腕',/forearm|brachioradialis|pronator|supinator|flexor[ _]carpi|extensor[ _]carpi|flexor[ _]digitorum|extensor[ _]digitorum|extensor[ _]indicis|extensor[ _]pollicis|flexor[ _]pollicis[ _]longus|abductor[ _]pollicis[ _]longus|extensor[ _]digiti[ _]minimi|palmaris/i],
+ ['手',/hand|wrist|opponens[ _](pollicis|digiti)|abductor[ _]pollicis[ _]brevis|flexor[ _]pollicis[ _]brevis|adductor[ _]pollicis|lumbrical|interossei/i],
  ['大腿',/rectus[ _]femoris|vastus|biceps[ _]femoris|semitendinosus|semimembranosus|sartorius|gracilis|adductor(?![ _](hallucis|pollicis))|iliotibial/i],
- ['下腿',/gastrocnemius|soleus|tibialis|fibularis|peroneus|plantaris|popliteus|flexor[ _]digitorum[ _]longus|flexor[ _]hallucis[ _]longus|extensor[ _]digitorum[ _]longus|extensor[ _]hallucis|calcaneal[ _]tendon/i],
+ ['下腿',/leg|gastrocnemius|soleus|tibialis|fibularis|peroneus|plantaris|popliteus|flexor[ _]digitorum[ _]longus|flexor[ _]hallucis[ _]longus|extensor[ _]digitorum[ _]longus|extensor[ _]hallucis|calcaneal[ _]tendon/i],
  ['足',/foot|abductor[ _]hallucis|adductor[ _]hallucis|flexor[ _]hallucis[ _]brevis|flexor[ _]digitorum[ _]brevis|flexor[ _]accessorius|plantar[ _]ligament|abductor[ _]digiti[ _]minimi|flexor[ _]digiti[ _]minimi/i]
- ];
+ ]
  const jpTerms=[
  ['sternocleidomastoid','胸鎖乳突筋'],['platysma','広頸筋'],['digastric','顎二腹筋'],['mylohyoid','顎舌骨筋'],['geniohyoid','オトガイ舌骨筋'],['sternohyoid','胸骨舌骨筋'],['sternothyroid','胸骨甲状筋'],['thyrohyoid','甲状舌骨筋'],['omohyoid','肩甲舌骨筋'],['stylohyoid','茎突舌骨筋'],
  ['splenius_capitis','頭板状筋'],['splenius_cervicis','頸板状筋'],['longus_capitis','頭長筋'],['longus_colli','頸長筋'],['scalenus_anterior','前斜角筋'],['scalenus_medius','中斜角筋'],['scalenus_posterior','後斜角筋'],

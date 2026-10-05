@@ -242,32 +242,31 @@ loader.load(FULL_ANATOMY_URL,g=>{
  fullAnatomy.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xb76555,roughness:.72,metalness:0,side:THREE.DoubleSide})}});
  scene.add(fullAnatomy);
  fullAnatomyReady=true;
- const wanted=['right_gluteus_maximus','right_gluteus_medius','right_gluteus_minimus','right_piriformis','right_obturator_internus','right_obturator_externus','right_gemellus_superior','right_gemellus_inferior','right_quadratus_femoris','right_tensor_fasciae_latae','right_rectus_femoris','right_vastus_lateralis','right_vastus_medialis','right_vastus_intermedius','right_sartorius','right_adductor_longus','right_adductor_brevis','right_adductor_magnus','right_semitendinosus','right_semimembranosus','long_head_of_right_biceps_femoris','short_head_of_right_biceps_femoris'];
+ // Full skeletal-muscle prototype: show all muscle/tendon/connective-tissue meshes
+ // contained in the validated anatomy.glb instead of the former right hip/thigh subset.
  let kept=0;
  fullAnatomy.traverse(o=>{
    if(!o.isMesh)return;
-   const n=(o.name||'').toLowerCase();
-   const keep=wanted.some(w=>n.includes(w));
-   o.visible=keep;
-   if(keep)kept++;
+   o.visible=true;
+   kept++;
  });
- console.info('[BodyMap] right hip/thigh muscle test ready',kept);
- // Promote the validated whole skeleton + right hip/thigh set to the default prototype view.
+ console.info('[BodyMap] full skeletal-muscle anatomy ready',kept);
+ // Promote the validated whole skeleton + full skeletal-muscle anatomy to the default prototype view.
  fullAnatomy.visible=true;
  if(fullSkeleton) fullSkeleton.visible=true;
  Object.values(objects).forEach(o=>o.visible=false);
  fitFullBodyWhenReady();
  const btn=document.createElement('button');
- btn.id='hipMuscleTest';
- btn.textContent='右股関節・大腿筋テスト';
- btn.title='右股関節から大腿の筋群をまとめて確認';
+ btn.id='fullMuscleTest';
+ btn.textContent='全身骨格筋';
+ btn.title='全身の骨格筋を表示／非表示';
  document.querySelector('aside')?.appendChild(btn);
  btn.onclick=()=>{
    const show=!fullAnatomy.visible;
    fullAnatomy.visible=show;
    if(fullSkeleton) fullSkeleton.visible=show;
    Object.values(objects).forEach(o=>o.visible=!show);
-   btn.textContent=show?'元のモデルに戻す':'全身＋右股関節・大腿筋を表示';
+   btn.textContent=show?'元のモデルに戻す':'全身骨格筋を表示';
    if(show) fit();
  };
 },undefined,e=>console.warn('[BodyMap] anatomy test load failed',e));

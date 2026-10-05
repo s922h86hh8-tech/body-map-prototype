@@ -273,6 +273,30 @@ loader.load(FULL_ANATOMY_URL,g=>{
   ['下腿',/gastrocnemius|soleus|tibialis|fibularis|perone|popliteus|lower_leg/i],
   ['足',/foot|halluc|digitorum|plantar|pedis/i]
  ];
+ const jpTerms=[
+ ['sternocleidomastoid','胸鎖乳突筋'],['trapezius','僧帽筋'],['latissimus_dorsi','広背筋'],
+ ['deltoid','三角筋'],['supraspinatus','棘上筋'],['infraspinatus','棘下筋'],['subscapularis','肩甲下筋'],
+ ['teres_major','大円筋'],['teres_minor','小円筋'],['pectoralis_major','大胸筋'],['pectoralis_minor','小胸筋'],
+ ['serratus_anterior','前鋸筋'],['biceps_brachii','上腕二頭筋'],['triceps_brachii','上腕三頭筋'],['brachialis','上腕筋'],
+ ['gluteus_maximus','大殿筋'],['gluteus_medius','中殿筋'],['gluteus_minimus','小殿筋'],['piriformis','梨状筋'],
+ ['obturator_internus','内閉鎖筋'],['obturator_externus','外閉鎖筋'],['gemellus_superior','上双子筋'],['gemellus_inferior','下双子筋'],
+ ['quadratus_femoris','大腿方形筋'],['tensor_fasciae_latae','大腿筋膜張筋'],['rectus_femoris','大腿直筋'],
+ ['vastus_lateralis','外側広筋'],['vastus_medialis','内側広筋'],['vastus_intermedius','中間広筋'],['sartorius','縫工筋'],
+ ['adductor_longus','長内転筋'],['adductor_brevis','短内転筋'],['adductor_magnus','大内転筋'],['gracilis','薄筋'],
+ ['semitendinosus','半腱様筋'],['semimembranosus','半膜様筋'],['biceps_femoris','大腿二頭筋'],
+ ['gastrocnemius','腓腹筋'],['soleus','ヒラメ筋'],['tibialis_anterior','前脛骨筋'],['tibialis_posterior','後脛骨筋'],
+ ['abductor_hallucis','母趾外転筋'],['lumbrical','虫様筋']
+ ];
+ function japaneseName(raw){
+  let n=raw.toLowerCase().replace(/^left_/,'').replace(/^right_/,'');
+  n=n.replace(/_left$/,'').replace(/_right$/,'');
+  for(const [en,jp] of jpTerms)if(n.includes(en))return jp;
+  return raw.replace(/_/g,' ');
+ }
+ function sideName(raw){
+  const n=raw.toLowerCase();
+  if(n.includes('left'))return '左｜'; if(n.includes('right'))return '右｜'; return '';
+ }
  const deepRe=/piriformis|obturator|gemellus|quadratus_femoris|gluteus_minimus|supraspinatus|infraspinatus|subscapularis|teres_minor|rhomboid|multifidus|intercost|psoas|iliacus|popliteus|interosse|lumbrical|pronator_quadratus/i;
  const middleRe=/gluteus_medius|erector_spinae|serratus|brachialis|soleus|vastus_intermedius/i;
  const groups=new Map(regionDefs.map(([n])=>[n,[]]));groups.set('その他',[]);
@@ -283,7 +307,7 @@ loader.load(FULL_ANATOMY_URL,g=>{
   muscleMeshes.push(o);
   const raw=o.name||'名称未設定',region=regionFor(raw),layer=layerFor(raw);
   const d=document.createElement('label');d.className='item muscleHidden';d.dataset.region=region;d.dataset.layer=layer;
-  const s=document.createElement('span');s.textContent=raw.replace(/_/g,' ');
+  const s=document.createElement('span');s.textContent=sideName(raw)+japaneseName(raw);
   const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.addEventListener('change',()=>{o.visible=cb.checked});
   d.append(s,cb);muscleItems.appendChild(d);groups.get(region).push({el:d,mesh:o,layer});
  });

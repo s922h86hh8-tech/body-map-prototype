@@ -26,6 +26,9 @@ input[type=range]{width:100%}
 <h2>表示を重ねる・外す</h2>
 <div class="row"><button id="bones">骨だけ</button><button id="all" class="primary">すべて</button></div>
 <div id="items"></div>
+<h2>骨格筋</h2>
+<div class="row"><button id="musclesOn" class="primary">筋肉すべて</button><button id="musclesOff">筋肉を外す</button></div>
+<div id="muscleItems"></div>
 <h2>骨の透明度</h2><input id="opacity" type="range" min="0" max="1" step=".05" value=".28">
 <div class="row" style="margin-top:12px"><button id="reset">視点を戻す</button></div>
 </aside><button id="panelTab" class="paneltab" aria-label="表示パネルを開く">‹</button></main><div class="verticalbar" aria-label="人体位置"><button id="moveUp" aria-label="上へ移動">↑</button><button id="moveLeft" aria-label="左へ移動">←</button><button id="padHandle" aria-label="方向キーを移動" title="ここをドラッグして方向キーを移動">●</button><button id="moveRight" aria-label="右へ移動">→</button><button id="moveDown" aria-label="下へ移動">↓</button></div><div class="modebar" aria-label="3D操作"><button id="lock" class="active" aria-pressed="true">🔒 固定中</button><button id="rotate" class="active" aria-pressed="true">↻ 回転中</button></div>
@@ -251,6 +254,26 @@ loader.load(FULL_ANATOMY_URL,g=>{
    kept++;
  });
  console.info('[BodyMap] full skeletal-muscle anatomy ready',kept);
+ const muscleItems=document.getElementById('muscleItems');
+ const muscleMeshes=[];
+ fullAnatomy.traverse(o=>{
+   if(!o.isMesh)return;
+   muscleMeshes.push(o);
+   const label=(o.name||'名称未設定').replace(/_/g,' ');
+   const d=document.createElement('label'); d.className='item';
+   const s=document.createElement('span'); s.textContent=label;
+   const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=true;
+   cb.addEventListener('change',()=>{o.visible=cb.checked});
+   d.append(s,cb); muscleItems.appendChild(d);
+ });
+ document.getElementById('musclesOn').onclick=()=>{
+   muscleMeshes.forEach(o=>o.visible=true);
+   muscleItems.querySelectorAll('input').forEach(x=>x.checked=true);
+ };
+ document.getElementById('musclesOff').onclick=()=>{
+   muscleMeshes.forEach(o=>o.visible=false);
+   muscleItems.querySelectorAll('input').forEach(x=>x.checked=false);
+ };
  // Promote the validated whole skeleton + full skeletal-muscle anatomy to the default prototype view.
  fullAnatomy.visible=true;
  if(fullSkeleton) fullSkeleton.visible=true;

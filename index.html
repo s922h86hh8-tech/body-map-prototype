@@ -298,6 +298,16 @@ loader.load(FULL_ANATOMY_URL,g=>{
   return raw.replace(/_/g,' ');
  }
  function sideName(raw){const n=normName(raw);if(/(^|_)left(_|$)/.test(n))return '左｜';if(/(^|_)right(_|$)/.test(n))return '右｜';return ''}
+ function structureType(raw){
+  const n=normName(raw);
+  if(/cartilage/.test(n))return '軟骨';
+  if(/ligament/.test(n))return '靱帯';
+  if(/fascia|iliotibial_tract/.test(n))return '筋膜・腱膜';
+  if(/retinaculum/.test(n))return '支帯';
+  if(/tendon|tendinous/.test(n))return '腱';
+  if(/interosseous_membrane/.test(n))return '骨間膜';
+  return '筋';
+ }
  const deepRe=/piriformis|obturator|gemellus|quadratus_femoris|gluteus_minimus|supraspinatus|infraspinatus|subscapularis|teres_minor|rhomboid|multifidus|intercost|psoas|iliacus|popliteus|interosse|lumbrical|pronator_quadratus/i;
  const middleRe=/gluteus_medius|erector_spinae|serratus|brachialis|soleus|vastus_intermedius/i;
  const groups=new Map(regionDefs.map(([n])=>[n,[]]));groups.set('その他',[]);
@@ -306,11 +316,11 @@ loader.load(FULL_ANATOMY_URL,g=>{
  fullAnatomy.traverse(o=>{
   if(!o.isMesh)return;
   muscleMeshes.push(o);
-  const raw=o.name||'名称未設定',region=regionFor(raw),layer=layerFor(raw);
+  const raw=o.name||'名称未設定',region=regionFor(raw),layer=layerFor(raw),type=structureType(raw);
   const d=document.createElement('label');d.className='item muscleHidden';d.dataset.region=region;d.dataset.layer=layer;
-  const s=document.createElement('span');s.textContent=sideName(raw)+japaneseName(raw);
+  const s=document.createElement('span');s.textContent=sideName(raw)+japaneseName(raw)+(type==='筋'?'':'［'+type+'］');
   const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.addEventListener('change',()=>{o.visible=cb.checked});
-  d.append(s,cb);muscleItems.appendChild(d);groups.get(region).push({el:d,mesh:o,layer});
+  d.append(s,cb);muscleItems.appendChild(d);groups.get(region).push({el:d,mesh:o,layer,type});
  });
  let activeRegion=null;
  function showRegion(region){

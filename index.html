@@ -264,6 +264,11 @@ loader.load(FULL_ANATOMY_URL,g=>{
  function normName(raw){return raw.toLowerCase().replace(/[ -]+/g,'_')}
  function japaneseName(raw){
   const n=normName(raw);
+  if(n.includes('lumbrical')&&n.includes('foot')){
+   const footOrders=[['first_lumbrical','第1虫様筋（足）'],['second_lumbrical','第2虫様筋（足）'],['third_lumbrical','第3虫様筋（足）'],['fourth_lumbrical','第4虫様筋（足）']];
+   for(const [en,jp] of footOrders)if(n.includes(en))return jp;
+  }
+  if(n.includes('lumbrical')&&n.includes('hand'))return '虫様筋群（手）';
   for(const [en,jp] of jpTerms)if(n.includes(en))return jp;
   return raw.replace(/_/g,' ');
  }

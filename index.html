@@ -225,7 +225,7 @@ loader.load(FULL_ANATOMY_URL,g=>{
  const muscleMeshes=[];
  const regionDefs=[
  ['頭部・顔面',/frontalis|orbicularis|zygomaticus|labii|anguli|risorius|mentalis|procerus|nasalis|corrugator|temporalis|masseter|pterygoid|inferior[ _]oblique|superior[ _]oblique|inferior[ _]rectus|superior[ _]rectus|lateral[ _]rectus|medial[ _]rectus|levator[ _]palpebrae|levator[ _]veli[ _]palatini|tensor[ _]veli[ _]palatini/i],
- ['頸部',/sternocleidomastoid|platysma|digastric|mylohyoid|sternohyoid|omohyoid|thyrohyoid|stylohyoid|splenius|longus[ _](capitis|colli)|scalen|geniohyoid|sternothyroid|rectus[ _]capitis|arytenoid|cricothyroid|intermediate[ _]tendon/i],
+ ['頸部',/sternocleidomastoid|platysma|digastric|mylohyoid|sternohyoid|omohyoid|thyrohyoid|stylohyoid|splenius|longus[ _](capitis|colli)|scalen|cervicis|cervical|semispinalis[ _]capitis|longissimus[ _]capitis|obliquus[ _]capitis|geniohyoid|sternothyroid|rectus[ _]capitis|arytenoid|cricothyroid|intermediate[ _]tendon/i],
  ['肩部',/deltoid|supraspinatus|infraspinatus|subscapularis|teres[ _]|levator[ _]scapulae|subclavius/i],
  ['胸部',/pectoralis|serratus[ _]anterior/i],
  ['背部',/trapezius|latissimus|rhomboid|serratus[ _]posterior|erector|levatores[ _]costarum|iliocostalis|longissimus|spinalis|semispinalis|interspinal|intertransversar|multifidus|rotatores|thoracolumbar[ _]fascia/i],
@@ -281,7 +281,7 @@ loader.load(FULL_ANATOMY_URL,g=>{
  const deepRe=/piriformis|obturator|gemellus|quadratus_femoris|gluteus_minimus|supraspinatus|infraspinatus|subscapularis|teres_minor|rhomboid|multifidus|intercost|psoas|iliacus|popliteus|interosse|lumbrical|pronator_quadratus/i;
  const middleRe=/gluteus_medius|erector_spinae|serratus|brachialis|soleus|vastus_intermedius/i;
  const groups=new Map(regionDefs.map(([n])=>[n,[]]));groups.set('その他',[]);
- function regionFor(name){const neck=regionDefs.find(([label])=>label==='頸部');if(neck&&neck[1].test(name))return neck[0];for(const [label,re] of regionDefs)if(label!=='頸部'&&re.test(name))return label;return 'その他'}
+ function regionFor(name){const neck=regionDefs.find(([label])=>label==='頸部');if(neck&&neck[1].test(name))return neck[0];if(/\bfoot\b/i.test(name))return '足';if(/\bhand\b/i.test(name))return '手';const leg=regionDefs.find(([label])=>label==='下腿');if(leg&&leg[1].test(name))return leg[0];if(/flexor[ _]digitorum[ _]brevis/i.test(name))return '足';for(const [label,re] of regionDefs)if(label!=='頸部'&&re.test(name))return label;return 'その他'}
  function layerFor(name){return deepRe.test(name)?'深層':middleRe.test(name)?'中間層':'表層'}
  fullAnatomy.traverse(o=>{
   if(!o.isMesh)return;

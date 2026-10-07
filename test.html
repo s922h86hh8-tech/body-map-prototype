@@ -1,1 +1,247 @@
-<h1>テスト成功</h1>
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>施術者のための身体の地図｜統合UIテスト</title>
+<style>
+:root{
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;
+  color:#26313d;background:#f4f7fb;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#f4f7fb}
+button,input{font:inherit}
+.app{min-height:100dvh;display:grid;grid-template-columns:270px 1fr}
+.sidebar{
+  background:linear-gradient(180deg,#193447,#214b63);
+  color:white;padding:20px 16px;position:sticky;top:0;height:100dvh;overflow:auto
+}
+.brand{font-size:22px;font-weight:800;line-height:1.25;margin-bottom:4px}
+.brandSub{font-size:12px;opacity:.78;margin-bottom:18px}
+.search{width:100%;border:0;border-radius:12px;padding:12px 13px;margin-bottom:14px}
+.navCard{display:grid;gap:8px}
+.navBtn{
+  display:flex;align-items:center;gap:10px;width:100%;background:#fff;color:#273340;border:0;
+  border-radius:12px;padding:12px;text-align:left;font-weight:700
+}
+.navBtn small{display:block;font-weight:400;color:#74808c;margin-top:2px}
+.ico{width:34px;height:34px;border-radius:9px;background:#eef3f8;display:grid;place-items:center;font-size:18px;flex:0 0 auto}
+.daily{margin-top:18px;padding:12px;border-radius:14px;background:#ffffff14;border:1px solid #ffffff24}
+.daily b{display:block;margin-bottom:6px}
+.content{min-width:0}
+.topbar{
+  background:white;border-bottom:1px solid #dfe6ee;padding:14px 20px;display:flex;gap:12px;align-items:center;justify-content:space-between
+}
+.breadcrumb{font-size:12px;color:#6e7a86}
+.actions{display:flex;gap:8px}
+.ghost{border:1px solid #d7dee6;background:white;border-radius:10px;padding:8px 11px}
+.main{padding:20px;max-width:1500px;margin:0 auto}
+.titleRow{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px}
+h1{font-size:34px;margin:0 0 4px;color:#16212c}
+.latin{font-size:13px;color:#6b7784}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.chip{font-size:12px;background:#eaf0f6;border-radius:999px;padding:6px 9px}
+.tabs{display:flex;gap:4px;overflow:auto;padding-bottom:4px;margin:14px 0}
+.tab{white-space:nowrap;border:1px solid #d9e1e9;background:white;border-radius:9px;padding:10px 13px}
+.tab.active{background:#1677e8;color:white;border-color:#1677e8}
+.viewToggle{display:flex;gap:8px;margin-bottom:10px}
+.viewToggle button{border:1px solid #d8e0e8;background:white;border-radius:9px;padding:9px 12px}
+.viewToggle button.active{background:#1e3447;color:white;border-color:#1e3447}
+.heroGrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(270px,.72fr);gap:14px}
+.panel{background:white;border:1px solid #e0e6ec;border-radius:16px;box-shadow:0 3px 14px #17344a0d;overflow:hidden}
+.panelHead{padding:12px 14px;font-weight:800;background:#f7f9fc;border-bottom:1px solid #e6ebf0}
+.diagram{
+  min-height:560px;display:grid;place-items:center;padding:18px;
+  background:radial-gradient(circle at 52% 46%,#f9e3d7 0 14%,#ead9c8 15% 29%,#f6f1e9 30% 100%)
+}
+.diagramCard{max-width:520px;background:#ffffffda;border:1px solid #d9e1e8;border-radius:18px;padding:20px;text-align:center;backdrop-filter:blur(8px)}
+.diagramCard strong{font-size:24px;display:block;margin-bottom:8px}
+.diagramCard p{margin:6px 0;color:#60707e;line-height:1.7}
+.note{font-size:12px;color:#7d8791;margin-top:12px}
+.threeWrap{display:none;background:#0f151b}
+.threeWrap.active{display:block}
+.threeFrame{display:block;width:100%;height:650px;border:0;background:#f6f3ed}
+.info{padding:0}
+.info dl{display:grid;grid-template-columns:64px 1fr;gap:9px 12px;margin:0;padding:14px}
+.info dt{color:#1570c9;font-weight:800}
+.info dd{margin:0;line-height:1.55}
+.clinical{margin:12px;border-radius:12px;background:#fff1f1;padding:14px}
+.clinical h3{color:#b74646;margin:0 0 8px;font-size:16px}
+.clinical ul{margin:0;padding-left:18px;line-height:1.75}
+.cards{display:grid;grid-template-columns:1.1fr 1.05fr .95fr;gap:14px;margin-top:14px}
+.card{background:white;border:1px solid #e0e6ec;border-radius:16px;padding:15px}
+.card h3{margin:0 0 10px;font-size:17px}
+.map{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center}
+.node{background:#edf5ff;border:1px solid #b8d6f4;border-radius:999px;padding:9px;text-align:center;font-size:13px}
+.node.center{background:#ff6e7b;color:white;border-color:#ff6e7b;font-weight:800}
+.activityGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.activity{background:#fff6e9;border-radius:11px;padding:12px;min-height:74px}
+.check{background:#eef7ff;border-radius:11px;padding:12px;line-height:1.7}
+.treat{background:#f3efff;border-radius:11px;padding:12px;line-height:1.7}
+.placeholder{display:none;padding:18px;background:white;border:1px solid #e0e6ec;border-radius:16px;line-height:1.8}
+.placeholder.active{display:block}
+.mobileTop{display:none}
+@media(max-width:900px){
+  .app{display:block}
+  .sidebar{display:none}
+  .mobileTop{display:flex;position:sticky;top:0;z-index:50;background:#193447;color:white;padding:10px 12px;align-items:center;justify-content:space-between}
+  .mobileTop b{font-size:15px}
+  .mobileTop a{color:white;text-decoration:none;font-size:12px}
+  .topbar{display:none}
+  .main{padding:12px}
+  .titleRow{display:block}
+  h1{font-size:27px}
+  .heroGrid,.cards{grid-template-columns:1fr}
+  .diagram{min-height:380px}
+  .threeFrame{height:68dvh;min-height:520px}
+  .tabs{margin:10px -12px 12px;padding:0 12px 6px}
+  .map{grid-template-columns:1fr 1fr}
+  .actions{margin-top:8px}
+}
+</style>
+</head>
+<body>
+<div class="mobileTop"><b>施術者のための身体の地図</b><a href="./index.html">3D単体へ</a></div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">施術者のための<br>身体の地図</div>
+    <div class="brandSub">調べる・つながる・3Dで確かめる</div>
+    <input class="search" placeholder="筋肉・骨・動き・症状などを検索">
+    <div class="navCard">
+      <button class="navBtn"><span class="ico">👤</span><span>お客様の訴えから探す<small>肩・腰・お尻・脚など</small></span></button>
+      <button class="navBtn"><span class="ico">🧍</span><span>身体の場所から探す<small>頭・首・肩・背中・骨盤など</small></span></button>
+      <button class="navBtn"><span class="ico">🟢</span><span>筋肉から探す<small>部位別・層別</small></span></button>
+      <button class="navBtn"><span class="ico">🦴</span><span>骨から探す<small>頭蓋骨・脊柱・骨盤・四肢</small></span></button>
+      <button class="navBtn"><span class="ico">↔️</span><span>動きから探す<small>曲げる・伸ばす・ひねる</small></span></button>
+      <button class="navBtn"><span class="ico">🚶</span><span>日常動作から探す<small>歩く・立つ・座る・階段</small></span></button>
+    </div>
+    <div class="daily"><b>今日の1筋</b>中殿筋<br><small>骨盤の安定に関わる重要な筋肉</small></div>
+  </aside>
+
+  <section class="content">
+    <div class="topbar">
+      <div class="breadcrumb">ホーム ＞ 筋肉から探す ＞ 深層外旋筋群 ＞ 内閉鎖筋</div>
+      <div class="actions"><button class="ghost">☆ お気に入り</button><button class="ghost">🔗 関連を見る</button></div>
+    </div>
+
+    <main class="main">
+      <div class="titleRow">
+        <div>
+          <h1>内閉鎖筋</h1>
+          <div class="latin">Obturator internus</div>
+          <div class="chips"><span class="chip">股関節</span><span class="chip">深層外旋筋群</span><span class="chip">骨盤</span><span class="chip">安定性</span></div>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-panel="where">どこにある？</button>
+        <button class="tab" data-panel="function">何をする？</button>
+        <button class="tab" data-panel="daily">日常のどこで使う？</button>
+        <button class="tab" data-panel="near">周りの筋肉</button>
+        <button class="tab" data-panel="self">自分で確かめる</button>
+        <button class="tab" data-panel="treatment">施術で考える</button>
+        <button class="tab" data-panel="myth">よくある誤解</button>
+      </div>
+
+      <section id="where" class="panelSet">
+        <div class="viewToggle">
+          <button id="diagramBtn" class="active">図で見る</button>
+          <button id="threeBtn">3Dで触る</button>
+        </div>
+        <div class="heroGrid">
+          <div class="panel">
+            <div class="panelHead">内閉鎖筋の位置を確認</div>
+            <div id="diagramView" class="diagram">
+              <div class="diagramCard">
+                <strong>内閉鎖筋</strong>
+                <p>骨盤の内側から始まり、坐骨孔を通って大腿骨側へ向かう深層筋。</p>
+                <p>ここは最終版では、監査済みの解剖図・視点切替画像を配置する。</p>
+                <div class="note">※このテスト画面では、解剖学的に未監査の生成画像は使っていません。</div>
+              </div>
+            </div>
+            <div id="threeView" class="threeWrap">
+              <iframe class="threeFrame" src="./index.html" title="身体の地図 3D"></iframe>
+            </div>
+          </div>
+
+          <div class="panel info">
+            <div class="panelHead">基本情報</div>
+            <dl>
+              <dt>起始</dt><dd>閉鎖膜とその周囲</dd>
+              <dt>停止</dt><dd>大腿骨近位部</dd>
+              <dt>機能</dt><dd>股関節外旋を中心に、肢位によって作用が変化</dd>
+              <dt>神経</dt><dd>内閉鎖筋への神経</dd>
+              <dt>関連</dt><dd>梨状筋、上双子筋、下双子筋、大腿方形筋など</dd>
+            </dl>
+            <div class="clinical">
+              <h3>施術で見るポイント</h3>
+              <ul>
+                <li>単独の筋だけでなく深層外旋筋群として位置関係を見る</li>
+                <li>骨盤・大腿骨との位置関係を3Dで確認する</li>
+                <li>お客様の訴えと動作を結びつけて考える</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <h3>つながりを見る</h3>
+            <div class="map">
+              <div class="node">梨状筋</div><div class="node">上双子筋</div><div class="node">下双子筋</div>
+              <div class="node">坐骨</div><div class="node center">内閉鎖筋</div><div class="node">大腿方形筋</div>
+              <div class="node">骨盤</div><div class="node">股関節</div><div class="node">大腿骨</div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>日常のどこで使う？</h3>
+            <div class="activityGrid">
+              <div class="activity"><b>しゃがむ</b><br><small>股関節の安定</small></div>
+              <div class="activity"><b>階段</b><br><small>片脚支持との関係</small></div>
+              <div class="activity"><b>歩く</b><br><small>骨盤・股関節の連動</small></div>
+              <div class="activity"><b>座ってひねる</b><br><small>股関節肢位の変化</small></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>自分で確かめる / 施術で考える</h3>
+            <div class="check">セルフチェックは「痛みを出すテスト」ではなく、動き・左右差・位置感覚を確認する設計へ。</div>
+            <div class="treat" style="margin-top:8px">3Dで周囲構造を外しながら、どこからどこへ走る筋なのかを確認して施術の考え方につなげる。</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="function" class="placeholder">ここには、機能・関節運動・肢位による作用の違いをまとめます。最終版では3Dの動き表示とも接続します。</section>
+      <section id="daily" class="placeholder">歩行、階段、立ち上がり、しゃがみ込みなど、日常動作から内閉鎖筋との関係をたどる画面にします。</section>
+      <section id="near" class="placeholder">梨状筋、双子筋、大腿方形筋、骨盤、坐骨、大腿骨などを「関連マップ」と3Dから相互にたどれるようにします。</section>
+      <section id="self" class="placeholder">安全に自分で位置や動きを確認するためのセルフチェックを配置します。</section>
+      <section id="treatment" class="placeholder">施術時に「この筋だけを見る」のではなく、骨・周囲筋・股関節運動・お客様の訴えを合わせて考えるページにします。</section>
+      <section id="myth" class="placeholder">よくある誤解、単純化しすぎやすい説明、個人差がある部分を分けて整理します。</section>
+    </main>
+  </section>
+</div>
+
+<script>
+const tabs=[...document.querySelectorAll('.tab')];
+const where=document.getElementById('where');
+const placeholders=[...document.querySelectorAll('.placeholder')];
+tabs.forEach(btn=>btn.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.toggle('active',x===btn));
+  where.style.display=btn.dataset.panel==='where'?'block':'none';
+  placeholders.forEach(p=>p.classList.toggle('active',p.id===btn.dataset.panel));
+}));
+const diagramBtn=document.getElementById('diagramBtn');
+const threeBtn=document.getElementById('threeBtn');
+const diagramView=document.getElementById('diagramView');
+const threeView=document.getElementById('threeView');
+diagramBtn.onclick=()=>{
+  diagramBtn.classList.add('active');threeBtn.classList.remove('active');
+  diagramView.style.display='grid';threeView.classList.remove('active');
+};
+threeBtn.onclick=()=>{
+  threeBtn.classList.add('active');diagramBtn.classList.remove('active');
+  diagramView.style.display='none';threeView.classList.add('active');
+};
+</script>
+</body>
+</html>

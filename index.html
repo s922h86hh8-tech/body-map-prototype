@@ -264,11 +264,42 @@ loader.load(FULL_ANATOMY_URL,g=>{
  function normName(raw){return raw.toLowerCase().replace(/[ -]+/g,'_')}
  function japaneseName(raw){
   const n=normName(raw);
-  if(n.includes('lumbrical')&&n.includes('foot')){
-   const footOrders=[['first_lumbrical','第1虫様筋（足）'],['second_lumbrical','第2虫様筋（足）'],['third_lumbrical','第3虫様筋（足）'],['fourth_lumbrical','第4虫様筋（足）']];
+
+  // Hand/foot structures must be resolved by context before generic Latin-name matches.
+  if(n.includes('hand')){
+   if(n.includes('abductor_digiti_minimi'))return '小指外転筋';
+   if(n.includes('flexor_digiti_minimi_brevis'))return '短小指屈筋';
+   if(n.includes('opponens_digiti_minimi'))return '小指対立筋';
+   if(n.includes('lumbrical'))return '虫様筋群（手）';
+   if(n.includes('dorsal_interosse'))return '背側骨間筋群（手）';
+   if(n.includes('palmar_interosse'))return '掌側骨間筋群（手）';
+  }
+  if(n.includes('foot')){
+   const footOrders=[
+    ['first_lumbrical','第1虫様筋（足）'],['second_lumbrical','第2虫様筋（足）'],
+    ['third_lumbrical','第3虫様筋（足）'],['fourth_lumbrical','第4虫様筋（足）'],
+    ['first_plantar_interosseous','第1底側骨間筋（足）'],
+    ['second_plantar_interosseous','第2底側骨間筋（足）'],
+    ['third_plantar_interosseous','第3底側骨間筋（足）']
+   ];
    for(const [en,jp] of footOrders)if(n.includes(en))return jp;
   }
-  if(n.includes('lumbrical')&&n.includes('hand'))return '虫様筋群（手）';
+
+  // Preserve named heads/parts that would otherwise collapse to the parent muscle name.
+  if(n.includes('adductor_pollicis')){
+   if(n.includes('oblique_head'))return '母指内転筋（斜頭）';
+   if(n.includes('transverse_head'))return '母指内転筋（横頭）';
+  }
+  if(n.includes('flexor_pollicis_brevis')&&n.includes('superficial_head'))return '短母指屈筋（浅頭）';
+  if(n.includes('adductor_hallucis')){
+   if(n.includes('oblique_head'))return '母趾内転筋（斜頭）';
+   if(n.includes('transverse_head'))return '母趾内転筋（横頭）';
+  }
+  if(n.includes('flexor_hallucis_brevis')){
+   if(n.includes('lateral_head'))return '短母趾屈筋（外側頭）';
+   if(n.includes('medial_head'))return '短母趾屈筋（内側頭）';
+  }
+
   for(const [en,jp] of jpTerms)if(n.includes(en))return jp;
   return raw.replace(/_/g,' ');
  }

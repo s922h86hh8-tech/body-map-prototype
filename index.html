@@ -317,12 +317,42 @@ loader.load(FULL_ANATOMY_URL,g=>{
  const deepRe=/piriformis|obturator|gemellus|quadratus_femoris|gluteus_minimus|supraspinatus|infraspinatus|subscapularis|teres_minor|rhomboid|multifidus|intercost|psoas|iliacus|popliteus|interosse|lumbrical|pronator_quadratus/i;
  const middleRe=/gluteus_medius|erector_spinae|serratus|brachialis|soleus|vastus_intermedius/i;
  const groups=new Map(regionDefs.map(([n])=>[n,[]]));groups.set('その他',[]);
- function regionFor(name){const neck=regionDefs.find(([label])=>label==='頸部');if(neck&&neck[1].test(name))return neck[0];if(/\bfoot\b/i.test(name))return '足';if(/\bhand\b/i.test(name))return '手';const leg=regionDefs.find(([label])=>label==='下腿');if(leg&&leg[1].test(name))return leg[0];if(/flexor[ _]digitorum[ _]brevis/i.test(name))return '足';for(const [label,re] of regionDefs)if(label!=='頸部'&&re.test(name))return label;return 'その他'}
- function layerFor(name){return deepRe.test(name)?'深層':middleRe.test(name)?'中間層':'表層'}
+ function regionFor(name){
+  const neck=regionDefs.find(([label])=>label==='頸部');
+  if(neck&&neck[1].test(name))return neck[0];
+  if(/\bfoot\b/i.test(name)||/extensor[ _]hallucis[ _]brevis/i.test(name))return '足';
+  if(/\bhand\b/i.test(name))return '手';
+  const leg=regionDefs.find(([label])=>label==='下腿');
+  if(leg&&leg[1].test(name))return leg[0];
+  if(/flexor[ _]digitorum[ _]brevis/i.test(name))return '足';
+  for(const [label,re] of regionDefs)if(label!=='頸部'&&re.test(name))return label;
+  return 'その他'
+ }
+ function layerFor(name,region,type){
+  if(type!=='筋')return '関連構造';
+  const n=normName(name);
+  if(region==='足'){
+   if(/extensor_hallucis_brevis/.test(n))return '足背';
+   if(/abductor_hallucis|flexor_digitorum_brevis|abductor_digiti_minimi/.test(n))return '第1層';
+   if(/flexor_accessorius|lumbrical/.test(n))return '第2層';
+   if(/flexor_hallucis_brevis|adductor_hallucis|flexor_digiti_minimi_brevis|opponens_digiti_minimi/.test(n))return '第3層';
+   if(/plantar_interosse/.test(n))return '第4層';
+  }
+  if(region==='手'){
+   if(/opponens_pollicis|opponens_digiti_minimi|adductor_pollicis|interosse/.test(n))return '深層';
+   if(/lumbrical/.test(n))return '中間層';
+   return '表層';
+  }
+  return deepRe.test(name)?'深層':middleRe.test(name)?'中間層':'表層'
+ }
+ function layerOrderFor(region){
+  if(region==='足')return ['足背','第1層','第2層','第3層','第4層','関連構造'];
+  return ['表層','中間層','深層','関連構造'];
+ }
  fullAnatomy.traverse(o=>{
   if(!o.isMesh)return;
   muscleMeshes.push(o);
-  const raw=o.name||'名称未設定',region=regionFor(raw),layer=layerFor(raw),type=structureType(raw);
+  const raw=o.name||'名称未設定',region=regionFor(raw),type=structureType(raw),layer=layerFor(raw,region,type);
   const d=document.createElement('label');d.className='item muscleHidden';d.dataset.region=region;d.dataset.layer=layer;
   const s=document.createElement('span');s.textContent=sideName(raw)+japaneseName(raw)+(type==='筋'?'':'［'+type+'］');
   const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.addEventListener('change',()=>{o.visible=cb.checked});
@@ -334,7 +364,7 @@ loader.load(FULL_ANATOMY_URL,g=>{
   muscleRegions.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.region===activeRegion));
   if(!activeRegion)return;
   const entries=groups.get(activeRegion)||[];
-  ['表層','中間層','深層'].forEach(layer=>{
+  layerOrderFor(activeRegion).forEach(layer=>{
    const layerEntries=entries.filter(x=>x.layer===layer);if(!layerEntries.length)return;
    const head=document.createElement('label');head.className='item muscleGroupTitle';
    const title=document.createElement('span');title.textContent=layer+'（'+layerEntries.length+'）';

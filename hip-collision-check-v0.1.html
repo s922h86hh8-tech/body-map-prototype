@@ -193,26 +193,20 @@ function changeOpacity(mesh,val){mesh?.traverse(n=>{if(n.isMesh&&n.material)n.ma
 const keys=['right_hip_bone','right_femur','right_obturator_internus','right_superior_gemellus','right_inferior_gemellus','right_piriformis','right_quadratus_femoris','right_obturator_externus'];
 new GLTFLoader().load('./body_map_prototype02_web_v0.1.glb',g=>{
  scene.add(g.scene);
- for(const child of g.scene.children){
+ g.scene.traverse(child=>{
+  if(!child.isMesh)return;
   const key=keys.find(k=>child.name.includes(k));
-  if(!key)continue;
+  if(!key)return;
   objects[key]=child;
   const isHip=key==='right_hip_bone',isFemur=key==='right_femur';
   const color=isHip?0xcbbfaa:isFemur?0x8c9cbd:0xba635a;
-  const opacity=isHip?.3:isFemur?.6:1;
-  child.traverse(node=>{
-   if(!node.isMesh)return;
-   node.material=new THREE.MeshStandardMaterial({color,roughness:.8,metalness:0,transparent:opacity<1,opacity,side:THREE.DoubleSide,depthWrite:opacity===1});
-  });
+  const opacity=isHip?0.3:isFemur?0.6:1;
+  child.material=new THREE.MeshStandardMaterial({color,roughness:.8,metalness:0,transparent:opacity<1,opacity,side:THREE.DoubleSide,depthWrite:opacity===1});
   if(!isHip&&!isFemur)child.visible=false;
- }
- if(!objects.right_hip_bone||!objects.right_femur)throw new Error('骨のデータが見つかりません');
+ });
+ if(!objects.right_hip_bone||!objects.right_femur){status.textContent='骨のデータが見つかりません。GLB構造を確認してください。';return;}
  hipMat=objects.right_hip_bone;femMat=objects.right_femur;
- const h=hipMat.getObjectByProperty('isMesh',true)||hipMat;
- const f=femMat.getObjectByProperty('isMesh',true)||femMat;
- // GLBの各構造は独立したメッシュ。子階層がある場合は最初のメッシュを使用。
- const findMesh=o=>{let m=null;o.traverse(n=>{if(n.isMesh&&!m)m=n});return m};
- const results=computeIntersections(findMesh(h),findMesh(f));
+ const results=computeIntersections(hipMat,femMat);
  addMarkers(results);updateStatus(results.pairCount);focusJoint();
 },undefined,error=>{status.textContent='モデルの読み込みに失敗しました。ネット接続と配信URLをご確認ください。';document.getElementById('summary').textContent=String(error)});
 document.getElementById('showHits').onchange=e=>{hitGroup.visible=e.target.checked;document.getElementById('mobileHits').textContent=e.target.checked?'赤い点を隠す':'赤い点を表示'};

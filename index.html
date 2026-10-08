@@ -17,6 +17,8 @@ button.primary{background:#222;color:#fff}.item{display:flex;align-items:center;
 input[type=range]{width:100%}
 @media(max-width:760px){main{grid-template-columns:1fr;height:calc(100dvh - 66px)}.verticalbar{right:10px;top:38%}#view{overflow:hidden}aside{position:fixed;left:8px;right:8px;top:auto;bottom:92px;width:auto;max-height:min(22dvh,190px);padding:12px;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002;z-index:20;overflow-y:auto;overscroll-behavior:contain}aside.panel-hidden{transform:translateX(calc(100% + 18px))}.paneltab{position:fixed;right:0;bottom:150px;z-index:40;width:44px;height:58px;border-radius:12px 0 0 12px;font-size:24px;display:none;background:#fff}.paneltab.show{display:block}.panelhide{position:sticky;top:0;float:right;z-index:3;margin:-5px -5px 6px 8px;padding:6px 9px;font-size:12px;background:#fff;border:1px solid #aaa}.scrollcue{display:block}.row{flex-wrap:wrap}button{padding:7px 8px}}
  .regionHelp{font-size:11px;line-height:1.45;color:#666;margin:-2px 0 7px}.regionGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}.regionBtn{text-align:left}.regionBtn.active{font-weight:700;border-color:#555}.muscleGroupTitle{font-size:12px;font-weight:700;margin:8px 0 4px}.muscleHidden{display:none!important}
+body.embed header{display:none}body.embed main{height:100dvh}body.embed .hint{bottom:72px}
+@media(max-width:760px){body.embed main{height:100dvh}}
 </style>
 </head>
 <body>
@@ -37,6 +39,10 @@ input[type=range]{width:100%}
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+
+const pageParams=new URLSearchParams(location.search);
+const focusKey=(pageParams.get('focus')||'').toLowerCase().replace(/[ -]+/g,'_');
+if(pageParams.get('embed')==='1')document.body.classList.add('embed');
 
 const host=document.getElementById('view'), scene=new THREE.Scene(); scene.background=new THREE.Color(0xf6f3ed);
 const camera=new THREE.PerspectiveCamera(38,1,.1,2000); camera.position.set(260,-330,180);
@@ -153,6 +159,26 @@ function fit(){
  // Converted BP3D is Y-up. Look straight at the body along +Z.
  camera.position.set(c.x,c.y,c.z+dist);
  camera.near=Math.max(dist/1000,.01);camera.far=Math.max(dist*12,100);
+ camera.updateProjectionMatrix();controls.update();
+}
+function fitToMeshes(meshes,padding=3.2){
+ const box=new THREE.Box3(),tmp=new THREE.Box3();
+ scene.updateMatrixWorld(true);
+ meshes.forEach(o=>{
+  if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();
+  tmp.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld);box.union(tmp);
+ });
+ if(box.isEmpty())return;
+ const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+ const vfov=THREE.MathUtils.degToRad(camera.fov);
+ const hfov=2*Math.atan(Math.tan(vfov/2)*Math.max(camera.aspect,.01));
+ const distH=(size.y*.5)/Math.tan(vfov/2);
+ const distW=(size.x*.5)/Math.tan(hfov/2);
+ const dist=Math.max(distH,distW,size.z*.8,.7)*padding;
+ controls.target.copy(center);
+ camera.up.set(0,1,0);
+ camera.position.set(center.x,center.y,center.z+dist);
+ camera.near=Math.max(dist/1000,.01);camera.far=Math.max(dist*20,100);
  camera.updateProjectionMatrix();controls.update();
 }
 const FULL_SKELETON_URL='https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/skeleton.glb';
@@ -375,6 +401,21 @@ loader.load(FULL_ANATOMY_URL,g=>{
   });
  }
  groups.forEach((items,label)=>{if(!items.length)return;const btn=document.createElement('button');btn.className='regionBtn';btn.dataset.region=label;btn.textContent=label+'（'+items.length+'）';btn.onclick=()=>showRegion(label);muscleRegions.appendChild(btn)});
+
+ function applyFocusFromQuery(){
+  if(!focusKey)return;
+  const matched=muscleMeshes.filter(o=>normName(o.name).includes(focusKey));
+  if(!matched.length){console.warn('[BodyMap] focus target not found',focusKey);return}
+  const selected=new Set(matched);
+  muscleMeshes.forEach(o=>{o.visible=selected.has(o)});
+  groups.forEach(es=>es.forEach(x=>{const cb=x.el.querySelector('input');if(cb)cb.checked=x.mesh.visible}));
+  const targetRegion=regionFor(matched[0].name);
+  activeRegion=null;showRegion(targetRegion);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>fitToMeshes(matched,3.4)));
+  console.info('[BodyMap] focused structure',focusKey,matched.map(o=>o.name));
+ }
+ applyFocusFromQuery();
+
  document.getElementById('musclesOn').onclick=()=>{muscleMeshes.forEach(o=>o.visible=true);groups.forEach(es=>es.forEach(x=>x.el.querySelector('input').checked=true));if(activeRegion){const r=activeRegion;activeRegion=null;showRegion(r)}};
  document.getElementById('musclesOff').onclick=()=>{muscleMeshes.forEach(o=>o.visible=false);groups.forEach(es=>es.forEach(x=>x.el.querySelector('input').checked=false));if(activeRegion){const r=activeRegion;activeRegion=null;showRegion(r)}};
  // Promote the validated whole skeleton + full skeletal-muscle anatomy to the default prototype view.

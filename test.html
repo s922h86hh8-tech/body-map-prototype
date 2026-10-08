@@ -74,6 +74,7 @@ h1{font-size:34px;margin:0 0 4px;color:#16212c}
 .card h3{margin:0 0 10px;font-size:17px}
 .map{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center}
 .node{background:#edf5ff;border:1px solid #b8d6f4;border-radius:999px;padding:9px;text-align:center;font-size:13px}
+.node[data-focus]{cursor:pointer;transition:.15s}.node[data-focus]:active{transform:scale(.97)}
 .node.center{background:#ff6e7b;color:white;border-color:#ff6e7b;font-weight:800}
 .activityGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .activity{background:#fff6e9;border-radius:11px;padding:12px;min-height:74px}
@@ -161,7 +162,7 @@ h1{font-size:34px;margin:0 0 4px;color:#16212c}
               </div>
             </div>
             <div id="threeView" class="threeWrap">
-              <iframe class="threeFrame" src="./index.html" title="身体の地図 3D"></iframe>
+              <iframe id="threeFrame" class="threeFrame" src="./index.html?embed=1&focus=obturator_internus" title="身体の地図 3D"></iframe>
             </div>
           </div>
 
@@ -189,8 +190,8 @@ h1{font-size:34px;margin:0 0 4px;color:#16212c}
           <div class="card">
             <h3>つながりを見る</h3>
             <div class="map">
-              <div class="node">梨状筋</div><div class="node">上双子筋</div><div class="node">下双子筋</div>
-              <div class="node">坐骨</div><div class="node center">内閉鎖筋</div><div class="node">大腿方形筋</div>
+              <div class="node" data-focus="piriformis">梨状筋</div><div class="node" data-focus="gemellus_superior">上双子筋</div><div class="node" data-focus="gemellus_inferior">下双子筋</div>
+              <div class="node">坐骨</div><div class="node center" data-focus="obturator_internus">内閉鎖筋</div><div class="node" data-focus="quadratus_femoris">大腿方形筋</div>
               <div class="node">骨盤</div><div class="node">股関節</div><div class="node">大腿骨</div>
             </div>
           </div>
@@ -242,6 +243,11 @@ threeBtn.onclick=()=>{
   threeBtn.classList.add('active');diagramBtn.classList.remove('active');
   diagramView.style.display='none';threeView.classList.add('active');
 };
+const threeFrame=document.getElementById('threeFrame');
+document.querySelectorAll('.node[data-focus]').forEach(node=>node.addEventListener('click',()=>{
+  threeFrame.src='./index.html?embed=1&focus='+encodeURIComponent(node.dataset.focus);
+  threeBtn.click();
+}));
 </script>
 </body>
 </html>

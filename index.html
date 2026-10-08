@@ -186,7 +186,7 @@ const FULL_ANATOMY_URL='https://raw.githubusercontent.com/JohanBellander/BodyExp
 const loader=new GLTFLoader();
 
 // BodyParts3D -> Three.js: X=left/right, Z=up, -Y=front/back.
-let bpCenter=null,bpScale=null,fullSkeletonReady=false,fullAnatomyReady=false,fullBodyFitted=false;
+let bpCenter=null,bpScale=null,fullSkeletonReady=false,fullAnatomyReady=false,fullBodyFitted=!!focusKey;
 function transformBP3D(root,center,scale){
  root.updateMatrixWorld(true);
  root.traverse(o=>{

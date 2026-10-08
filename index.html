@@ -295,8 +295,46 @@ loader.load(FULL_ANATOMY_URL,g=>{
  ['calcaneal_tendon','踵骨腱（アキレス腱）'],['iliotibial_tract','腸脛靱帯'],['thoracolumbar_fascia','胸腰筋膜'],['interosseous_membrane','骨間膜'],['flexor_retinaculum','屈筋支帯'],['long_plantar_ligament','長足底靱帯']
  ];
  function normName(raw){return raw.toLowerCase().replace(/[ -]+/g,'_')}
+ function canonicalMeshName(raw){return normName(raw).replace(/_\(\d+\)$/,'')}
  function japaneseName(raw){
   const n=normName(raw);
+
+  // Resolve overlapping names first so a shorter parent term cannot swallow a more specific structure.
+  if(n.includes('iliococcygeus'))return '腸骨尾骨筋';
+  if(n.includes('pubococcygeus'))return '恥骨尾骨筋';
+  if(n.includes('coccygeus'))return '尾骨筋';
+  if(n.includes('interspinal'))return '棘間筋'+(n.includes('cervicis')?'（頸部）':n.includes('lumborum')?'（腰部）':n.includes('thoracis')?'（胸部）':'');
+  if(n.includes('semispinalis'))return '半棘筋'+(n.includes('capitis')?'（頭）':n.includes('cervicis')?'（頸）':n.includes('thoracis')?'（胸）':'');
+  if(n.includes('spinalis'))return '棘筋'+(n.includes('thoracis')?'（胸）':'');
+  if(n.includes('coracobrachialis'))return '烏口腕筋';
+  if(n.includes('extensor_digitorum_longus'))return '長趾伸筋';
+  if(n.includes('extensor_digitorum')&&!n.includes('longus'))return '総指伸筋';
+
+  // Preserve anatomical heads, parts and layers instead of collapsing them to one repeated label.
+  const namedParts=[
+   ['pectoralis_major',[['abdominal_part','大胸筋（腹部）'],['clavicular_part','大胸筋（鎖骨部）'],['sternocostal_part','大胸筋（胸肋部）']]],
+   ['deltoid',[['acromial_part','三角筋（肩峰部）'],['clavicular_part','三角筋（鎖骨部）'],['spinal_part','三角筋（肩甲棘部）']]],
+   ['trapezius',[['ascending_part','僧帽筋（上行部）'],['descending_part','僧帽筋（下行部）'],['transverse_part','僧帽筋（横行部）']]],
+   ['triceps_brachii',[['lateral_head','上腕三頭筋（外側頭）'],['long_head','上腕三頭筋（長頭）'],['medial_head','上腕三頭筋（内側頭）']]],
+   ['biceps_brachii',[['long_head','上腕二頭筋（長頭）'],['short_head','上腕二頭筋（短頭）']]],
+   ['biceps_femoris',[['long_head','大腿二頭筋（長頭）'],['short_head','大腿二頭筋（短頭）']]],
+   ['gastrocnemius',[['lateral_head','腓腹筋（外側頭）'],['medial_head','腓腹筋（内側頭）']]],
+   ['flexor_carpi_ulnaris',[['humeral_head','尺側手根屈筋（上腕頭）'],['ulnar_head','尺側手根屈筋（尺骨頭）']]],
+   ['pronator_teres',[['humeral_head','円回内筋（上腕頭）'],['ulnar_head','円回内筋（尺骨頭）']]],
+   ['cricothyroid',[['oblique_part','輪状甲状筋（斜部）'],['straight_part','輪状甲状筋（直部）']]],
+   ['masseter',[['superficial_part','咬筋（浅部）'],['deep_part','咬筋（深部）']]],
+   ['lateral_pterygoid',[['inferior_head','外側翼突筋（下頭）'],['superior_head','外側翼突筋（上頭）']]],
+   ['orbicularis_oculi',[['orbital_part','眼輪筋（眼窩部）'],['palpebral_part','眼輪筋（眼瞼部）']]],
+   ['thoracolumbar_fascia',[['posterior_layer','胸腰筋膜（後葉）'],['middle_layer','胸腰筋膜（中葉）'],['anterior_layer','胸腰筋膜（前葉）']]]
+  ];
+  for(const [base,parts] of namedParts)if(n.includes(base))for(const [part,jp] of parts)if(n.includes(part))return jp;
+
+  if(n.includes('iliocostalis'))return n.includes('cervicis')?'腸肋筋（頸）':n.includes('thoracis')?'腸肋筋（胸）':n.includes('lumborum')?'腸肋筋（腰）':'腸肋筋';
+  if(n.includes('longissimus'))return n.includes('capitis')?'最長筋（頭）':n.includes('cervicis')?'最長筋（頸）':n.includes('thoracis')?'最長筋（胸）':'最長筋';
+  if(n.includes('multifidus'))return n.includes('cervicis')?'多裂筋（頸）':n.includes('thoracis')?'多裂筋（胸）':n.includes('lumborum')?'多裂筋（腰）':'多裂筋';
+  if(n.includes('intertransvers'))return n.includes('lateral_lumbar')?'腰部外側横突間筋':n.includes('medial_lumbar')?'腰部内側横突間筋':n.includes('anterior_cervical')?'前頸横突間筋群':n.includes('posterior_cervical')?'後頸横突間筋群':'横突間筋';
+  if(n.includes('interosseous_membrane'))return n.includes('forearm')?'前腕骨間膜':n.includes('leg')?'下腿骨間膜':'骨間膜';
+  if(n.includes('levator_palpebrae_superioris')&&n.includes('tendon'))return '上眼瞼挙筋腱';
 
   // Hand/foot structures must be resolved by context before generic Latin-name matches.
   if(n.includes('hand')){
@@ -318,7 +356,6 @@ loader.load(FULL_ANATOMY_URL,g=>{
    for(const [en,jp] of footOrders)if(n.includes(en))return jp;
   }
 
-  // Preserve named heads/parts that would otherwise collapse to the parent muscle name.
   if(n.includes('adductor_pollicis')){
    if(n.includes('oblique_head'))return '母指内転筋（斜頭）';
    if(n.includes('transverse_head'))return '母指内転筋（横頭）';
@@ -382,14 +419,24 @@ loader.load(FULL_ANATOMY_URL,g=>{
   if(region==='足')return ['足背','第1層','第2層','第3層','第4層','関連構造'];
   return ['表層','中間層','深層','関連構造'];
  }
+ const anatomyUiEntries=new Map();
  fullAnatomy.traverse(o=>{
   if(!o.isMesh)return;
   muscleMeshes.push(o);
-  const raw=o.name||'名称未設定',region=regionFor(raw),type=structureType(raw),layer=layerFor(raw,region,type);
+  const raw=o.name||'名称未設定',key=canonicalMeshName(raw);
+  let entry=anatomyUiEntries.get(key);
+  if(!entry){
+   const region=regionFor(raw),type=structureType(raw),layer=layerFor(raw,region,type);
+   entry={raw,region,type,layer,meshes:[]};anatomyUiEntries.set(key,entry);
+  }
+  entry.meshes.push(o);
+ });
+ anatomyUiEntries.forEach(entry=>{
+  const {raw,region,type,layer,meshes}=entry;
   const d=document.createElement('label');d.className='item muscleHidden';d.dataset.region=region;d.dataset.layer=layer;
   const s=document.createElement('span');s.textContent=sideName(raw)+japaneseName(raw)+(type==='筋'?'':'［'+type+'］');
-  const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.addEventListener('change',()=>{o.visible=cb.checked});
-  d.append(s,cb);muscleItems.appendChild(d);groups.get(region).push({el:d,mesh:o,layer,type});
+  const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.addEventListener('change',()=>{meshes.forEach(m=>m.visible=cb.checked)});
+  d.append(s,cb);muscleItems.appendChild(d);groups.get(region).push({el:d,meshes,layer,type,raw});
  });
  let activeRegion=null;
  function showRegion(region){
@@ -401,8 +448,8 @@ loader.load(FULL_ANATOMY_URL,g=>{
    const layerEntries=entries.filter(x=>x.layer===layer);if(!layerEntries.length)return;
    const head=document.createElement('label');head.className='item muscleGroupTitle';
    const title=document.createElement('span');title.textContent=layer+'（'+layerEntries.length+'）';
-   const master=document.createElement('input');master.type='checkbox';master.checked=layerEntries.every(x=>x.mesh.visible);
-   master.onchange=()=>{layerEntries.forEach(x=>{x.mesh.visible=master.checked;x.el.querySelector('input').checked=master.checked})};
+   const master=document.createElement('input');master.type='checkbox';master.checked=layerEntries.every(x=>x.meshes.every(m=>m.visible));
+   master.onchange=()=>{layerEntries.forEach(x=>{x.meshes.forEach(m=>m.visible=master.checked);x.el.querySelector('input').checked=master.checked})};
    head.append(title,master);muscleItems.appendChild(head);
    layerEntries.forEach(x=>{x.el.classList.remove('muscleHidden');muscleItems.appendChild(x.el)});
   });
@@ -415,7 +462,7 @@ loader.load(FULL_ANATOMY_URL,g=>{
   if(!matched.length){console.warn('[BodyMap] focus target not found',focusKey);return}
   const selected=new Set(matched);
   muscleMeshes.forEach(o=>{o.visible=selected.has(o)});
-  groups.forEach(es=>es.forEach(x=>{const cb=x.el.querySelector('input');if(cb)cb.checked=x.mesh.visible}));
+  groups.forEach(es=>es.forEach(x=>{const cb=x.el.querySelector('input');if(cb)cb.checked=x.meshes.every(m=>m.visible)}));
   const targetRegion=regionFor(matched[0].name);
   activeRegion=null;showRegion(targetRegion);
   requestAnimationFrame(()=>requestAnimationFrame(()=>fitToMeshes(matched,3.4)));

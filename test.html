@@ -235,18 +235,24 @@ const diagramBtn=document.getElementById('diagramBtn');
 const threeBtn=document.getElementById('threeBtn');
 const diagramView=document.getElementById('diagramView');
 const threeView=document.getElementById('threeView');
+const threeFrame=document.getElementById('threeFrame');
+const isMobile3D=()=>matchMedia('(max-width:900px)').matches;
+function openFocused3D(focus='obturator_internus'){
+  if(isMobile3D()){
+    location.href='./index.html?guide=1&focus='+encodeURIComponent(focus);
+    return;
+  }
+  threeFrame.src='./index.html?embed=1&focus='+encodeURIComponent(focus);
+  threeBtn.classList.add('active');diagramBtn.classList.remove('active');
+  diagramView.style.display='none';threeView.classList.add('active');
+}
 diagramBtn.onclick=()=>{
   diagramBtn.classList.add('active');threeBtn.classList.remove('active');
   diagramView.style.display='grid';threeView.classList.remove('active');
 };
-threeBtn.onclick=()=>{
-  threeBtn.classList.add('active');diagramBtn.classList.remove('active');
-  diagramView.style.display='none';threeView.classList.add('active');
-};
-const threeFrame=document.getElementById('threeFrame');
+threeBtn.onclick=()=>openFocused3D('obturator_internus');
 document.querySelectorAll('.node[data-focus]').forEach(node=>node.addEventListener('click',()=>{
-  threeFrame.src='./index.html?embed=1&focus='+encodeURIComponent(node.dataset.focus);
-  threeBtn.click();
+  openFocused3D(node.dataset.focus);
 }));
 </script>
 </body>

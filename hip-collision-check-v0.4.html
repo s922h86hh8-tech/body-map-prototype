@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>身体の地図｜股関節・交差検証 0.4</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#222}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#f6f3ed}
+header{height:69px;padding:10px 15px;background:#fff;border-bottom:1px solid #dedad1}
+header strong{font-size:16px}header p{margin:3px 0 0;font-size:11px;color:#65625d}
+#view{position:absolute;inset:69px 0 0;overflow:hidden;touch-action:none}
+#view canvas{display:block}
+#status{position:absolute;left:10px;top:10px;z-index:2;max-width:calc(100% - 275px);border:1px solid #e0d7cc;background:#fffef4ed;padding:9px 11px;border-radius:11px;font-size:12px;line-height:1.6;pointer-events:none}
+#status strong{font-size:14px}
+#hint{position:absolute;bottom:12px;left:12px;background:#ffffffdf;border-radius:10px;padding:7px 9px;font-size:11px;pointer-events:none}
+#panel{position:absolute;z-index:3;right:10px;top:80px;width:254px;max-height:calc(100dvh - 105px);overflow:auto;background:#ffffffee;border:1px solid #d9d3cb;border-radius:14px;padding:13px;box-shadow:0 5px 20px #0001}
+h2{font-size:14px;margin:0 0 8px}
+p{font-size:12px;line-height:1.6}
+label.check{display:flex;gap:8px;align-items:center;margin:11px 0;font-size:13px}
+input[type="checkbox"]{width:18px;height:18px;accent-color:#a32121}
+input[type="range"]{width:100%}
+.row{display:flex;gap:7px;flex-wrap:wrap}
+button{cursor:pointer;border:1px solid #aaa;background:white;padding:9px 11px;font-size:13px;border-radius:9px;color:#222}
+button:focus-visible,input:focus-visible{outline:3px solid #5e9bd9;outline-offset:2px}
+button.primary{background:#273944;color:#fff;border-color:#273944}
+.small{font-size:11px;color:#69635d}
+.warn{font-size:11px;background:#fff2df;padding:8px;border-radius:8px;color:#6a4719}
+.note{font-size:11px;background:#f1f6f9;padding:8px;border-radius:8px;color:#23475c}
+button:disabled{opacity:.45;cursor:not-allowed}
+#floating{display:none}
+@media(max-width:760px){
+header{height:68px;padding:10px 12px}header strong{font-size:15px}
+#view{inset:68px 0 0}
+#status{max-width:calc(100% - 20px);padding:7px 9px;top:8px;font-size:11px}
+#status strong{font-size:13px}
+#panel{top:auto;bottom:calc(116px + env(safe-area-inset-bottom));right:8px;left:8px;width:auto;max-height:min(42dvh,380px)}
+#panel.closed{display:none}
+#floating{display:grid;grid-template-columns:1fr 1fr;position:absolute;z-index:4;left:8px;right:8px;bottom:calc(7px + env(safe-area-inset-bottom));gap:6px}
+#floating button{font-size:12px;background:#fffdf6eF;min-height:44px;box-shadow:0 2px 6px #0001}
+#floating button.primary{background:#273944;color:white}
+#hint{left:8px;bottom:calc(111px + env(safe-area-inset-bottom));font-size:10px}
+}
+</style>
+</head>
+<body>
+<header>
+<strong>施術者のための身体の地図</strong>
+<p>右股関節｜指1本で回転／上下左右への移動ができる検証ページ 0.4</p>
+</header>
+<div id="view">
+<div id="status" role="status" aria-live="polite">3Dモデルを読み込み中…</div>
+<div id="hint">操作：回転｜指1本で回転・2本指で拡大縮小／移動</div>
+</div>
+<aside id="panel">
+<h2>交差の調査</h2>
+<div class="small" id="summary">解析待ち</div>
+<div class="small" id="summaryMode" style="margin-top:5px">表示範囲：骨全体</div>
+<div class="note" id="gestureNote">操作：回転モード。指1本で回転します。モデルを上・下・左右へ動かしたいときは「指1本：移動」に切り替えてください。</div>
+<div class="row"><button id="panelRotate" class="primary">指1本：回転</button><button id="panelPan">指1本：移動</button></div>
+<label class="check"><input id="showHits" type="checkbox" checked>赤い交差マーカー（白い縁取り）</label>
+<label class="check"><input id="isolate" type="checkbox">交差周辺の骨表面だけ表示</label>
+<div class="note">「交差周辺」は3Dメッシュから切り出した解析用の範囲です。実際の骨の切断面や解剖学的境界を示すものではありません。</div>
+<label class="check"><input id="showCenter" type="checkbox" checked>黄色い骨頭中心候補</label>
+<label class="check"><input id="showMuscles" type="checkbox">深層外旋筋群（参考表示）</label>
+<label class="check"><input id="showHip" type="checkbox" checked>右寛骨</label>
+<label class="check"><input id="showFemur" type="checkbox" checked>右大腿骨</label>
+<label for="hipOpacity" class="small">寛骨の不透明度</label>
+<input id="hipOpacity" type="range" min="0.1" max="1" step="0.05" value="0.3">
+<label for="femurOpacity" class="small">大腿骨の不透明度</label>
+<input id="femurOpacity" type="range" min="0.1" max="1" step="0.05" value="0.6">
+<div class="row" style="margin:12px 0">
+<button id="focus" class="primary">交差箇所に寄る</button>
+<button id="overview">骨全体を見る</button>
+<button id="headFocus">骨頭中心を見る</button>
+<button id="resetView">視点を戻す</button>
+</div>
+<div class="warn">赤い点は見やすさのため実際の交差線より大きく表示しています。赤い位置は3Dメッシュの交差です。黄色い点は計算上の候補中心で、解剖学的に確定した回転中心ではありません。骨の形状は補正していません。</div>
+<p class="small">原データ：body_map_prototype02_web_v0.1.glb。既存のindex.htmlとGLBは変更していません。</p>
+</aside>
+<nav id="floating" aria-label="検証操作">
+<button id="mobileMode">交差周辺だけ</button>
+<button id="mobileReset">視点を戻す</button>
+<button id="gestureToggle" class="primary">指1本：回転</button>
+<button id="panelToggle" class="primary" aria-expanded="false" aria-controls="panel">表示設定</button>
+</nav>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const CENTER=new THREE.Vector3(-87.35,-78.88,811.34);
+const status=document.getElementById('status');
+const panel=document.getElementById('panel');
+const host=document.getElementById('view');
+if(window.matchMedia('(max-width:760px)').matches)panel.classList.add('closed');
+const scene=new THREE.Scene();scene.background=new THREE.Color(0xf6f3ed);
+const camera=new THREE.PerspectiveCamera(40,1,0.1,3000);
+camera.up.set(0,0,1); // GLB is Z-up; rotate vertically around the anatomical height axis
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+host.prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.enablePan=true;
+controls.minDistance=25;controls.maxDistance=1500;
+controls.minPolarAngle=0.001;controls.maxPolarAngle=Math.PI-0.001;
+controls.touches.ONE=THREE.TOUCH.ROTATE;
+controls.touches.TWO=THREE.TOUCH.DOLLY_PAN; // also allow two-finger repositioning
+scene.add(new THREE.HemisphereLight(0xffffff,0x8e8580,2.5));
+const sun=new THREE.DirectionalLight(0xffffff,2);sun.position.set(1,-2,3);scene.add(sun);
+const hitGroup=new THREE.Group();hitGroup.name='collision_markers';scene.add(hitGroup);
+const centerGroup=new THREE.Group();scene.add(centerGroup);
+const centerBall=new THREE.Mesh(new THREE.SphereGeometry(2.1,16,12),new THREE.MeshBasicMaterial({color:0xffb300,depthTest:false,depthWrite:false}));
+centerBall.position.copy(CENTER);centerBall.renderOrder=1001;centerGroup.add(centerBall);
+const objects={};let hipMat,femMat;let overview=false;let isolated=false;
+const patchGroup=new THREE.Group();patchGroup.visible=false;scene.add(patchGroup);
+const direction=new THREE.Vector3(0.62,-0.73,0.38).normalize();
+let activeView="joint";
+let gestureMode="rotate";
+function setGestureMode(mode){
+ gestureMode=mode;
+ const pan=mode==="pan";
+ controls.touches.ONE=pan?THREE.TOUCH.PAN:THREE.TOUCH.ROTATE;
+ controls.mouseButtons.LEFT=pan?THREE.MOUSE.PAN:THREE.MOUSE.ROTATE;
+ // Always support pinching and two-finger movement.
+ controls.touches.TWO=THREE.TOUCH.DOLLY_PAN;
+ controls.enablePan=true;
+ controls.update();
+ document.getElementById('gestureToggle').textContent=pan?'指1本：移動':'指1本：回転';
+ document.getElementById('panelPan').classList.toggle('primary',pan);
+ document.getElementById('panelRotate').classList.toggle('primary',!pan);
+ document.getElementById('hint').textContent=pan?'操作：移動｜指1本で上下左右・2本指で拡大縮小':'操作：回転｜指1本で回転・2本指で拡大縮小／移動';
+ document.getElementById('gestureNote').textContent=pan?'移動モード：指1本でモデルを画面の上・下・左右に移動できます。回転するときは「指1本：回転」を押してください。':'回転モード：指1本で上下左右の角度を変えます。モデル自体を画面上へ動かすには「指1本：移動」を選んでください。';
+}
+
+const HIT_TARGET=new THREE.Vector3(-76.015,-62.478,811.291); // baseline intersection centroid
+function frameAt(target,radius){
+ const halfVertical=THREE.MathUtils.degToRad(camera.fov)/2;
+ const halfHorizontal=Math.atan(Math.tan(halfVertical)*Math.max(camera.aspect,.12));
+ const requiredDistance=radius*1.28/Math.sin(Math.min(halfVertical,halfHorizontal));
+ const distance=Math.max(requiredDistance,controls.minDistance+2);
+ camera.position.copy(target).addScaledVector(direction,distance);
+ controls.target.copy(target);
+ camera.near=Math.max(.1,distance/1000);
+ camera.far=Math.max(3000,distance*10);
+ camera.updateProjectionMatrix();
+ controls.update();
+}
+function focusJoint(){
+ activeView="joint";overview=false;
+ frameAt(HIT_TARGET,isolated?30:44);
+}
+function focusHead(){
+ activeView="head";overview=false;frameAt(CENTER,44);
+}
+function showOverview(){
+ if(!hipMat||!femMat)return;
+ activeView="overview";overview=true;
+ const b=new THREE.Box3().setFromObject(hipMat).union(new THREE.Box3().setFromObject(femMat));
+ const mid=b.getCenter(new THREE.Vector3());
+ frameAt(mid,b.getSize(new THREE.Vector3()).length/2);
+}
+function resetCurrentView(){
+ if(activeView==="overview")showOverview();
+ else if(activeView==="head")focusHead();
+ else focusJoint();
+}
+function buildPatch(mesh,color){
+ mesh.updateWorldMatrix(true,false);
+ const attr=mesh.geometry.getAttribute('position'),ind=mesh.geometry.getIndex();
+ const tris=ind?ind.count:attr.count,coords=[];
+ let faces=0;
+ for(let i=0;i<tris;i+=3){
+  const pts=[];
+  for(let j=0;j<3;j++){
+   const index=ind?ind.getX(i+j):i+j;
+   pts.push(new THREE.Vector3().fromBufferAttribute(attr,index).applyMatrix4(mesh.matrixWorld));
+  }
+  const mid=pts[0].clone().add(pts[1]).add(pts[2]).multiplyScalar(1/3);
+  if(mid.distanceTo(HIT_TARGET)>36)continue;
+  for(const p of pts)coords.push(p.x,p.y,p.z);
+  faces++;
+ }
+ const geometry=new THREE.BufferGeometry();
+ geometry.setAttribute('position',new THREE.Float32BufferAttribute(coords,3));
+ geometry.computeVertexNormals();
+ const material=new THREE.MeshStandardMaterial({color,side:THREE.DoubleSide,transparent:true,opacity:.55,depthWrite:false,roughness:.85});
+ const patch=new THREE.Mesh(geometry,material);patchGroup.add(patch);
+ return faces;
+}
+function syncVisibility(){
+ const yes=id=>document.getElementById(id).checked;
+ if(hipMat)hipMat.visible=!isolated&&yes('showHip');
+ if(femMat)femMat.visible=!isolated&&yes('showFemur');
+ for(const k of keys.slice(2))if(objects[k])objects[k].visible=!isolated&&yes('showMuscles');
+ patchGroup.visible=isolated;
+ hitGroup.visible=yes('showHits');
+ centerGroup.visible=yes('showCenter');
+ document.getElementById('mobileMode').textContent=isolated?'骨全体の表示へ':'交差周辺だけ';
+ document.getElementById('summaryMode').textContent=isolated?'表示範囲：交差周辺の抽出メッシュ（解析用）':'表示範囲：原形状の骨全体';
+}
+function changeMode(yes){
+ isolated=!!yes;
+ document.getElementById('isolate').checked=isolated;
+ syncVisibility();focusJoint();
+}
+// 初期視点はモデルの読み込み後に設定する。
+const sub=(a,b)=>a.map((x,i)=>x-b[i]);
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+function segmentTriangle(P,Q,A,B,C){
+ const dir=sub(Q,P),e1=sub(B,A),e2=sub(C,A);
+ const h=cross(dir,e2),det=dot(e1,h);
+ if(Math.abs(det)<1e-8)return null;
+ const inv=1/det,s=sub(P,A),u=inv*dot(s,h);
+ if(u<0||u>1)return null;
+ const q=cross(s,e1),v=inv*dot(dir,q);
+ if(v<0||u+v>1)return null;
+ const t=inv*dot(e2,q);
+ return t>1e-7&&t<1-1e-7?P.map((x,i)=>x+dir[i]*t):null;
+}
+function triangles(mesh){
+ const geometry=mesh.geometry,position=geometry.getAttribute('position'),index=geometry.getIndex();
+ mesh.updateWorldMatrix(true,false);
+ const vertices=[];
+ for(let i=0;i<position.count;i++)vertices.push(new THREE.Vector3().fromBufferAttribute(position,i).applyMatrix4(mesh.matrixWorld).toArray());
+ const indices=index?Array.from(index.array):Array.from({length:vertices.length},(_,i)=>i);
+ const faces=[];
+ for(let i=0;i<indices.length;i+=3){
+  const tri=indices.slice(i,i+3).map(j=>vertices[j]);
+  const min=[0,1,2].map(j=>Math.min(...tri.map(p=>p[j])));
+  const max=[0,1,2].map(j=>Math.max(...tri.map(p=>p[j])));
+  const mid=tri[0].map((_,j)=>(tri[0][j]+tri[1][j]+tri[2][j])/3);
+  if(Math.hypot(mid[0]-CENTER.x,mid[1]-CENTER.y,mid[2]-CENTER.z)>48)continue;
+  faces.push({tri,min,max});
+ }
+ return faces;
+}
+function computeIntersections(hip,femur){
+ const H=triangles(hip),F=triangles(femur);
+ const points=[],lines=[];let pairCount=0;
+ for(const h of H)for(const f of F){
+  if([0,1,2].some(j=>h.min[j]>f.max[j]+1e-6||f.min[j]>h.max[j]+1e-6))continue;
+  const p=[];
+  for(let i=0;i<3;i++){
+   const a=segmentTriangle(h.tri[i],h.tri[(i+1)%3],...f.tri);
+   const b=segmentTriangle(f.tri[i],f.tri[(i+1)%3],...h.tri);
+   if(a)p.push(a);if(b)p.push(b);
+  }
+  if(!p.length)continue;
+  pairCount++;
+  let first=p[0],last=p[0],maxDistance=-1;
+  for(let i=0;i<p.length;i++)for(let j=i+1;j<p.length;j++){
+   const d=dot(sub(p[i],p[j]),sub(p[i],p[j]));
+   if(d>maxDistance){maxDistance=d;first=p[i];last=p[j]}
+  }
+  points.push(first.map((x,i)=>(x+last[i])/2));
+  if(maxDistance>1e-8)lines.push(...first,...last);
+ }
+ return {pairCount,points,lines};
+}
+function addMarkers(results){
+ const geometry=new THREE.SphereGeometry(1,12,10);
+ const halo=new THREE.InstancedMesh(geometry,new THREE.MeshBasicMaterial({color:0xffffff,depthTest:false,depthWrite:false}),results.points.length);
+ const red=new THREE.InstancedMesh(geometry,new THREE.MeshBasicMaterial({color:0xe00012,depthTest:false,depthWrite:false}),results.points.length);
+ halo.renderOrder=1003;red.renderOrder=1004;
+ const dummy=new THREE.Object3D();
+ results.points.forEach((p,i)=>{
+  dummy.position.fromArray(p);
+  dummy.scale.setScalar(2.8);dummy.updateMatrix();halo.setMatrixAt(i,dummy.matrix);
+  dummy.scale.setScalar(1.85);dummy.updateMatrix();red.setMatrixAt(i,dummy.matrix);
+ });
+ halo.instanceMatrix.needsUpdate=true;red.instanceMatrix.needsUpdate=true;
+ hitGroup.add(halo,red);
+ if(results.lines.length){
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(results.lines,3));
+  const line=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:0xb60000,depthTest:false,depthWrite:false}));
+  line.renderOrder=1005;hitGroup.add(line);
+ }
+ if(results.points.length){
+  HIT_TARGET.set(0,0,0);
+  for(const p of results.points)HIT_TARGET.add(new THREE.Vector3(...p));
+  HIT_TARGET.multiplyScalar(1/results.points.length);
+ }
+}
+function updateStatus(count){
+ const ok=count===67;
+ status.innerHTML='<strong>交差 '+count+'組｜'+(ok?'解析一致':'要検証')+'</strong><div>赤：交差の可視化　黄：骨頭中心候補</div>';
+ document.getElementById('summary').textContent='原位置で検出した交差：'+count+'組。検証用の表示であり、交差の修正は未実施です。';
+}
+function changeOpacity(mesh,val){mesh?.traverse(n=>{if(n.isMesh&&n.material)n.material.opacity=val})}
+const keys=['right_hip_bone','right_femur','right_obturator_internus','right_superior_gemellus','right_inferior_gemellus','right_piriformis','right_quadratus_femoris','right_obturator_externus'];
+new GLTFLoader().load('./body_map_prototype02_web_v0.1.glb',g=>{
+ scene.add(g.scene);
+ g.scene.traverse(child=>{
+  if(!child.isMesh)return;
+  const key=keys.find(k=>child.name.includes(k));
+  if(!key)return;
+  objects[key]=child;
+  const isHip=key==='right_hip_bone',isFemur=key==='right_femur';
+  const color=isHip?0xcbbfaa:isFemur?0x8c9cbd:0xba635a;
+  const opacity=isHip?0.3:isFemur?0.6:1;
+  child.material=new THREE.MeshStandardMaterial({color,roughness:.8,metalness:0,transparent:opacity<1,opacity,side:THREE.DoubleSide,depthWrite:opacity===1});
+  if(!isHip&&!isFemur)child.visible=false;
+ });
+ if(!objects.right_hip_bone||!objects.right_femur){status.textContent='骨のデータが見つかりません。GLB構造を確認してください。';return;}
+ hipMat=objects.right_hip_bone;femMat=objects.right_femur;
+ const results=computeIntersections(hipMat,femMat);
+ addMarkers(results);
+ const hipFaces=buildPatch(hipMat,0xcbbfaa),femurFaces=buildPatch(femMat,0x8c9cbd);
+ updateStatus(results.pairCount);
+ document.getElementById('summary').textContent+=' 抽出した局所面：寛骨'+hipFaces+'面／大腿骨'+femurFaces+'面。';
+ syncVisibility();showOverview();
+},undefined,error=>{status.textContent='モデルの読み込みに失敗しました。ネット接続と配信URLをご確認ください。';document.getElementById('summary').textContent=String(error)});
+document.getElementById('showHits').onchange=syncVisibility;
+document.getElementById('showCenter').onchange=syncVisibility;
+document.getElementById('showMuscles').onchange=syncVisibility;
+document.getElementById('showHip').onchange=syncVisibility;
+document.getElementById('showFemur').onchange=syncVisibility;
+document.getElementById('isolate').onchange=e=>changeMode(e.target.checked);
+document.getElementById('hipOpacity').oninput=e=>changeOpacity(hipMat,+e.target.value);
+document.getElementById('femurOpacity').oninput=e=>changeOpacity(femMat,+e.target.value);
+document.getElementById('focus').onclick=()=>changeMode(true);
+document.getElementById('headFocus').onclick=focusHead;
+document.getElementById('overview').onclick=()=>{if(isolated)changeMode(false);showOverview()};
+document.getElementById('resetView').onclick=resetCurrentView;
+document.getElementById('mobileReset').onclick=resetCurrentView;
+document.getElementById('mobileMode').onclick=()=>changeMode(!isolated);
+document.getElementById('gestureToggle').onclick=()=>setGestureMode(gestureMode==='pan'?'rotate':'pan');
+document.getElementById('panelRotate').onclick=()=>setGestureMode('rotate');
+document.getElementById('panelPan').onclick=()=>setGestureMode('pan');
+document.getElementById('panelToggle').onclick=()=>{
+ panel.classList.toggle('closed');
+ document.getElementById('panelToggle').setAttribute('aria-expanded',String(!panel.classList.contains('closed')));
+};
+function resize(){const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+let lastWidth=host.clientWidth;
+window.addEventListener('resize',()=>{
+ const previousWidth=lastWidth;
+ resize();lastWidth=host.clientWidth;
+ if(Math.abs(lastWidth-previousWidth)>30)resetCurrentView();
+});
+resize();
+renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+</script>
+</body>
+</html>

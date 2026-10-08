@@ -18,10 +18,12 @@ input[type=range]{width:100%}
 @media(max-width:760px){main{grid-template-columns:1fr;height:calc(100dvh - 66px)}.verticalbar{right:10px;top:38%}#view{overflow:hidden}aside{position:fixed;left:8px;right:8px;top:auto;bottom:92px;width:auto;max-height:min(22dvh,190px);padding:12px;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002;z-index:20;overflow-y:auto;overscroll-behavior:contain}aside.panel-hidden{transform:translateX(calc(100% + 18px))}.paneltab{position:fixed;right:0;bottom:150px;z-index:40;width:44px;height:58px;border-radius:12px 0 0 12px;font-size:24px;display:none;background:#fff}.paneltab.show{display:block}.panelhide{position:sticky;top:0;float:right;z-index:3;margin:-5px -5px 6px 8px;padding:6px 9px;font-size:12px;background:#fff;border:1px solid #aaa}.scrollcue{display:block}.row{flex-wrap:wrap}button{padding:7px 8px}}
  .regionHelp{font-size:11px;line-height:1.45;color:#666;margin:-2px 0 7px}.regionGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}.regionBtn{text-align:left}.regionBtn.active{font-weight:700;border-color:#555}.muscleGroupTitle{font-size:12px;font-weight:700;margin:8px 0 4px}.muscleHidden{display:none!important}
 body.embed header{display:none}body.embed main{height:100dvh}body.embed .hint{bottom:72px}
+.guideBack{display:none;position:fixed;left:10px;top:max(10px,env(safe-area-inset-top));z-index:70;border:1px solid #cbd5df;background:#ffffffee;border-radius:12px;padding:9px 11px;font-weight:700;box-shadow:0 3px 14px #0002}.guideBack.show{display:block}
 @media(max-width:760px){body.embed main{height:100dvh}}
 </style>
 </head>
 <body>
+<button id="guideBack" class="guideBack" type="button">← 内閉鎖筋ページへ</button>
 <header><b>施術者のための身体の地図</b><div class="sub">右股関節・深層外旋筋群｜3D Prototype 0.3</div></header>
 <main><div id="view"><div class="hint">ドラッグ：回転　ピンチ/ホイール：拡大縮小</div></div>
 <aside>
@@ -43,6 +45,11 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 const pageParams=new URLSearchParams(location.search);
 const focusKey=(pageParams.get('focus')||'').toLowerCase().replace(/[ -]+/g,'_');
 if(pageParams.get('embed')==='1')document.body.classList.add('embed');
+const guideBack=document.getElementById('guideBack');
+if(pageParams.get('guide')==='1'){
+ guideBack.classList.add('show');
+ guideBack.onclick=()=>{if(history.length>1)history.back();else location.href='./test.html'};
+}
 
 const host=document.getElementById('view'), scene=new THREE.Scene(); scene.background=new THREE.Color(0xf6f3ed);
 const camera=new THREE.PerspectiveCamera(38,1,.1,2000); camera.position.set(260,-330,180);

@@ -291,7 +291,7 @@ new GLTFLoader().load('./body_map_prototype02_web_v0.1.glb',g=>{
  const hipFaces=buildPatch(hipMat,0xcbbfaa),femurFaces=buildPatch(femMat,0x8c9cbd);
  updateStatus(results.pairCount);
  document.getElementById('summary').textContent+=' 抽出した局所面：寛骨'+hipFaces+'面／大腿骨'+femurFaces+'面。';
- syncVisibility();focusJoint();
+ syncVisibility();showOverview();
 },undefined,error=>{status.textContent='モデルの読み込みに失敗しました。ネット接続と配信URLをご確認ください。';document.getElementById('summary').textContent=String(error)});
 document.getElementById('showHits').onchange=syncVisibility;
 document.getElementById('showCenter').onchange=syncVisibility;
@@ -301,7 +301,7 @@ document.getElementById('showFemur').onchange=syncVisibility;
 document.getElementById('isolate').onchange=e=>changeMode(e.target.checked);
 document.getElementById('hipOpacity').oninput=e=>changeOpacity(hipMat,+e.target.value);
 document.getElementById('femurOpacity').oninput=e=>changeOpacity(femMat,+e.target.value);
-document.getElementById('focus').onclick=focusJoint;
+document.getElementById('focus').onclick=()=>changeMode(true);
 document.getElementById('headFocus').onclick=focusHead;
 document.getElementById('overview').onclick=()=>{if(isolated)changeMode(false);showOverview()};
 document.getElementById('resetView').onclick=resetCurrentView;
@@ -312,7 +312,12 @@ document.getElementById('panelToggle').onclick=()=>{
  document.getElementById('panelToggle').setAttribute('aria-expanded',String(!panel.classList.contains('closed')));
 };
 function resize(){const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
-window.addEventListener('resize',()=>{resize();resetCurrentView()});
+let lastWidth=host.clientWidth;
+window.addEventListener('resize',()=>{
+ const previousWidth=lastWidth;
+ resize();lastWidth=host.clientWidth;
+ if(Math.abs(lastWidth-previousWidth)>30)resetCurrentView();
+});
 resize();
 renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
 </script>

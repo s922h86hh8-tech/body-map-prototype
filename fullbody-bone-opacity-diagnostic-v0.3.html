@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>身体の地図｜骨透明度検証 v0.3</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#222}
+*{box-sizing:border-box} body{margin:0;background:#f6f3ed}
+header{padding:14px 16px;background:#fff;border-bottom:1px solid #ddd}
+header b{font-size:18px}.sub{font-size:12px;color:#666;margin-top:3px}
+main{display:grid;grid-template-columns:1fr 310px;height:calc(100vh - 66px)}
+#view{min-width:0;position:relative}.hint{position:absolute;left:12px;bottom:70px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}.modebar{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;gap:8px;padding:7px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.modebar button{min-width:92px}.modebar button.active{background:#222;color:#fff;border-color:#222}.verticalbar{position:fixed;right:12px;top:42%;transform:translateY(-50%);z-index:31;display:grid;grid-template-columns:44px 44px 44px;grid-template-rows:44px 44px 44px;gap:3px;padding:6px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.verticalbar button{width:44px;height:44px;padding:0;font-size:21px;touch-action:none}.verticalbar #moveUp{grid-column:2;grid-row:1}.verticalbar #moveLeft{grid-column:1;grid-row:2}.verticalbar #moveRight{grid-column:3;grid-row:2}.verticalbar #padHandle{grid-column:2;grid-row:2;cursor:grab;font-size:17px;color:#666}.verticalbar #padHandle:active{cursor:grabbing}.verticalbar #moveDown{grid-column:2;grid-row:3}
+aside{background:#fff;padding:14px;overflow:auto;border-left:1px solid #ddd;transition:transform .24s ease}
+h2{font-size:15px;margin:4px 0 10px}.row{display:flex;gap:8px;margin-bottom:10px}
+button{border:1px solid #bbb;background:#fff;border-radius:10px;padding:9px 10px;font-size:13px}
+button.primary{background:#222;color:#fff}.item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eee;font-size:13px}
+input[type=range]{width:100%}
+@media(max-width:760px){main{grid-template-columns:1fr;height:calc(100dvh - 66px)}.verticalbar{right:10px;top:38%}#view{overflow:hidden}aside{position:fixed;left:8px;right:8px;top:auto;bottom:92px;width:auto;max-height:min(22dvh,190px);padding:12px;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002;z-index:20;overflow-y:auto;overscroll-behavior:contain}aside.panel-hidden{transform:translateX(calc(100% + 18px))}.paneltab{position:fixed;right:0;bottom:150px;z-index:40;width:44px;height:58px;border-radius:12px 0 0 12px;font-size:24px;display:none;background:#fff}.paneltab.show{display:block}.panelhide{position:sticky;top:0;float:right;z-index:3;margin:-5px -5px 6px 8px;padding:6px 9px;font-size:12px;background:#fff;border:1px solid #aaa}.scrollcue{display:block}.row{flex-wrap:wrap}button{padding:7px 8px}}
+ .regionHelp{font-size:11px;line-height:1.45;color:#666;margin:-2px 0 7px}.regionGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}.regionBtn{text-align:left}.regionBtn.active{font-weight:700;border-color:#555}.muscleGroupTitle{font-size:12px;font-weight:700;margin:8px 0 4px}.muscleHidden{display:none!important}
+body.embed header{display:none}body.embed main{height:100dvh}body.embed .hint{bottom:72px}
+body.guide header{display:none}body.guide main{height:100dvh}
+.guideBack{display:none;position:fixed;left:10px;top:max(10px,env(safe-area-inset-top));z-index:70;border:1px solid #cbd5df;background:#ffffffee;border-radius:12px;padding:9px 11px;font-weight:700;box-shadow:0 3px 14px #0002}.guideBack.show{display:block}
+.guideTarget{display:none;position:fixed;right:10px;top:max(10px,env(safe-area-inset-top));z-index:69;background:#20384c;color:#fff;border-radius:12px;padding:9px 11px;font-size:13px;font-weight:800;box-shadow:0 3px 14px #0002}.guideTarget.show{display:block}
+@media(max-width:760px){body.embed main,body.guide main{height:100dvh}body.guide .hint{bottom:78px}}
+
+
+/* V0.2 -- comparison interface; main app stays unchanged. */
+body.diag-only header{display:none}
+body.diag-only main{height:100dvh}
+body.diag-only aside{display:none!important}
+body.diag-only .paneltab{display:none!important}
+body.diag-only .verticalbar{display:none}
+body.diag-only #view{height:100%;overflow:hidden}
+body.diag-only .hint{bottom:75px;left:8px;max-width:calc(100vw - 16px);font-size:11px}
+.diagButtons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:7px}
+.diagButtons button{padding:9px 3px;min-width:0;font-weight:700}
+.diagActions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:7px 0}
+.diagActions button{font-size:12px;padding:8px 3px;min-width:0}
+#diagOpacity{width:100%;margin:2px 0 0}
+#diagStats{white-space:normal!important}
+#opacityDiag .noteSmall{font-size:10px;color:#697b87;margin:2px 0}
+#diagCurrent{font-weight:700}
+#diagHint{color:#43586c}
+#opacityDiag{z-index:65}
+@media(max-width:760px){
+body.diag-only #opacityDiag{top:calc(8px + env(safe-area-inset-top));left:8px;right:8px;width:auto;max-height:30dvh;padding:8px}
+body.diag-only #opacityDiag.minimized{left:8px;right:auto;width:auto}
+body.diag-only .modebar{bottom:max(14px,env(safe-area-inset-bottom))}
+body.diag-only #opacityDiag .diagRow{justify-content:space-between}
+body.diag-only #opacityDiag .diagBody p{margin:3px 0}
+body.diag-only #opacityDiag #diagStats{font-size:10px;padding:4px;margin-top:5px}
+}
+ /* Bone opacity diagnosis — separate test page only. */
+#opacityDiag{position:fixed;z-index:65;top:74px;left:10px;width:min(250px,calc(100vw - 20px));max-height:49dvh;overflow:auto;background:#ffffffed;border:1px solid #8297a4;border-radius:13px;box-shadow:0 3px 16px #0002;padding:11px;line-height:1.45;font-size:12px}
+#opacityDiag.minimized{width:auto;max-height:none}
+#opacityDiag.minimized .diagBody{display:none}
+#opacityDiag h2{font-size:14px;margin:0;flex:1}
+#opacityDiag p{font-size:11px;color:#526273;margin:6px 0}
+#opacityDiag label{display:block;font-size:11px;margin:8px 0 3px}
+#opacityDiag select{width:100%;padding:8px;border:1px solid #a9b9c5;border-radius:8px;background:#fff;color:#222;font-size:12px}
+#opacityDiag .diagRow{display:flex;align-items:center;gap:8px}
+#opacityDiag #diagStats{padding:7px;background:#f1f5f8;border-radius:8px;font-size:11px;white-space:pre-line}
+#opacityDiag #diagToggle{padding:5px 8px}
+@media(max-width:760px){#opacityDiag{top:calc(12px + env(safe-area-inset-top));left:8px;max-height:36dvh;width:min(220px,calc(100vw - 70px));padding:9px;z-index:52}#opacityDiag h2{font-size:12px}}
+</style>
+</head>
+<body class="diag-only">
+<section id="opacityDiag" aria-label="骨の透明度検証">
+  <div class="diagRow"><h2>骨の透明度｜比較テスト</h2><button type="button" id="diagToggle" aria-expanded="true">しまう</button></div>
+  <div class="diagBody">
+    <div class="diagButtons" aria-label="描画方法を選ぶ">
+      <button id="diagA" type="button" aria-pressed="false">A</button>
+      <button id="diagB" type="button" class="primary" aria-pressed="true">B</button>
+      <button id="diagC" type="button" aria-pressed="false">C</button>
+      <button id="diagD" type="button" aria-pressed="false">D</button>
+    </div>
+    <p id="diagCurrent">B：骨の奥行き書込OFF</p>
+    <div class="diagActions">
+      <button id="diagOnlyBones" type="button">骨だけ</button>
+      <button id="diagShowMuscles" type="button" class="primary">筋と骨</button>
+      <button id="diagFit" type="button">全身を中央に</button>
+    </div>
+    <label for="diagOpacity">骨の不透明度：<strong id="diagOpacityText">28％</strong></label>
+    <input id="diagOpacity" type="range" min="0" max="1" step=".05" value=".28">
+    <div id="diagStats" role="status" aria-live="polite">モデルを読み込み中…</div>
+    <p id="diagHint" class="noteSmall">A：現行／B：深度書込OFF／C：骨を前面（診断用）／D：筋も半透明（診断用）</p>
+  </div>
+</section>
+<button id="guideBack" class="guideBack" type="button">← 図鑑へ</button><div id="guideTarget" class="guideTarget"></div>
+<header><b>施術者のための身体の地図</b><div class="sub">右股関節・深層外旋筋群｜3D Prototype 0.3</div></header>
+<main><div id="view"><div class="hint">ドラッグ：回転　ピンチ/ホイール：拡大縮小</div></div>
+<aside>
+<button id="panelHide" class="panelhide" aria-label="表示パネルをしまう">しまう ›</button>
+<h2>表示を重ねる・外す</h2>
+<h2>骨格筋</h2>
+<div class="row"><button id="musclesOn" class="primary">筋肉すべて</button><button id="musclesOff">筋肉を外す</button></div>
+<h2>部位別の筋一覧</h2><div class="regionHelp">部位を選ぶと一覧が開きます。3D表示は一覧のチェックで切り替えます。</div><div id="muscleRegions" class="regionGrid"></div>
+<div id="muscleItems"></div>
+<h2>骨の透明度</h2><input id="opacity" type="range" min="0" max="1" step=".05" value=".28">
+<div class="row" style="margin-top:12px"><button id="reset">視点を戻す</button></div>
+</aside><button id="panelTab" class="paneltab" aria-label="表示パネルを開く">‹</button></main><div class="verticalbar" aria-label="人体位置"><button id="moveUp" aria-label="上へ移動">↑</button><button id="moveLeft" aria-label="左へ移動">←</button><button id="padHandle" aria-label="方向キーを移動" title="ここをドラッグして方向キーを移動">●</button><button id="moveRight" aria-label="右へ移動">→</button><button id="moveDown" aria-label="下へ移動">↓</button></div><div class="modebar" aria-label="3D操作"><button id="lock" class="active" aria-pressed="true">🔒 固定中</button><button id="rotate" class="active" aria-pressed="true">↻ 回転中</button></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+
+const pageParams=new URLSearchParams(location.search);
+let diagFullbodyReady=false;
+let initialDiagnosticFitPending=false;
+function diagnosticFit(){
+ if(!fullSkeletonReady||!fullAnatomyReady||!fullSkeleton||!fullAnatomy)return;
+ resize();
+ const box=new THREE.Box3().setFromObject(targetRoot);
+ if(box.isEmpty())return;
+ const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+ const halfV=THREE.MathUtils.degToRad(camera.fov)/2;
+ const halfH=Math.atan(Math.tan(halfV)*Math.max(camera.aspect,.1));
+ const distV=(size.y/2)/Math.tan(halfV);
+ const distH=(size.x/2)/Math.tan(halfH);
+ const distance=Math.max(distV,distH,size.z,1)*1.45;
+ controls.target.copy(center);
+ camera.up.set(0,1,0);
+ camera.position.copy(center).add(new THREE.Vector3(0,0,distance));
+ camera.near=Math.max(distance/2000,.01);
+ camera.far=Math.max(distance*20,150);
+ camera.lookAt(center);
+ camera.updateProjectionMatrix();
+ controls.update();
+}
+const focusKey=(pageParams.get('focus')||'').toLowerCase().replace(/[ -]+/g,'_');
+if(pageParams.get('embed')==='1')document.body.classList.add('embed');
+const guideBack=document.getElementById('guideBack');
+const guideTarget=document.getElementById('guideTarget');
+if(pageParams.get('guide')==='1'){
+ document.body.classList.add('guide');
+ const focusLabels={
+  obturator_internus:'内閉鎖筋',
+  piriformis:'梨状筋',
+  gemellus_superior:'上双子筋',
+  gemellus_inferior:'下双子筋',
+  quadratus_femoris:'大腿方形筋'
+ };
+ guideBack.classList.add('show');
+ guideTarget.textContent=(focusLabels[focusKey]||'選択構造')+'｜3D';
+ guideTarget.classList.add('show');
+ guideBack.onclick=()=>{if(history.length>1)history.back();else location.href='./test.html'};
+ if(matchMedia('(max-width:760px)').matches){
+  const p=document.querySelector('aside'),tab=document.getElementById('panelTab');
+  if(p&&tab){p.style.transform='translateX(calc(100vw + 24px))';tab.style.display='block'}
+ }
+}
+
+const host=document.getElementById('view'), scene=new THREE.Scene(); scene.background=new THREE.Color(0xf6f3ed);
+const camera=new THREE.PerspectiveCamera(38,1,.1,2000); camera.position.set(260,-330,180);
+const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); host.prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true;
+controls.enablePan=false;
+controls.touches.ONE=THREE.TOUCH.ROTATE;
+controls.touches.TWO=THREE.TOUCH.DOLLY_ROTATE;
+renderer.domElement.style.touchAction='none';
+const lockBtn=document.getElementById('lock'), rotateBtn=document.getElementById('rotate');
+let positionLocked=true, rotationEnabled=true;
+function syncModes(){
+ controls.enablePan=!positionLocked;
+ controls.enableRotate=rotationEnabled;
+ controls.touches.ONE=positionLocked?THREE.TOUCH.ROTATE:THREE.TOUCH.PAN;
+ controls.mouseButtons.LEFT=positionLocked?THREE.MOUSE.ROTATE:THREE.MOUSE.PAN;
+ controls.screenSpacePanning=true;
+ lockBtn.classList.toggle('active',positionLocked);
+ lockBtn.setAttribute('aria-pressed',String(positionLocked));
+ lockBtn.textContent=positionLocked?'🔒 固定中':'🔓 固定解除';
+ rotateBtn.classList.toggle('active',rotationEnabled);
+ rotateBtn.setAttribute('aria-pressed',String(rotationEnabled));
+ rotateBtn.textContent=rotationEnabled?'↻ 回転中':'↻ 回転OFF';
+}
+lockBtn.onclick=()=>{
+ positionLocked=!positionLocked;
+ controls.enabled=false;
+ syncModes();
+ requestAnimationFrame(()=>{controls.enabled=true});
+};
+rotateBtn.onclick=()=>{rotationEnabled=!rotationEnabled;syncModes()};
+const moveStep=()=>{
+ const d=camera.position.distanceTo(controls.target);
+ return Math.max(d*.0183,.12);
+};
+function moveVertical(dir){
+ const amount=moveStep()*dir;
+ const up=new THREE.Vector3(0,1,0).multiplyScalar(amount);
+ controls.target.add(up);
+ camera.position.add(up);
+ controls.update();
+}
+function bindVertical(id,dir){
+ const b=document.getElementById(id);
+ let timer=null;
+ const stop=()=>{if(timer){clearInterval(timer);timer=null}};
+ b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture?.(e.pointerId);moveVertical(dir);timer=setInterval(()=>moveVertical(dir),55)});
+ b.addEventListener('pointerup',stop); b.addEventListener('pointercancel',stop); b.addEventListener('pointerleave',stop);
+}
+bindVertical('moveUp',-1); bindVertical('moveDown',1);
+function moveHorizontal(dir){
+ const amount=moveStep()*dir;
+ const right=new THREE.Vector3();
+ camera.getWorldDirection(right);
+ right.cross(camera.up).normalize().multiplyScalar(amount);
+ controls.target.add(right);
+ camera.position.add(right);
+ controls.update();
+}
+function bindHorizontal(id,dir){
+ const b=document.getElementById(id);
+ let timer=null;
+ const stop=()=>{if(timer){clearInterval(timer);timer=null}};
+ b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture?.(e.pointerId);moveHorizontal(dir);timer=setInterval(()=>moveHorizontal(dir),55)});
+ b.addEventListener('pointerup',stop); b.addEventListener('pointercancel',stop); b.addEventListener('pointerleave',stop);
+}
+bindHorizontal('moveLeft',1); bindHorizontal('moveRight',-1);
+const pad=document.querySelector('.verticalbar'), padHandle=document.getElementById('padHandle');
+let padDrag=null;
+padHandle.addEventListener('pointerdown',e=>{
+ e.preventDefault(); e.stopPropagation();
+ const r=pad.getBoundingClientRect();
+ padDrag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};
+ padHandle.setPointerCapture?.(e.pointerId);
+});
+padHandle.addEventListener('pointermove',e=>{
+ if(!padDrag||e.pointerId!==padDrag.id)return;
+ const r=pad.getBoundingClientRect(), margin=6;
+ const left=Math.min(Math.max(margin,e.clientX-padDrag.dx),window.innerWidth-r.width-margin);
+ const top=Math.min(Math.max(margin,e.clientY-padDrag.dy),window.innerHeight-r.height-margin);
+ pad.style.left=left+'px'; pad.style.top=top+'px'; pad.style.right='auto'; pad.style.transform='none';
+});
+const endPadDrag=e=>{if(padDrag&&e.pointerId===padDrag.id)padDrag=null};
+padHandle.addEventListener('pointerup',endPadDrag);
+padHandle.addEventListener('pointercancel',endPadDrag);
+syncModes();
+scene.add(new THREE.HemisphereLight(0xffffff,0x777777,2.4));
+const dl=new THREE.DirectionalLight(0xffffff,2.0); dl.position.set(2,-3,4); scene.add(dl);
+let boneOpacity=.28;
+let renderPreset='adjusted';
+function applyBoneMaterials(){
+ if(!fullSkeleton)return;
+ fullSkeleton.traverse(mesh=>{
+  if(!mesh.isMesh||!mesh.material)return;
+  const mat=mesh.material;
+  mat.transparent=true;
+  mat.opacity=boneOpacity;
+  mat.depthTest=renderPreset!=='xray';
+  mat.depthWrite=renderPreset==='baseline';
+  mat.side=THREE.DoubleSide;
+  mesh.renderOrder=renderPreset==='xray'?10:0;
+  mat.needsUpdate=true;
+ });
+ updateDiagnosticStats();
+}
+let previousAnatomyMode=null;
+function applyAnatomyMaterials(){
+ if(!fullAnatomy)return;
+ const mode=renderPreset==='mixed'?'mixed':'original';
+ if(previousAnatomyMode===mode)return;
+ previousAnatomyMode=mode;
+ fullAnatomy.traverse(mesh=>{
+  if(!mesh.isMesh||!mesh.material)return;
+  const mat=mesh.material;
+  mat.transparent=mode==='mixed';
+  mat.opacity=mode==='mixed'?.42:1;
+  mat.depthWrite=mode!=='mixed';
+  mat.depthTest=true;
+  mat.needsUpdate=true;
+ });
+}
+function updateDiagnosticStats(){
+ const bones=fullSkeleton?countMeshes(fullSkeleton):'未読み込み';
+ const anatomy=fullAnatomy?countMeshes(fullAnatomy):'未読み込み';
+ const names={baseline:'A 現行方式',adjusted:'B depthWrite OFF',xray:'C 前面表示',mixed:'D 筋を半透明'};
+ const e=document.getElementById('diagStats');
+ if(e)e.textContent='骨 '+bones+'メッシュ｜筋ほか '+anatomy+'メッシュ｜骨不透明度 '+Math.round(boneOpacity*100)+'％';
+}
+function countMeshes(root){let n=0;root.traverse(x=>{if(x.isMesh)n++});return n;}
+function changeRenderingPreset(value){
+ renderPreset=value;
+ applyAnatomyMaterials();
+ applyBoneMaterials();
+ updateDiagnosticStats();
+ const titles={baseline:'A：現行方式',adjusted:'B：骨の奥行き書込OFF',xray:'C：骨を前面（診断用）',mixed:'D：筋も半透明（診断用）'};
+ document.getElementById('diagCurrent').textContent=titles[value];
+ [['diagA','baseline'],['diagB','adjusted'],['diagC','xray'],['diagD','mixed']].forEach(([id,preset])=>{
+   const b=document.getElementById(id),selected=preset===value;
+   b.classList.toggle('primary',selected);
+   b.setAttribute('aria-pressed',String(selected));
+ });
+}
+
+function visibleBounds(){
+ const box=new THREE.Box3(), tmp=new THREE.Box3();
+ scene.updateMatrixWorld(true);
+ scene.traverse(o=>{
+  if(!o.isMesh||!o.visible)return;
+  let p=o.parent,shown=true;
+  while(p&&p!==scene){if(!p.visible){shown=false;break}p=p.parent}
+  if(!shown)return;
+  if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();
+  tmp.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld); box.union(tmp);
+ });
+ return box;
+}
+function fit(){
+ const box=visibleBounds(); if(box.isEmpty())return;
+ const c=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+ const vfov=THREE.MathUtils.degToRad(camera.fov);
+ const hfov=2*Math.atan(Math.tan(vfov/2)*Math.max(camera.aspect,.01));
+ const distH=(size.y*.5)/Math.tan(vfov/2);
+ const distW=(size.x*.5)/Math.tan(hfov/2);
+ const dist=Math.max(distH,distW,size.z*.8)*1.18;
+ controls.target.copy(c);
+ camera.up.set(0,1,0);
+ // Converted BP3D is Y-up. Look straight at the body along +Z.
+ camera.position.set(c.x,c.y,c.z+dist);
+ camera.near=Math.max(dist/1000,.01);camera.far=Math.max(dist*12,100);
+ camera.updateProjectionMatrix();controls.update();
+}
+function fitToMeshes(meshes,padding=3.2){
+ const box=new THREE.Box3(),tmp=new THREE.Box3();
+ scene.updateMatrixWorld(true);
+ meshes.forEach(o=>{
+  if(!o.geometry.boundingBox)o.geometry.computeBoundingBox();
+  tmp.copy(o.geometry.boundingBox).applyMatrix4(o.matrixWorld);box.union(tmp);
+ });
+ if(box.isEmpty())return;
+ const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3());
+ const vfov=THREE.MathUtils.degToRad(camera.fov);
+ const hfov=2*Math.atan(Math.tan(vfov/2)*Math.max(camera.aspect,.01));
+ const distH=(size.y*.5)/Math.tan(vfov/2);
+ const distW=(size.x*.5)/Math.tan(hfov/2);
+ const dist=Math.max(distH,distW,size.z*.8,.7)*padding;
+ controls.target.copy(center);
+ camera.up.set(0,1,0);
+ camera.position.set(center.x,center.y,center.z+dist);
+ camera.near=Math.max(dist/1000,.01);camera.far=Math.max(dist*20,100);
+ camera.updateProjectionMatrix();controls.update();
+}
+const FULL_SKELETON_URL='https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/skeleton.glb';
+const FULL_ANATOMY_URL='https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/anatomy.glb';
+const loader=new GLTFLoader();
+
+// BodyParts3D -> Three.js: X=left/right, Z=up, -Y=front/back.
+let bpCenter=null,bpScale=null,fullSkeletonReady=false,fullAnatomyReady=false,fullBodyFitted=!!focusKey;
+function transformBP3D(root,center,scale){
+ root.updateMatrixWorld(true);
+ root.traverse(o=>{
+  if(!o.isMesh)return;
+  const g=o.geometry.clone();
+  // Bake any GLTF node transform before converting BP3D axes.
+  g.applyMatrix4(o.matrixWorld);
+  const p=g.attributes.position;
+  for(let i=0;i<p.count;i++){
+   const x=p.getX(i),y=p.getY(i),z=p.getZ(i);
+   p.setXYZ(i,(x-center.x)*scale,(z-center.z)*scale,-(y-center.y)*scale);
+  }
+  p.needsUpdate=true;
+  // Recompute normals after axis conversion to avoid inherited orientation errors.
+  g.deleteAttribute('normal'); g.computeVertexNormals(); g.computeBoundingBox(); g.computeBoundingSphere();
+  o.geometry=g; o.position.set(0,0,0);o.rotation.set(0,0,0);o.scale.set(1,1,1);o.updateMatrix();
+ });
+ root.position.set(0,0,0);root.rotation.set(0,0,0);root.scale.set(1,1,1);root.updateMatrixWorld(true);
+}
+function fitFullBodyWhenReady(){
+ // Only the diagnostic camera fit is allowed to position the initial view.
+ if(!fullSkeletonReady||!fullAnatomyReady||initialDiagnosticFitPending)return;
+ initialDiagnosticFitPending=true;
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  if(!fullSkeletonReady||!fullAnatomyReady)return;
+  diagFullbodyReady=true;
+  diagnosticFit();
+  const e=document.getElementById('diagStats');
+  if(e)e.textContent+='｜モデル読み込み完了';
+ }));
+}
+
+// Load the full-body skeleton used by the current prototype.
+let fullSkeleton=null;
+loader.load(FULL_SKELETON_URL,g=>{
+ fullSkeleton=g.scene;
+ fullSkeleton.visible=false;
+ fullSkeleton.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xd8d2c7,roughness:.72,metalness:0,transparent:true,opacity:boneOpacity,depthWrite:false,side:THREE.DoubleSide})}});
+ scene.add(fullSkeleton);
+ fullSkeletonReady=true;
+ applyBoneMaterials();
+ if(bpCenter&&bpScale){transformBP3D(fullSkeleton,bpCenter,bpScale);fullSkeleton.visible=!!fullAnatomy?.visible;fitFullBodyWhenReady()}
+},undefined,e=>{
+ console.warn('[BodyMap] full skeleton preflight failed',e);
+});
+
+let fullAnatomy=null;
+loader.load(FULL_ANATOMY_URL,g=>{
+ fullAnatomy=g.scene;
+ const rawBox=new THREE.Box3().setFromObject(fullAnatomy);
+ bpCenter=rawBox.getCenter(new THREE.Vector3());
+ const rawSize=rawBox.getSize(new THREE.Vector3());
+ bpScale=30/Math.max(rawSize.z,1e-6);
+ transformBP3D(fullAnatomy,bpCenter,bpScale);
+ if(fullSkeletonReady)transformBP3D(fullSkeleton,bpCenter,bpScale);
+ fullAnatomy.visible=false;
+ fullAnatomy.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xb76555,roughness:.72,metalness:0,side:THREE.DoubleSide})}});
+ scene.add(fullAnatomy);
+ fullAnatomyReady=true;
+ applyAnatomyMaterials();
+ updateDiagnosticStats();
+ // Full skeletal-muscle prototype: show all muscle/tendon/connective-tissue meshes
+ // contained in the validated anatomy.glb instead of the former right hip/thigh subset.
+ let kept=0;
+ fullAnatomy.traverse(o=>{
+   if(!o.isMesh)return;
+   o.visible=true;
+   kept++;
+ });
+ console.info('[BodyMap] full skeletal-muscle anatomy ready',kept);
+ const muscleItems=document.getElementById('muscleItems');
+ const muscleRegions=document.getElementById('muscleRegions');
+ const muscleMeshes=[];
+ const regionDefs=[
+ ['頭部・顔面',/frontalis|orbicularis|zygomaticus|labii|anguli|risorius|mentalis|procerus|nasalis|corrugator|temporalis|masseter|pterygoid|inferior[ _]oblique|superior[ _]oblique|inferior[ _]rectus|superior[ _]rectus|lateral[ _]rectus|medial[ _]rectus|levator[ _]palpebrae|levator[ _]veli[ _]palatini|tensor[ _]veli[ _]palatini/i],
+ ['頸部',/sternocleidomastoid|platysma|digastric|mylohyoid|sternohyoid|omohyoid|thyrohyoid|stylohyoid|splenius|longus[ _](capitis|colli)|scalen|cervicis|cervical|semispinalis[ _]capitis|longissimus[ _]capitis|obliquus[ _]capitis|geniohyoid|sternothyroid|rectus[ _]capitis|arytenoid|cricothyroid|intermediate[ _]tendon/i],
+ ['肩部',/deltoid|supraspinatus|infraspinatus|subscapularis|teres[ _]|levator[ _]scapulae|subclavius/i],
+ ['胸部',/pectoralis|serratus[ _]anterior/i],
+ ['背部',/trapezius|latissimus|rhomboid|serratus[ _]posterior|erector|levatores[ _]costarum|iliocostalis|longissimus|spinalis|semispinalis|interspinal|intertransversar|multifidus|rotatores|thoracolumbar[ _]fascia/i],
+ ['腰部・腹部',/quadratus[ _]lumborum|external[ _]oblique|internal[ _]oblique|rectus[ _]abdominis|transversus[ _]abdominis|intercostal|diaphragm|transversus[ _]thoracis/i],
+ ['殿部・骨盤',/gluteus|piriformis|obturator|iliacus|psoas|quadratus[ _]femoris|tensor[ _]fasciae|gemellus|pectineus|coccygeus|iliococcygeus|pubococcygeus|puborectalis|levator[ _]ani|anal[ _]sphincter/i],
+ ['上腕',/biceps[ _]brachii|triceps[ _]brachii|(?<!radio)brachialis|coracobrachialis|anconeus/i],
+ ['前腕',/forearm|brachioradialis|pronator|supinator|flexor[ _]carpi|extensor[ _]carpi|flexor[ _]digitorum|extensor[ _]digitorum|extensor[ _]indicis|extensor[ _]pollicis|flexor[ _]pollicis[ _]longus|abductor[ _]pollicis[ _]longus|extensor[ _]digiti[ _]minimi|palmaris/i],
+ ['手',/hand|wrist|opponens[ _](pollicis|digiti)|abductor[ _]pollicis[ _]brevis|flexor[ _]pollicis[ _]brevis|adductor[ _]pollicis|lumbrical|interossei/i],
+ ['大腿',/rectus[ _]femoris|vastus|biceps[ _]femoris|semitendinosus|semimembranosus|sartorius|gracilis|adductor(?![ _](hallucis|pollicis))|iliotibial/i],
+ ['下腿',/leg|gastrocnemius|soleus|tibialis|fibularis|peroneus|plantaris|popliteus|flexor[ _]digitorum[ _]longus|flexor[ _]hallucis[ _]longus|extensor[ _]digitorum[ _]longus|extensor[ _]hallucis|calcaneal[ _]tendon/i],
+ ['足',/foot|abductor[ _]hallucis|adductor[ _]hallucis|flexor[ _]hallucis[ _]brevis|flexor[ _]digitorum[ _]brevis|flexor[ _]accessorius|plantar[ _]ligament|abductor[ _]digiti[ _]minimi|flexor[ _]digiti[ _]minimi/i]
+ ]
+ const jpTerms=[
+ ['sternocleidomastoid','胸鎖乳突筋'],['platysma','広頸筋'],['digastric','顎二腹筋'],['mylohyoid','顎舌骨筋'],['geniohyoid','オトガイ舌骨筋'],['sternohyoid','胸骨舌骨筋'],['sternothyroid','胸骨甲状筋'],['thyrohyoid','甲状舌骨筋'],['omohyoid','肩甲舌骨筋'],['stylohyoid','茎突舌骨筋'],
+ ['splenius_capitis','頭板状筋'],['splenius_cervicis','頸板状筋'],['longus_capitis','頭長筋'],['inferior_oblique_part_of','頸長筋（下斜部）'],['superior_oblique_part_of','頸長筋（上斜部）'],['vertical_intermediate_part_of','頸長筋（垂直部）'],['longus_colli','頸長筋'],['scalenus_anterior','前斜角筋'],['scalenus_medius','中斜角筋'],['scalenus_posterior','後斜角筋'],
+ ['rectus_capitis_anterior','前頭直筋'],['rectus_capitis_lateralis','外側頭直筋'],['rectus_capitis_posterior_major','大後頭直筋'],['rectus_capitis_posterior_minor','小後頭直筋'],
+ ['masseter','咬筋'],['temporalis','側頭筋'],['medial_pterygoid','内側翼突筋'],['lateral_pterygoid','外側翼突筋'],['frontalis','前頭筋'],['orbicularis_oculi','眼輪筋'],['orbicularis_oris','口輪筋'],['zygomaticus_major','大頬骨筋'],['zygomaticus_minor','小頬骨筋'],['levator_labii_superioris','上唇挙筋'],['depressor_labii_inferioris','下唇下制筋'],['depressor_anguli_oris','口角下制筋'],['risorius','笑筋'],['mentalis','オトガイ筋'],['procerus','鼻根筋'],['nasalis','鼻筋'],['corrugator_supercilii','皺眉筋'],
+ ['trapezius','僧帽筋'],['latissimus_dorsi','広背筋'],['rhomboid_major','大菱形筋'],['rhomboid_minor','小菱形筋'],['levator_scapulae','肩甲挙筋'],['multifidus','多裂筋'],['rotatores','回旋筋'],['iliocostalis','腸肋筋'],['longissimus','最長筋'],['spinalis','棘筋'],['semispinalis','半棘筋'],['interspinal','棘間筋'],['intertransvers','横突間筋'],['serratus_posterior_superior','上後鋸筋'],['serratus_posterior_inferior','下後鋸筋'],
+ ['deltoid','三角筋'],['supraspinatus','棘上筋'],['infraspinatus','棘下筋'],['subscapularis','肩甲下筋'],['teres_major','大円筋'],['teres_minor','小円筋'],['subclavius','鎖骨下筋'],
+ ['pectoralis_major','大胸筋'],['pectoralis_minor','小胸筋'],['serratus_anterior','前鋸筋'],['external_intercostal','外肋間筋'],['internal_intercostal','内肋間筋'],['innermost_intercostal','最内肋間筋'],['diaphragm','横隔膜'],['transversus_thoracis','胸横筋'],
+ ['rectus_abdominis','腹直筋'],['external_oblique','外腹斜筋'],['internal_oblique','内腹斜筋'],['transversus_abdominis','腹横筋'],['quadratus_lumborum','腰方形筋'],
+ ['biceps_brachii','上腕二頭筋'],['triceps_brachii','上腕三頭筋'],['brachialis','上腕筋'],['coracobrachialis','烏口腕筋'],['anconeus','肘筋'],['brachioradialis','腕橈骨筋'],
+ ['pronator_teres','円回内筋'],['pronator_quadratus','方形回内筋'],['supinator','回外筋'],['flexor_carpi_radialis','橈側手根屈筋'],['flexor_carpi_ulnaris','尺側手根屈筋'],['palmaris_longus','長掌筋'],['flexor_digitorum_superficialis','浅指屈筋'],['flexor_digitorum_profundus','深指屈筋'],['flexor_pollicis_longus','長母指屈筋'],['extensor_carpi_radialis_longus','長橈側手根伸筋'],['extensor_carpi_radialis_brevis','短橈側手根伸筋'],['extensor_carpi_ulnaris','尺側手根伸筋'],['extensor_digitorum','総指伸筋'],['extensor_digiti_minimi','小指伸筋'],['extensor_indicis','示指伸筋'],['abductor_pollicis_longus','長母指外転筋'],['extensor_pollicis_longus','長母指伸筋'],['extensor_pollicis_brevis','短母指伸筋'],
+ ['abductor_pollicis_brevis','短母指外転筋'],['flexor_pollicis_brevis','短母指屈筋'],['opponens_pollicis','母指対立筋'],['adductor_pollicis','母指内転筋'],['lumbrical','虫様筋'],['palmar_interosse','掌側骨間筋'],['dorsal_interosse','背側骨間筋'],
+ ['gluteus_maximus','大殿筋'],['gluteus_medius','中殿筋'],['gluteus_minimus','小殿筋'],['piriformis','梨状筋'],['obturator_internus','内閉鎖筋'],['obturator_externus','外閉鎖筋'],['gemellus_superior','上双子筋'],['gemellus_inferior','下双子筋'],['quadratus_femoris','大腿方形筋'],['tensor_fasciae_latae','大腿筋膜張筋'],['psoas_major','大腰筋'],['iliacus','腸骨筋'],['pectineus','恥骨筋'],['coccygeus','尾骨筋'],['iliococcygeus','腸骨尾骨筋'],['pubococcygeus','恥骨尾骨筋'],['puborectalis','恥骨直腸筋'],['external_anal_sphincter','外肛門括約筋'],
+ ['rectus_femoris','大腿直筋'],['vastus_lateralis','外側広筋'],['vastus_medialis','内側広筋'],['vastus_intermedius','中間広筋'],['sartorius','縫工筋'],['adductor_longus','長内転筋'],['adductor_brevis','短内転筋'],['adductor_magnus','大内転筋'],['adductor_minimus','小内転筋'],['gracilis','薄筋'],['semitendinosus','半腱様筋'],['semimembranosus','半膜様筋'],['biceps_femoris','大腿二頭筋'],
+ ['gastrocnemius','腓腹筋'],['soleus','ヒラメ筋'],['plantaris','足底筋'],['popliteus','膝窩筋'],['tibialis_anterior','前脛骨筋'],['tibialis_posterior','後脛骨筋'],['fibularis_longus','長腓骨筋'],['fibularis_brevis','短腓骨筋'],['fibularis_tertius','第三腓骨筋'],['flexor_digitorum_longus','長趾屈筋'],['flexor_hallucis_longus','長母趾屈筋'],['extensor_digitorum_longus','長趾伸筋'],['extensor_hallucis_longus','長母趾伸筋'],
+ ['abductor_hallucis','母趾外転筋'],['adductor_hallucis','母趾内転筋'],['flexor_hallucis_brevis','短母趾屈筋'],['flexor_digitorum_brevis','短趾屈筋'],['flexor_accessorius','足底方形筋'],['abductor_digiti_minimi','小趾外転筋'],['flexor_digiti_minimi_brevis','短小趾屈筋'],['opponens_digiti_minimi','小趾対立筋'],['plantar_interosse','底側骨間筋'],
+ ['extensor_hallucis_brevis','短母趾伸筋'],['inferior_oblique','下斜筋'],['superior_oblique','上斜筋'],['inferior_rectus','下直筋'],['superior_rectus','上直筋'],['lateral_rectus','外側直筋'],['medial_rectus','内側直筋'],
+ ['levator_palpebrae_superioris','上眼瞼挙筋'],['levator_veli_palatini','口蓋帆挙筋'],['tensor_veli_palatini','口蓋帆張筋'],
+ ['lateral_crico_arytenoid','外側輪状披裂筋'],['posterior_crico_arytenoid','後輪状披裂筋'],['thyro_arytenoid','甲状披裂筋'],['oblique_arytenoid','斜披裂筋'],['transverse_arytenoid','横披裂筋'],['cricothyroid','輪状甲状筋'],
+ ['levatores_costarum_breves','短肋骨挙筋'],['levatores_costarum_longi','長肋骨挙筋'],['arytenoid_cartilage','披裂軟骨'],
+ ['median_cricothyroid_ligament','正中輪状甲状靱帯'],['tendinous_arch_of_levator_ani','肛門挙筋腱弓'],['intermediate_tendon','中間腱'],
+ ['calcaneal_tendon','踵骨腱（アキレス腱）'],['iliotibial_tract','腸脛靱帯'],['thoracolumbar_fascia','胸腰筋膜'],['interosseous_membrane','骨間膜'],['flexor_retinaculum','屈筋支帯'],['long_plantar_ligament','長足底靱帯']
+ ];
+ function normName(raw){return raw.toLowerCase().replace(/[ -]+/g,'_')}
+ function canonicalMeshName(raw){return normName(raw).replace(/_\(\d+\)$/,'')}
+ function japaneseName(raw){
+  const n=normName(raw);
+
+  // Resolve overlapping names first so a shorter parent term cannot swallow a more specific structure.
+  if(n.includes('iliococcygeus'))return '腸骨尾骨筋';
+  if(n.includes('pubococcygeus'))return '恥骨尾骨筋';
+  if(n.includes('coccygeus'))return '尾骨筋';
+  if(n.includes('interspinal'))return '棘間筋'+(n.includes('cervicis')?'（頸部）':n.includes('lumborum')?'（腰部）':n.includes('thoracis')?'（胸部）':'');
+  if(n.includes('semispinalis'))return '半棘筋'+(n.includes('capitis')?'（頭）':n.includes('cervicis')?'（頸）':n.includes('thoracis')?'（胸）':'');
+  if(n.includes('spinalis'))return '棘筋'+(n.includes('thoracis')?'（胸）':'');
+  if(n.includes('coracobrachialis'))return '烏口腕筋';
+  if(n.includes('extensor_digitorum_longus'))return '長趾伸筋';
+  if(n.includes('extensor_digitorum')&&!n.includes('longus'))return '総指伸筋';
+
+  // Preserve anatomical heads, parts and layers instead of collapsing them to one repeated label.
+  const namedParts=[
+   ['pectoralis_major',[['abdominal_part','大胸筋（腹部）'],['clavicular_part','大胸筋（鎖骨部）'],['sternocostal_part','大胸筋（胸肋部）']]],
+   ['deltoid',[['acromial_part','三角筋（肩峰部）'],['clavicular_part','三角筋（鎖骨部）'],['spinal_part','三角筋（肩甲棘部）']]],
+   ['trapezius',[['ascending_part','僧帽筋（上行部）'],['descending_part','僧帽筋（下行部）'],['transverse_part','僧帽筋（横行部）']]],
+   ['triceps_brachii',[['lateral_head','上腕三頭筋（外側頭）'],['long_head','上腕三頭筋（長頭）'],['medial_head','上腕三頭筋（内側頭）']]],
+   ['biceps_brachii',[['long_head','上腕二頭筋（長頭）'],['short_head','上腕二頭筋（短頭）']]],
+   ['biceps_femoris',[['long_head','大腿二頭筋（長頭）'],['short_head','大腿二頭筋（短頭）']]],
+   ['gastrocnemius',[['lateral_head','腓腹筋（外側頭）'],['medial_head','腓腹筋（内側頭）']]],
+   ['flexor_carpi_ulnaris',[['humeral_head','尺側手根屈筋（上腕頭）'],['ulnar_head','尺側手根屈筋（尺骨頭）']]],
+   ['pronator_teres',[['humeral_head','円回内筋（上腕頭）'],['ulnar_head','円回内筋（尺骨頭）']]],
+   ['cricothyroid',[['oblique_part','輪状甲状筋（斜部）'],['straight_part','輪状甲状筋（直部）']]],
+   ['masseter',[['superficial_part','咬筋（浅部）'],['deep_part','咬筋（深部）']]],
+   ['lateral_pterygoid',[['inferior_head','外側翼突筋（下頭）'],['superior_head','外側翼突筋（上頭）']]],
+   ['orbicularis_oculi',[['orbital_part','眼輪筋（眼窩部）'],['palpebral_part','眼輪筋（眼瞼部）']]],
+   ['thoracolumbar_fascia',[['posterior_layer','胸腰筋膜（後葉）'],['middle_layer','胸腰筋膜（中葉）'],['anterior_layer','胸腰筋膜（前葉）']]]
+  ];
+  for(const [base,parts] of namedParts)if(n.includes(base))for(const [part,jp] of parts)if(n.includes(part))return jp;
+
+  if(n.includes('iliocostalis'))return n.includes('cervicis')?'腸肋筋（頸）':n.includes('thoracis')?'腸肋筋（胸）':n.includes('lumborum')?'腸肋筋（腰）':'腸肋筋';
+  if(n.includes('longissimus'))return n.includes('capitis')?'最長筋（頭）':n.includes('cervicis')?'最長筋（頸）':n.includes('thoracis')?'最長筋（胸）':'最長筋';
+  if(n.includes('multifidus'))return n.includes('cervicis')?'多裂筋（頸）':n.includes('thoracis')?'多裂筋（胸）':n.includes('lumborum')?'多裂筋（腰）':'多裂筋';
+  if(n.includes('intertransvers'))return n.includes('lateral_lumbar')?'腰部外側横突間筋':n.includes('medial_lumbar')?'腰部内側横突間筋':n.includes('anterior_cervical')?'前頸横突間筋群':n.includes('posterior_cervical')?'後頸横突間筋群':'横突間筋';
+  if(n.includes('interosseous_membrane'))return n.includes('forearm')?'前腕骨間膜':n.includes('leg')?'下腿骨間膜':'骨間膜';
+  if(n.includes('levator_palpebrae_superioris')&&n.includes('tendon'))return '上眼瞼挙筋腱';
+
+  // Hand/foot structures must be resolved by context before generic Latin-name matches.
+  if(n.includes('hand')){
+   if(n.includes('abductor_digiti_minimi'))return '小指外転筋';
+   if(n.includes('flexor_digiti_minimi_brevis'))return '短小指屈筋';
+   if(n.includes('opponens_digiti_minimi'))return '小指対立筋';
+   if(n.includes('lumbrical'))return '虫様筋群（手）';
+   if(n.includes('dorsal_interosse'))return '背側骨間筋群（手）';
+   if(n.includes('palmar_interosse'))return '掌側骨間筋群（手）';
+  }
+  if(n.includes('foot')){
+   const footOrders=[
+    ['first_lumbrical','第1虫様筋（足）'],['second_lumbrical','第2虫様筋（足）'],
+    ['third_lumbrical','第3虫様筋（足）'],['fourth_lumbrical','第4虫様筋（足）'],
+    ['first_plantar_interosseous','第1底側骨間筋（足）'],
+    ['second_plantar_interosseous','第2底側骨間筋（足）'],
+    ['third_plantar_interosseous','第3底側骨間筋（足）']
+   ];
+   for(const [en,jp] of footOrders)if(n.includes(en))return jp;
+  }
+
+  if(n.includes('adductor_pollicis')){
+   if(n.includes('oblique_head'))return '母指内転筋（斜頭）';
+   if(n.includes('transverse_head'))return '母指内転筋（横頭）';
+  }
+  if(n.includes('flexor_pollicis_brevis')&&n.includes('superficial_head'))return '短母指屈筋（浅頭）';
+  if(n.includes('adductor_hallucis')){
+   if(n.includes('oblique_head'))return '母趾内転筋（斜頭）';
+   if(n.includes('transverse_head'))return '母趾内転筋（横頭）';
+  }
+  if(n.includes('flexor_hallucis_brevis')){
+   if(n.includes('lateral_head'))return '短母趾屈筋（外側頭）';
+   if(n.includes('medial_head'))return '短母趾屈筋（内側頭）';
+  }
+
+  for(const [en,jp] of jpTerms)if(n.includes(en))return jp;
+  return raw.replace(/_/g,' ');
+ }
+ function sideName(raw){const n=normName(raw);if(/(^|_)left(_|$)/.test(n))return '左｜';if(/(^|_)right(_|$)/.test(n))return '右｜';return ''}
+ function structureType(raw){
+  const n=normName(raw);
+  if(/cartilage/.test(n))return '軟骨';
+  if(/ligament/.test(n))return '靱帯';
+  if(/fascia|iliotibial_tract/.test(n))return '筋膜・腱膜';
+  if(/retinaculum/.test(n))return '支帯';
+  if(/tendon|tendinous/.test(n))return '腱';
+  if(/interosseous_membrane/.test(n))return '骨間膜';
+  return '筋';
+ }
+ const deepRe=/piriformis|obturator|gemellus|quadratus_femoris|gluteus_minimus|supraspinatus|infraspinatus|subscapularis|teres_minor|rhomboid|multifidus|intercost|psoas|iliacus|popliteus|interosse|lumbrical|pronator_quadratus/i;
+ const middleRe=/gluteus_medius|erector_spinae|serratus|brachialis|soleus|vastus_intermedius/i;
+ const groups=new Map(regionDefs.map(([n])=>[n,[]]));groups.set('その他',[]);
+ function regionFor(name){
+  const neck=regionDefs.find(([label])=>label==='頸部');
+  if(neck&&neck[1].test(name))return neck[0];
+  if(/\bfoot\b/i.test(name)||/extensor[ _]hallucis[ _]brevis/i.test(name))return '足';
+  if(/\bhand\b/i.test(name))return '手';
+  const leg=regionDefs.find(([label])=>label==='下腿');
+  if(leg&&leg[1].test(name))return leg[0];
+  if(/flexor[ _]digitorum[ _]brevis/i.test(name))return '足';
+  for(const [label,re] of regionDefs)if(label!=='頸部'&&re.test(name))return label;
+  return 'その他'
+ }
+ function layerFor(name,region,type){
+  if(type!=='筋')return '関連構造';
+  const n=normName(name);
+  if(region==='足'){
+   if(/extensor_hallucis_brevis/.test(n))return '足背';
+   if(/abductor_hallucis|flexor_digitorum_brevis|abductor_digiti_minimi/.test(n))return '第1層';
+   if(/flexor_accessorius|lumbrical/.test(n))return '第2層';
+   if(/flexor_hallucis_brevis|adductor_hallucis|flexor_digiti_minimi_brevis|opponens_digiti_minimi/.test(n))return '第3層';
+   if(/plantar_interosse/.test(n))return '第4層';
+  }
+  if(region==='手'){
+   if(/opponens_pollicis|opponens_digiti_minimi|adductor_pollicis|interosse/.test(n))return '深層';
+   if(/lumbrical/.test(n))return '中間層';
+   return '表層';
+  }
+  return deepRe.test(name)?'深層':middleRe.test(name)?'中間層':'表層'
+ }
+ function layerOrderFor(region){
+  if(region==='足')return ['足背','第1層','第2層','第3層','第4層','関連構造'];
+  return ['表層','中間層','深層','関連構造'];
+ }
+ const anatomyUiEntries=new Map();
+ fullAnatomy.traverse(o=>{
+  if(!o.isMesh)return;
+  muscleMeshes.push(o);
+  const raw=o.name||'名称未設定',key=canonicalMeshName(raw);
+  let entry=anatomyUiEntries.get(key);
+  if(!entry){
+   const region=regionFor(raw),type=structureType(raw),layer=layerFor(raw,region,type);
+   entry={raw,region,type,layer,meshes:[]};anatomyUiEntries.set(key,entry);
+  }
+  entry.meshes.push(o);
+ });
+ anatomyUiEntries.forEach(entry=>{
+  const {raw,region,type,layer,meshes}=entry;
+  const d=document.createElement('label');d.className='item muscleHidden';d.dataset.region=region;d.dataset.layer=layer;
+  const s=document.createElement('span');s.textContent=sideName(raw)+japaneseName(raw)+(type==='筋'?'':'［'+type+'］');
+  const cb=document.createElement('input');cb.type='checkbox';cb.checked=true;cb.addEventListener('change',()=>{meshes.forEach(m=>m.visible=cb.checked)});
+  d.append(s,cb);muscleItems.appendChild(d);groups.get(region).push({el:d,meshes,layer,type,raw});
+ });
+ let activeRegion=null;
+ function showRegion(region){
+  activeRegion=activeRegion===region?null:region; muscleItems.innerHTML='';
+  muscleRegions.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x.dataset.region===activeRegion));
+  if(!activeRegion)return;
+  const entries=groups.get(activeRegion)||[];
+  layerOrderFor(activeRegion).forEach(layer=>{
+   const layerEntries=entries.filter(x=>x.layer===layer);if(!layerEntries.length)return;
+   const head=document.createElement('label');head.className='item muscleGroupTitle';
+   const title=document.createElement('span');title.textContent=layer+'（'+layerEntries.length+'）';
+   const master=document.createElement('input');master.type='checkbox';master.checked=layerEntries.every(x=>x.meshes.every(m=>m.visible));
+   master.onchange=()=>{layerEntries.forEach(x=>{x.meshes.forEach(m=>m.visible=master.checked);x.el.querySelector('input').checked=master.checked})};
+   head.append(title,master);muscleItems.appendChild(head);
+   layerEntries.forEach(x=>{x.el.classList.remove('muscleHidden');muscleItems.appendChild(x.el)});
+  });
+ }
+ groups.forEach((items,label)=>{if(!items.length)return;const btn=document.createElement('button');btn.className='regionBtn';btn.dataset.region=label;btn.textContent=label+'（'+items.length+'）';btn.onclick=()=>showRegion(label);muscleRegions.appendChild(btn)});
+
+ function applyFocusFromQuery(){
+  if(!focusKey)return;
+  const matched=muscleMeshes.filter(o=>normName(o.name).includes(focusKey));
+  if(!matched.length){console.warn('[BodyMap] focus target not found',focusKey);return}
+  const selected=new Set(matched);
+  muscleMeshes.forEach(o=>{o.visible=selected.has(o)});
+  groups.forEach(es=>es.forEach(x=>{const cb=x.el.querySelector('input');if(cb)cb.checked=x.meshes.every(m=>m.visible)}));
+  const targetRegion=regionFor(matched[0].name);
+  activeRegion=null;showRegion(targetRegion);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>fitToMeshes(matched,3.4)));
+  console.info('[BodyMap] focused structure',focusKey,matched.map(o=>o.name));
+ }
+ applyFocusFromQuery();
+
+ document.getElementById('musclesOn').onclick=()=>{muscleMeshes.forEach(o=>o.visible=true);groups.forEach(es=>es.forEach(x=>x.el.querySelector('input').checked=true));if(activeRegion){const r=activeRegion;activeRegion=null;showRegion(r)}};
+ document.getElementById('musclesOff').onclick=()=>{muscleMeshes.forEach(o=>o.visible=false);groups.forEach(es=>es.forEach(x=>x.el.querySelector('input').checked=false));if(activeRegion){const r=activeRegion;activeRegion=null;showRegion(r)}};
+ // Promote the validated whole skeleton + full skeletal-muscle anatomy to the default prototype view.
+ fullAnatomy.visible=true;
+ if(fullSkeleton) fullSkeleton.visible=true;
+ fitFullBodyWhenReady();
+},undefined,e=>console.warn('[BodyMap] anatomy test load failed',e));
+
+document.getElementById('opacity').oninput=e=>{
+ boneOpacity=+e.target.value;
+ applyBoneMaterials();
+};
+[['diagA','baseline'],['diagB','adjusted'],['diagC','xray'],['diagD','mixed']].forEach(([id,preset])=>{
+ document.getElementById(id).onclick=()=>changeRenderingPreset(preset);
+});
+document.getElementById('diagOnlyBones').onclick=()=>{
+ document.getElementById('musclesOff').click();
+ document.getElementById('diagOnlyBones').classList.add('primary');
+ document.getElementById('diagShowMuscles').classList.remove('primary');
+};
+document.getElementById('diagShowMuscles').onclick=()=>{
+ document.getElementById('musclesOn').click();
+ document.getElementById('diagOnlyBones').classList.remove('primary');
+ document.getElementById('diagShowMuscles').classList.add('primary');
+};
+document.getElementById('diagFit').onclick=()=>{
+ if(!diagFullbodyReady){
+  document.getElementById('diagStats').textContent='骨と筋の両方の読み込みを待っています…';
+  return;
+ }
+ diagnosticFit();
+};
+document.getElementById('diagOpacity').oninput=e=>{
+ const slider=document.getElementById('opacity');
+ slider.value=e.target.value;
+ slider.dispatchEvent(new Event('input',{bubbles:true}));
+ document.getElementById('diagOpacityText').textContent=Math.round(+e.target.value*100)+'％';
+};
+document.getElementById('diagToggle').onclick=()=>{
+ const panel=document.getElementById('opacityDiag');
+ panel.classList.toggle('minimized');
+ const opened=!panel.classList.contains('minimized');
+ document.getElementById('diagToggle').textContent=opened?'しまう':'表示';
+ document.getElementById('diagToggle').setAttribute('aria-expanded',String(opened));
+};
+updateDiagnosticStats();
+document.getElementById('reset').onclick=diagnosticFit;
+function resize(){let w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()} addEventListener('resize',resize); resize();
+renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+</script>
+<script>
+(()=>{
+  const panel=document.querySelector('aside');
+  const tab=document.getElementById('panelTab');
+  const closeBtn=document.getElementById('panelHide');
+  const view=document.getElementById('view');
+  if(panel&&tab&&closeBtn){
+    closeBtn.addEventListener('click',()=>{
+      panel.style.transform='translateX(calc(100vw + 24px))';
+      tab.style.display='block';
+    });
+    tab.addEventListener('click',()=>{
+      panel.style.transform='translateX(0)';
+      tab.style.display='none';
+    });
+  }
+  if(view) view.style.touchAction='none';
+})();
+</script>
+</body></html>

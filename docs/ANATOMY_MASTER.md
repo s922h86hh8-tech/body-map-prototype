@@ -332,3 +332,12 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 部位・方向の一般的な参考文献: OpenStax, Anatomy and Physiology 2e, 1.6 Anatomical Terminology: https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology
 - 実機確認待ち。13部位のテキストと操作をiPhoneで確認したうえで、文言の改訂を検討する。
 
+### 2D入口の説明監査 Ver.0.8（2026-10-11）
+
+- `2d-body-map-v0.8.html` は別版の説明監査用試作。動作確認済みの旧版は上書きせず保存する。人体SVGと3Dリンクを変えない。
+- 13部位は学習の入口としてのUI分類であり、解剖学の領域区分を完全に再現したものではない。
+- UI上、正面の腹部周辺は「腰部・腹部」、背面の腰周辺は「背部」のボタンから選ぶ。腰部は解剖学的には背面領域の一部でもあるため、名称をUI上の使い分けとして明示した。名称・分類の厳密化は今後の改善課題。
+- 現行13区分には、肘部・膝部の独立した選択ボタンがない。そのことを明記し、未実装なのに調べられると断定しない。
+- 頭部・顔面、腰部・腹部、背部の入口説明の読みやすさを調整。個別筋の詳細情報とは混同しない。
+- 日本語の用語参考: 日本解剖学会「解剖学用語」 https://www.anatomy.or.jp/yougo.html 。身体領域と前後方向の参考: OpenStax Anatomy and Physiology 2e 1.6 https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology 。
+- Ver.0.8は静的検証済みだが、iPhone実機の見た目・動作確認と、部位分類を構造マスターへ反映する作業は未完了。

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>身体の地図｜殿部・骨盤の筋図鑑 0.1</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;background:#f1f5f8;color:#203447}
+*{box-sizing:border-box}body{margin:0}button,a{touch-action:manipulation}
+header{position:sticky;top:0;z-index:10;background:#17364c;color:white;display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px max(12px,env(safe-area-inset-left));box-shadow:0 2px 8px #152b3940}
+header a{border:1px solid #ffffff66;border-radius:11px;text-decoration:none;color:white;padding:10px;font-size:12px;font-weight:700;white-space:nowrap}
+header strong{font-size:14px;text-align:center;line-height:1.5}
+main{max-width:1050px;margin:0 auto;padding:17px 13px 42px}
+.hero{background:#fff;border-radius:17px;padding:19px;border:1px solid #dbe5eb}
+.kicker{font-size:12px;color:#577186;font-weight:700}
+h1{font-size:29px;margin:6px 0 4px;color:#1c384e}
+.latin{font-size:13px;color:#697f91}
+.summary{font-size:14px;line-height:1.8;margin:13px 0 0}
+.jump{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.jump a{padding:11px 14px;text-decoration:none;color:white;background:#205877;border-radius:10px;font-size:13px;font-weight:700}
+.jump a.secondary{background:#e9f2f7;color:#22506b}
+.notice{padding:10px 12px;font-size:12px;line-height:1.65;background:#fff8ea;border:1px solid #eadbbd;border-radius:11px;margin-top:12px;color:#725933}
+.panel{background:#fff;border-radius:16px;border:1px solid #dce6ed;margin-top:13px;padding:16px}
+.panel h2{font-size:17px;margin:0 0 11px}
+.picker{display:flex;gap:8px;overflow-x:auto;padding:5px 0 9px;scrollbar-width:thin}
+.picker button{font:inherit;font-size:13px;white-space:nowrap;padding:12px 13px;flex:none;border:1px solid #c9dae4;border-radius:12px;background:#f5f9fb;color:#294d63}
+.picker button[aria-pressed=true]{background:#205877;color:white;border-color:#205877}
+.tabs{display:flex;gap:7px;overflow-x:auto;padding:3px 0 10px}
+.tabs button{font:inherit;white-space:nowrap;font-weight:700;font-size:13px;padding:11px 12px;background:#f5f8fa;border:1px solid #d1dfe8;border-radius:9px}
+.tabs button[aria-selected=true]{background:#1f5476;border-color:#1f5476;color:white}
+.pair{display:grid;grid-template-columns:100px 1fr;gap:9px 12px;margin:0}
+.pair dt{font-size:13px;color:#3b6985;font-weight:800}
+.pair dd{font-size:14px;line-height:1.75;margin:0}
+.pair dt,.pair dd{padding:8px 0;border-bottom:1px solid #eef2f5}
+.prose{font-size:14px;line-height:1.85;margin:8px 0}
+.switcher{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.switcher a{display:inline-flex;text-decoration:none;font-size:12px;font-weight:700;padding:9px 11px;border-radius:10px;background:#eaf3f8;color:#235773;border:1px solid #cbdde7}
+.info{font-size:12px;line-height:1.75;color:#596f7d}
+.sources a{display:block;color:#1f6085;text-decoration:underline;font-size:13px;margin:7px 0;overflow-wrap:anywhere}
+footer{color:#748996;font-size:11px;line-height:1.65;text-align:center;padding:10px 15px 36px}
+[hidden]{display:none!important}
+@media(min-width:850px){main{padding:24px}.contentGrid{display:grid;grid-template-columns:1fr 310px;gap:14px;align-items:start}.contentGrid .panel{margin-top:13px}}
+@media(max-width:410px){header strong{font-size:12px}header a{padding:9px 7px;font-size:11px}.pair{grid-template-columns:80px 1fr}}
+</style></head><body>
+<header><a id="back2d" href="./2d-body-map-v0.9.html?region=pelvis">← 部位選択</a><strong>殿部・骨盤の筋図鑑<br><span id="shortTitle">内閉鎖筋</span></strong><a id="open3dTop" href="#">3Dで見る ↗</a></header>
+<main>
+<div class="hero"><div class="kicker">身体の地図｜個別構造を学ぶ（5筋試作）</div>
+<h1 id="muscleName"></h1><div id="muscleLatin" class="latin"></div><p id="muscleSummary" class="summary"></p>
+<div class="jump"><a id="open3d" href="#">選んだ筋を3Dで確認 ↗</a><a class="secondary" id="back2dOther" href="#">← 2D人体図へ</a></div>
+<div class="notice">起始・停止・働きは、複数の解剖学資料を照合した要点です。表現の細部や個体差は資料によって異なります。診断や施術手順を示すものではなく、図解や各動作の詳しい検証は今後追加します。</div>
+</div>
+<section class="panel" aria-label="筋を切り替える"><h2>殿部・骨盤の筋を選ぶ</h2><div id="muscleChoices" class="picker"></div><div class="info">選ぶと、その筋の解説と3Dへのリンクが切り替わります。</div></section>
+<div class="contentGrid"><section class="panel"><div id="tabs" class="tabs" role="tablist" aria-label="読む内容"></div><div id="tabContents" aria-live="polite"></div></section>
+<aside class="panel"><h2>近くの筋へ移動</h2><div id="related" class="switcher"></div><p class="info">関連する筋を選ぶと、その筋のページへ進みます。腱・骨・神経までの相互リンクは今後拡充します。</p><h2>参照資料</h2><div id="sources" class="sources"></div></aside></div>
+</main><footer>身体の地図｜筋図鑑 Prototype 0.1｜五筋の基本項目を資料で照合した試作。個別解剖図・実機検証は制作途中。</footer>
+<script>
+const data={
+  "obturator_internus": {
+    "name": "内閉鎖筋",
+    "latin": "Obturator internus",
+    "subtitle": "骨盤の内側から坐骨の後ろを回り、大腿骨近位部へ向かう筋。",
+    "location": "閉鎖孔の骨盤内面に広がり、腱が小坐骨孔を通って殿部深層へ出る。",
+    "origin": "閉鎖膜の骨盤面、および閉鎖孔を囲む恥骨・坐骨の内面。",
+    "insertion": "大腿骨大転子の内側面（転子窩近く）。上・下双子筋の腱と密接に合流する。",
+    "action": "股関節の外旋に関わる。股関節の屈曲位では外転にも関わり、股関節の安定にも寄与する。",
+    "nerve": "内閉鎖筋神経（仙骨神経叢由来）。",
+    "relationship": "上双子筋と下双子筋が腱の上下に位置し、3筋は機能的にも近い関係をもつ。",
+    "daily": "股関節の向きが変わる動作を理解するうえで、周囲の筋と合わせて考える。歩行などの動作中に、単独でどれだけ働くかはこの図鑑だけでは判定できない。",
+    "observe": "骨盤の内側から始まる筋腹と、坐骨の後方へ方向を変える腱を3Dで見比べる。",
+    "caveat": "腱の付着表現には資料ごとの差があるため、大転子内側付近として案内している。",
+    "sources": [
+      "tma",
+      "gemelli",
+      "hip"
+    ]
+  },
+  "piriformis": {
+    "name": "梨状筋",
+    "latin": "Piriformis",
+    "subtitle": "仙骨の前面から大坐骨孔を通り、殿部深層へ向かう筋。",
+    "location": "骨盤の内側にある仙骨前面から始まり、大坐骨孔を通って大腿骨大転子付近へ向かう。",
+    "origin": "仙骨前面（主として第2〜第4仙椎付近）。",
+    "insertion": "大腿骨大転子の上部。",
+    "action": "股関節の外旋に関わる。股関節の屈曲位では外転への寄与も説明される。",
+    "nerve": "梨状筋神経（仙骨神経叢由来）。",
+    "relationship": "坐骨神経が近傍を走り、その位置関係には個体差がある。梨状筋だけでなく周囲の深層筋とあわせて観察する。",
+    "daily": "脚の向きを変えるとき、股関節の角度で筋の作用を単純化できないことを学ぶ入口になる。",
+    "observe": "仙骨から大腿骨へ向かう位置と、大坐骨孔周囲の解剖学的関係を確認する。",
+    "caveat": "梨状筋と坐骨神経の近さだけで、お客様の症状の原因を決めることはできない。",
+    "sources": [
+      "tma",
+      "hip"
+    ]
+  },
+  "gemellus_superior": {
+    "name": "上双子筋",
+    "latin": "Superior gemellus",
+    "subtitle": "坐骨棘から内閉鎖筋の腱の上側へ向かう小さな筋。",
+    "location": "殿部深層で内閉鎖筋腱のすぐ上に位置する。",
+    "origin": "坐骨棘。",
+    "insertion": "内閉鎖筋の腱に合流して、大腿骨大転子内側面付近へ付着する。",
+    "action": "内閉鎖筋と協働して股関節の外旋に関わる。屈曲位での外転や関節の安定にも寄与する。",
+    "nerve": "標準的には内閉鎖筋神経。解剖研究では大腿方形筋神経の枝も加わる例が報告されている。",
+    "relationship": "下双子筋との間に内閉鎖筋の腱があり、3筋は近接する。",
+    "daily": "小さな筋だけを独立して日常動作に結びつけず、股関節周囲の筋の協働を見る。",
+    "observe": "坐骨棘から始まる位置を確認し、内閉鎖筋腱の上側にあることを3Dで見比べる。",
+    "caveat": "神経支配には個体差が報告されている。標準記述と解剖研究結果を区別する。",
+    "sources": [
+      "gemelli",
+      "aung",
+      "tma"
+    ]
+  },
+  "gemellus_inferior": {
+    "name": "下双子筋",
+    "latin": "Inferior gemellus",
+    "subtitle": "坐骨結節付近から内閉鎖筋の腱の下側へ向かう筋。",
+    "location": "殿部深層で内閉鎖筋腱のすぐ下に位置する。",
+    "origin": "坐骨結節の上部〜外側面。",
+    "insertion": "内閉鎖筋の腱に合流して、大腿骨大転子内側面付近へ付着する。",
+    "action": "内閉鎖筋と協働して股関節の外旋に関わり、股関節の安定や屈曲位での外転にも寄与する。",
+    "nerve": "標準的には大腿方形筋神経。内閉鎖筋神経からの枝が加わる例も報告されている。",
+    "relationship": "内閉鎖筋腱を挟んで上双子筋と対になり、下方には大腿方形筋が位置する。",
+    "daily": "歩行や方向転換における股関節の運動を、他の外旋筋とまとめて考えるための入口になる。",
+    "observe": "坐骨結節から大転子へ向かう筋を、内閉鎖筋腱との上下関係で識別する。",
+    "caveat": "起始の広がりや神経の枝には個体差の報告がある。",
+    "sources": [
+      "gemelli",
+      "aung",
+      "tma"
+    ]
+  },
+  "quadratus_femoris": {
+    "name": "大腿方形筋",
+    "latin": "Quadratus femoris",
+    "subtitle": "坐骨結節から大腿骨に横方向へ向かう、比較的平たい筋。",
+    "location": "殿部深層の下方。下双子筋・内閉鎖筋より下で、大腿骨近位部の後方に位置する。",
+    "origin": "坐骨結節の外側縁付近。",
+    "insertion": "大腿骨の転子間稜にある方形筋結節周囲。",
+    "action": "股関節の外旋に関わり、大腿骨頭の位置の安定にも寄与する。",
+    "nerve": "大腿方形筋神経（仙骨神経叢由来）。",
+    "relationship": "上方に下双子筋があり、前方には股関節の関節包などが位置する。",
+    "daily": "殿部の深い筋群の中で、筋の走行方向と股関節の回旋運動の関係を学ぶ。",
+    "observe": "筋が坐骨結節から大腿骨の後面へ横方向に走る点を、他の深層外旋筋と比較する。",
+    "caveat": "この筋の3D位置表示は学習用モデルによるもの。個人の状態の判断には使用しない。",
+    "sources": [
+      "tma",
+      "hip"
+    ]
+  }
+};
+const sourceData={
+  "tma": {
+    "label": "TeachMeAnatomy：Muscles of the Gluteal Region",
+    "url": "https://teachmeanatomy.info/lower-limb/muscles/gluteal-region/"
+  },
+  "hip": {
+    "label": "NCBI Bookshelf：Anatomy, Bony Pelvis and Lower Limb, Hip",
+    "url": "https://www.ncbi.nlm.nih.gov/books/NBK526019/"
+  },
+  "gemelli": {
+    "label": "NCBI Bookshelf：Gemelli Muscles",
+    "url": "https://www.ncbi.nlm.nih.gov/books/NBK557420/"
+  },
+  "aung": {
+    "label": "Aung et al. (2001)：双子筋と内閉鎖筋の神経分布の解剖研究",
+    "url": "https://pubmed.ncbi.nlm.nih.gov/11331970/"
+  }
+};
+const qs=new URLSearchParams(location.search);
+const side=qs.get('side')==='back'?'back':'front';
+const region='pelvis';
+let current=Object.prototype.hasOwnProperty.call(data,qs.get('muscle'))?qs.get('muscle'):'obturator_internus';
+const k=id=>document.getElementById(id);
+const toQuery='&side='+encodeURIComponent(side)+'&region='+region;
+const bodyURL='./2d-body-map-v0.9.html?side='+encodeURIComponent(side)+'&region='+region;
+k('back2d').href=bodyURL;k('back2dOther').href=bodyURL;
+const tabDefs=[
+['where','どこにある？'],['basics','起始・停止'],['action','何をする？'],
+['related','つながり'],['everyday','動きと日常'],['observe','観察の視点']];
+let activeTab='where';
+function muscleHref(id){return './muscle-dictionary-v0.1.html?muscle='+encodeURIComponent(id)+toQuery}
+function link3d(id){return './3d-navigation-v0.2.html?guide=1&focus='+encodeURIComponent(id)+'&from=dictionary'+toQuery}
+function addP(container,message,cls='prose'){const p=document.createElement('p');p.className=cls;p.textContent=message;container.append(p)}
+function renderTabs(){
+ const nav=k('tabs');nav.textContent='';
+ for(const [key,label] of tabDefs){const btn=document.createElement('button');btn.type='button';btn.textContent=label;
+ btn.setAttribute('role','tab');btn.setAttribute('aria-selected',String(activeTab===key));
+ btn.onclick=()=>{activeTab=key;renderTabs();renderContent()};nav.append(btn)}
+}
+function renderContent(){
+ const target=k('tabContents');target.textContent='';const a=data[current];
+ if(activeTab==='basics'){
+  const dl=document.createElement('dl');dl.className='pair';
+  for(const [label,val] of [['起始',a.origin],['停止',a.insertion],['主な働き',a.action],['神経支配',a.nerve]]){
+   let dt=document.createElement('dt');dt.textContent=label;let dd=document.createElement('dd');dd.textContent=val;dl.append(dt,dd)}
+  target.append(dl);
+ }else if(activeTab==='where'){addP(target,a.location);addP(target,a.relationship);addP(target,'各筋の正確な形を示す専用2D解剖図は制作・監査中です。今は3Dモデルで骨盤、大腿骨との位置関係を確認できます。','info');}
+ else if(activeTab==='action'){addP(target,a.action);addP(target,'股関節の肢位や他の筋との協働によって、作用の現れ方は変わります。単独の筋だけから動作全体を説明しないようにします。','info');}
+ else if(activeTab==='related'){addP(target,a.relationship);addP(target,'下にある「近くの筋へ移動」から、それぞれの基本情報を比べてください。','info');}
+ else if(activeTab==='everyday'){addP(target,a.daily);addP(target,'ここでは一般的な動作の理解に限ります。特定の人の症状や動作異常の原因を示すものではありません。','info');}
+ else{addP(target,a.observe);addP(target,a.caveat);addP(target,'このページの記述だけで押す位置や刺激の強さを決めず、個人差と周囲組織を考慮してください。','info');}
+}
+function render(){
+ const a=data[current];document.title='身体の地図｜'+a.name+' 筋図鑑';
+ k('muscleName').textContent=a.name;k('shortTitle').textContent=a.name;k('muscleLatin').textContent=a.latin;
+ k('muscleSummary').textContent=a.subtitle;k('open3d').href=link3d(current);k('open3dTop').href=link3d(current);
+ const u=new URL(location.href);u.searchParams.set('muscle',current);u.searchParams.set('side',side);u.searchParams.set('region',region);
+ history.replaceState(history.state,'',u.pathname+u.search);
+ const chooser=k('muscleChoices');chooser.textContent='';
+ for(const [id,muscle] of Object.entries(data)){const b=document.createElement('button');b.textContent=muscle.name;b.type='button';b.setAttribute('aria-pressed',String(id===current));b.onclick=()=>{current=id;activeTab='where';render()};chooser.append(b)}
+ const related=k('related');related.textContent='';
+ for(const [id,muscle] of Object.entries(data)){if(id===current)continue;const a=document.createElement('a');a.textContent=muscle.name+' ↗';a.href=muscleHref(id);related.append(a)}
+ const sources=k('sources');sources.textContent='';
+ for(const id of a.sources){const z=sourceData[id],link=document.createElement('a');link.textContent=z.label+' ↗';link.href=z.url;link.target='_blank';link.rel='noopener noreferrer';sources.append(link)}
+ renderTabs();renderContent();
+}
+render();
+</script></body></html>

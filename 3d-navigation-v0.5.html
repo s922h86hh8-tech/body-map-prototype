@@ -72,8 +72,8 @@ const returnQuery='?side='+encodeURIComponent(returnSide)+'&region='+encodeURICo
 const validMuscleFocus=new Set(['obturator_internus','piriformis','gemellus_superior','gemellus_inferior','quadratus_femoris']);
 const returnMuscle=validMuscleFocus.has(focusKey)?focusKey:'obturator_internus';
 const returnDestination=returnOrigin==='dictionary'
- ?'./muscle-dictionary-v0.3.html?muscle='+encodeURIComponent(returnMuscle)+'&side='+encodeURIComponent(returnSide)+'&region=pelvis'
- :'./2d-body-map-v0.11.html'+returnQuery;
+ ?'./muscle-dictionary-v0.4.html?muscle='+encodeURIComponent(returnMuscle)+'&side='+encodeURIComponent(returnSide)+'&region=pelvis'
+ :'./2d-body-map-v0.12.html'+returnQuery;
 if(pageParams.get('embed')==='1')document.body.classList.add('embed');
 const guideBack=document.getElementById('guideBack');
 const guideTarget=document.getElementById('guideTarget');

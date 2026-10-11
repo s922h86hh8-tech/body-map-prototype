@@ -341,3 +341,14 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 頭部・顔面、腰部・腹部、背部の入口説明の読みやすさを調整。個別筋の詳細情報とは混同しない。
 - 日本語の用語参考: 日本解剖学会「解剖学用語」 https://www.anatomy.or.jp/yougo.html 。身体領域と前後方向の参考: OpenStax Anatomy and Physiology 2e 1.6 https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology 。
 - Ver.0.8は静的検証済みだが、iPhone実機の見た目・動作確認と、部位分類を構造マスターへ反映する作業は未完了。
+
+### 5筋の個別図鑑拡張（2026-10-11）
+
+- 2D入口は `2d-body-map-v0.9.html` を新設。Ver.0.8のシルエットと部位説明を維持したまま、殿部・骨盤の5筋へ図鑑リンクを追加。旧版は保存。
+- 5筋を切り替えられる `muscle-dictionary-v0.1.html` を新設（内閉鎖筋・梨状筋・上双子筋・下双子筋・大腿方形筋）。筋名は URL `muscle` で指定。
+- 図鑑には各筋の位置、起始、停止、主な働き、神経支配、周囲構造、一般的な日常動作の見方、観察視点、個体差や注意点、出典リンクを用意した。
+- 3D専用 `3d-navigation-v0.2.html` を別版として追加。図鑑から開いた場合は同じ `focus` の筋図鑑へ、2D入口から開いた場合はVer.0.9へ戻す。現行 `index.html` と旧版は変更しない。
+- 参照: TeachMeAnatomy https://teachmeanatomy.info/lower-limb/muscles/gluteal-region/ 、NCBI Bookshelf Hip https://www.ncbi.nlm.nih.gov/books/NBK526019/ 、NCBI Bookshelf Gemelli Muscles https://www.ncbi.nlm.nih.gov/books/NBK557420/ 、Aung et al. 2001 https://pubmed.ncbi.nlm.nih.gov/11331970/
+- 上双子筋・下双子筋の神経支配や付着には個体差があるため、一般的な教科書表現と解剖研究結果を区別して記述。個別の臨床的な原因判定や施術方法を断定しない。
+- 情報項目を資料と対照した初期稿であり、専用2D解剖図・個別構造の詳細な解剖学監査・iPhone実機の画面・遷移は **未完了**。今後の監査で修正する前提で管理する。
+

@@ -67,7 +67,7 @@ if(pageParams.get('guide')==='1'){
   quadratus_femoris:'大腿方形筋'
  };
  guideBack.classList.add('show');
- guideTarget.textContent=(focusLabels[focusKey]||'選択構造')+'｜3D';
+ guideTarget.textContent=(focusKey?(focusLabels[focusKey]||'選択構造'):'全身骨格・筋')+'｜3D';
  guideTarget.classList.add('show');
  guideBack.textContent=returnOrigin==='dictionary'?'← 図鑑へ戻る':'← 部位選択へ戻る';
  guideBack.onclick=()=>{location.href=returnDestination};

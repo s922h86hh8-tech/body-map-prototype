@@ -9,7 +9,7 @@
 header{padding:14px 16px;background:#fff;border-bottom:1px solid #ddd}
 header b{font-size:18px}.sub{font-size:12px;color:#666;margin-top:3px}
 main{display:grid;grid-template-columns:1fr 310px;height:calc(100vh - 66px)}
-#view{min-width:0;position:relative}.hint{position:absolute;left:12px;bottom:70px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}.modebar{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;gap:8px;padding:7px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.modebar button{min-width:92px}.modebar button.active{background:#222;color:#fff;border-color:#222}.verticalbar{position:fixed;right:12px;top:42%;transform:translateY(-50%);z-index:31;display:grid;grid-template-columns:44px 44px 44px;grid-template-rows:44px 44px 44px;gap:3px;padding:6px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.verticalbar button{width:44px;height:44px;padding:0;font-size:21px;touch-action:none}.verticalbar #moveUp{grid-column:2;grid-row:1}.verticalbar #moveLeft{grid-column:1;grid-row:2}.verticalbar #moveRight{grid-column:3;grid-row:2}.verticalbar #padHandle{grid-column:2;grid-row:2;cursor:grab;font-size:17px;color:#666}.verticalbar #padHandle:active{cursor:grabbing}.verticalbar #moveDown{grid-column:2;grid-row:3}
+#view{min-width:0;position:relative}#view canvas{display:block;width:100%;height:100%}.hint{position:absolute;left:12px;bottom:70px;background:#ffffffd9;padding:7px 10px;border-radius:10px;font-size:12px}.modebar{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;gap:8px;padding:7px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.modebar button{min-width:92px}.modebar button.active{background:#222;color:#fff;border-color:#222}.verticalbar{position:fixed;right:12px;top:42%;transform:translateY(-50%);z-index:31;display:grid;grid-template-columns:44px 44px 44px;grid-template-rows:44px 44px 44px;gap:3px;padding:6px;background:#ffffffeb;border:1px solid #ddd;border-radius:14px;box-shadow:0 4px 18px #0002}.verticalbar button{width:44px;height:44px;padding:0;font-size:21px;touch-action:none}.verticalbar #moveUp{grid-column:2;grid-row:1}.verticalbar #moveLeft{grid-column:1;grid-row:2}.verticalbar #moveRight{grid-column:3;grid-row:2}.verticalbar #padHandle{grid-column:2;grid-row:2;cursor:grab;font-size:17px;color:#666}.verticalbar #padHandle:active{cursor:grabbing}.verticalbar #moveDown{grid-column:2;grid-row:3}
 aside{background:#fff;padding:14px;overflow:auto;border-left:1px solid #ddd;transition:transform .24s ease}
 h2{font-size:15px;margin:4px 0 10px}.row{display:flex;gap:8px;margin-bottom:10px}
 button{border:1px solid #bbb;background:#fff;border-radius:10px;padding:9px 10px;font-size:13px}
@@ -27,7 +27,7 @@ body.guide header{display:none}body.guide main{height:100dvh}
 </head>
 <body>
 <button id="guideBack" class="guideBack" type="button">← 図鑑へ</button><div id="guideTarget" class="guideTarget"></div>
-<header><b>施術者のための身体の地図</b><div class="sub">右股関節・深層外旋筋群｜3D Prototype 0.3</div></header>
+<header><b>施術者のための身体の地図</b><div class="sub">全身骨格・骨格筋｜3D Prototype 0.3</div></header>
 <main><div id="view"><div class="hint">ドラッグ：回転　ピンチ/ホイール：拡大縮小</div></div>
 <aside>
 <button id="panelHide" class="panelhide" aria-label="表示パネルをしまう">しまう ›</button>
@@ -241,7 +241,7 @@ let fullSkeleton=null;
 loader.load(FULL_SKELETON_URL,g=>{
  fullSkeleton=g.scene;
  fullSkeleton.visible=false;
- fullSkeleton.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xd8d2c7,roughness:.72,metalness:0,transparent:true,opacity:.32,side:THREE.DoubleSide})}});
+ fullSkeleton.traverse(o=>{if(o.isMesh){o.material=new THREE.MeshStandardMaterial({color:0xd8d2c7,roughness:.72,metalness:0,transparent:true,opacity:boneOpacity,side:THREE.DoubleSide})}});
  scene.add(fullSkeleton);
  fullSkeletonReady=true;
  if(bpCenter&&bpScale){transformBP3D(fullSkeleton,bpCenter,bpScale);fullSkeleton.visible=!!fullAnatomy?.visible;fitFullBodyWhenReady()}
@@ -501,7 +501,7 @@ document.getElementById('opacity').oninput=e=>{
  fullSkeleton?.traverse(x=>{if(x.isMesh){x.material.transparent=true;x.material.opacity=boneOpacity;x.material.needsUpdate=true}});
 };
 document.getElementById('reset').onclick=fit;
-function resize(){let w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()} addEventListener('resize',resize); resize();
+function resize(){let w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h,true);camera.aspect=w/h;camera.updateProjectionMatrix()} addEventListener('resize',resize); resize();
 renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
 </script>
 <script>

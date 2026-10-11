@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>身体の地図｜2D入口 Web試作 0.1</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#22364a;background:#f1f5f7}
+*{box-sizing:border-box}
+body{margin:0}
+button,input{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+header{background:#16344b;color:#fff;padding:16px max(16px,env(safe-area-inset-left));display:flex;gap:12px;align-items:center;justify-content:space-between}
+.brand strong{display:block;font-size:18px;line-height:1.35}
+.brand small{font-size:11px;color:#c8dde9}
+header a{color:white;font-weight:700;font-size:12px;text-decoration:none;border:1px solid #99bdcf77;padding:9px 12px;border-radius:10px}
+main{max-width:1130px;margin:auto;padding:22px 18px 50px}
+.hero{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:17px}
+h1{font-size:26px;letter-spacing:-.02em;margin:0 0 6px}
+h2{font-size:18px;margin:0 0 12px}
+p{line-height:1.7;margin:6px 0;color:#4f6474}
+.tag{font-size:12px;color:#517083;background:#e1ebf0;padding:6px 10px;border-radius:100px;white-space:nowrap}
+.layout{display:grid;grid-template-columns:minmax(310px,1.1fr) minmax(320px,1fr);gap:16px}
+.panel{background:white;border:1px solid #d9e3e9;border-radius:18px;box-shadow:0 3px 16px #19354a0a;overflow:hidden}
+.panelHead{padding:14px 16px;background:#f8fafb;border-bottom:1px solid #e7edf1}
+.panelHead strong{display:block}
+.panelHead small{display:block;color:#748899;font-size:11px;margin-top:5px}
+.panelBody{padding:15px}
+.toggle{display:flex;gap:6px;padding:4px;background:#eef3f6;border-radius:12px}
+.toggle button{flex:1;background:transparent;border:0;padding:10px 14px;border-radius:9px;font-weight:700;color:#536b7b}
+.toggle button.active{background:#213f55;color:#fff}
+.figure{background:radial-gradient(ellipse at center,#f8fcfe 0%,#e9f2f7 100%);border:1px solid #dce8ee;border-radius:15px;margin-top:12px;position:relative;display:grid;place-items:center;padding:12px;min-height:510px}
+.figure svg{display:block;height:min(63vh,520px);max-width:100%;width:auto;overflow:visible}
+.silhouette{fill:#c6d9e2;stroke:#6e92a4;stroke-width:1.8;stroke-linejoin:round}
+.bodyZone{fill:#8cb5c9;stroke:#739bb0;stroke-width:1.7;transition:fill .12s}
+.bodyZone:hover,.bodyZone:focus{fill:#53a9cf;outline:none}
+.bodyZone.selected{fill:#ef9f73;stroke:#b86141;stroke-width:2.4}
+.zoneLabel{font-size:11px;fill:#536b7b;font-weight:700;pointer-events:none}
+.figureNotes{font-size:11px;color:#64798a;text-align:center;margin:10px auto 0;max-width:500px}
+.regionGrid{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0 3px}
+.regionBtn{border:1px solid #d2e0e7;background:#f9fbfc;border-radius:10px;padding:8px 11px;color:#34566a;font-size:12px}
+.regionBtn[aria-pressed=true]{background:#204d69;color:#fff;border-color:#204d69}
+.summary{background:#f1f7f9;border-radius:12px;padding:14px;margin:12px 0}
+.summary h3{margin:0 0 5px;font-size:20px}
+.summary p{margin:0;font-size:13px}
+.sectionTitle{font-size:13px;color:#6a8394;font-weight:700;letter-spacing:.02em;margin:15px 0 8px}
+.search{width:100%;padding:12px 13px;border:1px solid #cad9e1;border-radius:11px;font-size:14px;background:#fff}
+.muscle{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid #e1eaf0;border-radius:11px;padding:11px 12px;margin-top:8px}
+.muscle strong{display:block;font-size:14px}
+.muscle small{display:block;font-size:11px;color:#8295a1;margin-top:4px}
+.muscle button{background:#eaf3fa;border:1px solid #b6d3e6;border-radius:8px;padding:9px 10px;color:#225474;font-size:12px;white-space:nowrap}
+.muted{padding:13px;background:#fafbfc;border:1px dashed #b9cbd6;border-radius:10px;color:#637b8a;font-size:13px;line-height:1.65}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+.buttonLink{display:inline-flex;align-items:center;justify-content:center;padding:11px 15px;border-radius:10px;text-decoration:none;background:#193f5c;color:white;font-size:13px;font-weight:700}
+.buttonLink.secondary{background:#f2f6fa;border:1px solid #cad9e4;color:#2c586f}
+.notice{background:#fff7e9;border:1px solid #f3e2c7;color:#6d5a3c;font-size:12px;line-height:1.7;padding:12px;border-radius:12px;margin:17px 0 0}
+footer{max-width:1130px;margin:0 auto;padding:0 18px 26px;color:#7b8994;font-size:11px}
+@media(max-width:800px){
+header{padding:12px 14px}
+.brand strong{font-size:15px}
+header a{font-size:11px;padding:8px}
+main{padding:16px 12px 38px}
+h1{font-size:22px}
+.hero{display:block}
+.tag{display:inline-block;margin-top:6px}
+.layout{grid-template-columns:1fr;gap:13px}
+.figure{min-height:380px}
+.figure svg{height:min(53vh,440px)}
+.panelBody{padding:12px}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="brand"><strong>施術者のための身体の地図</strong><small>調べる・つながる・3Dで確かめる</small></div>
+<a href="./index.html">全身3Dへ ↗</a>
+</header>
+<main>
+<div class="hero"><div><h1>身体の場所から探す</h1><p>2Dの部位案内から、関連する構造と3Dへ進めるWebアプリの最初の試作です。</p></div><span class="tag">2D入口｜Prototype 0.1</span></div>
+<div class="layout">
+<section class="panel" aria-label="2D部位選択">
+<div class="panelHead"><strong>① 2Dで場所を選ぶ</strong><small>前面・後面を切り替え、部位をタップしてください</small></div>
+<div class="panelBody">
+<div class="toggle"><button id="front" type="button" class="active" aria-pressed="true">正面</button><button id="back" type="button" aria-pressed="false">背面</button></div>
+<div class="figure">
+<svg id="bodyMap" viewBox="0 0 340 660" aria-labelledby="mapTitle" role="img">
+<title id="mapTitle">身体の部位選択用の簡略人体図</title>
+<g class="silhouette" aria-hidden="true">
+<ellipse cx="170" cy="68" rx="33" ry="41"/>
+<path d="M156 108 L151 128 L110 139 L102 187 L116 298 L120 367 L149 397 L161 400 L170 380 L179 400 L191 397 L220 367 L224 298 L238 187 L230 139 L189 128 L184 108Z"/>
+<path d="M110 142 L87 150 L73 197 L64 281 L76 298 L91 213 L107 185Z"/>
+<path d="M230 142 L253 150 L267 197 L276 281 L264 298 L249 213 L233 185Z"/>
+<path d="M65 279 L75 295 L62 392 L48 418 L40 413 L48 393Z"/>
+<path d="M275 279 L265 295 L278 392 L292 418 L300 413 L292 393Z"/>
+<path d="M46 409 L41 442 Q41 461 47 466 L59 452 L68 417Z"/>
+<path d="M294 409 L299 442 Q299 461 293 466 L281 452 L272 417Z"/>
+<path d="M122 365 L163 379 L165 399 L161 495 L151 542 L133 542 L119 492Z"/>
+<path d="M218 365 L177 379 L175 399 L179 495 L189 542 L207 542 L221 492Z"/>
+<path d="M133 540 L152 539 L154 604 L148 633 L129 633 L124 610Z"/>
+<path d="M207 540 L188 539 L186 604 L192 633 L211 633 L216 610Z"/>
+<path d="M129 628 L149 628 L158 645 L151 652 L115 652 L113 644Z"/>
+<path d="M211 628 L191 628 L182 645 L189 652 L225 652 L227 644Z"/>
+</g>
+<g id="hotspots">
+<ellipse class="bodyZone" data-region="head" cx="170" cy="68" rx="32" ry="40" tabindex="0" role="button" aria-label="頭部"/>
+<path class="bodyZone" data-region="neck" d="M156 110 L184 110 L190 135 L150 135Z" tabindex="0" role="button" aria-label="頸部"/>
+<path class="bodyZone" data-region="shoulder" d="M110 139 L149 129 L142 168 L103 177Z M230 139 L191 129 L198 168 L237 177Z" tabindex="0" role="button" aria-label="肩部"/>
+<path class="bodyZone" data-front-region="chest" data-back-region="back" d="M142 153 L198 153 L216 224 L124 224Z" tabindex="0" role="button" aria-label="胸部"/>
+<path class="bodyZone" data-front-region="abdomen" data-back-region="back" d="M123 230 L217 230 L221 339 L119 339Z" tabindex="0" role="button" aria-label="腰部・腹部"/>
+<path class="bodyZone" data-region="pelvis" d="M120 342 L220 342 L215 378 L190 396 L173 382 L167 382 L150 396 L125 378Z" tabindex="0" role="button" aria-label="殿部・骨盤"/>
+<path class="bodyZone" data-region="upperarm" d="M103 168 L79 172 L69 278 L81 285 L93 215Z M237 168 L261 172 L271 278 L259 285 L247 215Z" tabindex="0" role="button" aria-label="上腕"/>
+<path class="bodyZone" data-region="forearm" d="M65 289 L80 295 L65 402 L49 403Z M275 289 L260 295 L275 402 L291 403Z" tabindex="0" role="button" aria-label="前腕"/>
+<path class="bodyZone" data-region="hand" d="M49 408 L66 413 L58 455 L42 458Z M291 408 L274 413 L282 455 L298 458Z" tabindex="0" role="button" aria-label="手"/>
+<path class="bodyZone" data-region="thigh" d="M126 393 L160 403 L157 532 L132 534Z M214 393 L180 403 L183 532 L208 534Z" tabindex="0" role="button" aria-label="大腿"/>
+<path class="bodyZone" data-region="lowerleg" d="M131 543 L152 543 L148 624 L126 622Z M209 543 L188 543 L192 624 L214 622Z" tabindex="0" role="button" aria-label="下腿"/>
+<path class="bodyZone" data-region="foot" d="M128 629 L148 630 L156 648 L116 648Z M212 629 L192 630 L184 648 L224 648Z" tabindex="0" role="button" aria-label="足"/>
+</g>
+</svg>
+</div>
+<p class="figureNotes">※ この人体図は部位選択のための簡略シルエットです。実際の筋の形・走行・起始停止を表す解剖学図ではありません。</p>
+<div id="regions" class="regionGrid" aria-label="部位一覧"></div>
+</div>
+</section>
+<section class="panel" aria-label="図鑑と3D連動">
+<div class="panelHead"><strong>② 部位から構造を調べる</strong><small>選択した部位の情報と3Dへの入口</small></div>
+<div class="panelBody">
+<div class="summary"><h3 id="selectedTitle">殿部・骨盤</h3><p id="selectedDescription">股関節と周囲の構造を調べる入口です。</p></div>
+<label class="sectionTitle" for="structureSearch">構造を名前で探す（連動試作の範囲）</label>
+<input id="structureSearch" class="search" type="search" placeholder="例：内閉鎖筋、梨状筋" autocomplete="off">
+<div class="sectionTitle">この部位にある構造</div>
+<div id="items" aria-live="polite"></div>
+<div class="actions">
+<a class="buttonLink" href="./index.html">全身3Dを開く ↗</a>
+<a class="buttonLink secondary" href="./test.html">図鑑の既存試作を見る ↗</a>
+</div>
+<div class="notice">
+<b>第一版に向けた制作ルール</b>
+<div>起始・停止・機能・図解は、資料との照合と監査が終わったものから掲載します。ここでは場所から探す操作と3Dへの接続を先に検証します。</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<footer>身体の地図｜2D入口 Prototype 0.1　専用解剖イラスト・全構造データ・監査済み解説は制作途中です。</footer>
+<script>
+const regionLabels={
+ head:'頭部・顔面',neck:'頸部',shoulder:'肩部',chest:'胸部',back:'背部',
+ abdomen:'腰部・腹部',pelvis:'殿部・骨盤',upperarm:'上腕',forearm:'前腕',
+ hand:'手',thigh:'大腿',lowerleg:'下腿',foot:'足'
+};
+const samples=[
+ {id:'obturator_internus',name:'内閉鎖筋',region:'pelvis'},
+ {id:'piriformis',name:'梨状筋',region:'pelvis'},
+ {id:'gemellus_superior',name:'上双子筋',region:'pelvis'},
+ {id:'gemellus_inferior',name:'下双子筋',region:'pelvis'},
+ {id:'quadratus_femoris',name:'大腿方形筋',region:'pelvis'}
+];
+const regionKeys=['head','neck','shoulder','chest','back','abdomen','pelvis','upperarm','forearm','hand','thigh','lowerleg','foot'];
+let side='front',chosen='pelvis';
+const byId=id=>document.getElementById(id);
+function getZoneRegion(el){return el.dataset.region||(side==='front'?el.dataset.frontRegion:el.dataset.backRegion)}
+function showRegion(key){
+ chosen=key;
+ byId('selectedTitle').textContent=regionLabels[key]||'部位を選択';
+ byId('selectedDescription').textContent=key==='pelvis'?'股関節と周囲の構造を調べる入口です。以下の5つの筋は既存3Dとの連動試作があります。':'この部位の構造マスター・監査済みの2D解剖図はこれから順次追加します。';
+ byId('structureSearch').value='';
+ updateItems();
+ document.querySelectorAll('#hotspots [data-region],#hotspots [data-front-region]').forEach(z=>{
+  const target=getZoneRegion(z);
+  z.classList.toggle('selected',target===key);
+  z.setAttribute('aria-label',regionLabels[target]||target);
+ });
+ document.querySelectorAll('.regionBtn').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.region===key)));
+}
+function updateItems(){
+ const q=byId('structureSearch').value.trim();
+ const matches=samples.filter(x=>(q?x.name.includes(q):x.region===chosen));
+ const parent=byId('items');parent.textContent='';
+ if(!matches.length){
+  const message=document.createElement('div');
+  message.className='muted';
+  message.textContent=q?'この試作版の連動対象にはまだ見つかりません。正式な構造マスターから追加していきます。':'この部位の2D解剖図と個別構造データは、資料監査後に追加します。';
+  parent.append(message);return;
+ }
+ for(const item of matches){
+  const card=document.createElement('div');card.className='muscle';
+  const title=document.createElement('div'),bold=document.createElement('strong'),meta=document.createElement('small');
+  bold.textContent=item.name;meta.textContent='個別構造｜3D連動の試作あり';
+  title.append(bold,meta);
+  const btn=document.createElement('button');btn.type='button';btn.textContent='3Dで確認 ↗';
+  btn.setAttribute('aria-label',item.name+'を3Dで確認');
+  btn.addEventListener('click',()=>{location.href='./index.html?guide=1&focus='+encodeURIComponent(item.id)});
+  card.append(title,btn);parent.append(card);
+ }
+}
+function updateSide(next){
+ side=next;
+ byId('front').classList.toggle('active',side==='front');
+ byId('back').classList.toggle('active',side==='back');
+ for(const key of ['front','back'])byId(key).setAttribute('aria-pressed',String(key===side));
+ const target=document.querySelector('[data-front-region="chest"]');
+ if(target)target.setAttribute('aria-label',regionLabels[side==='front'?'chest':'back']);
+ showRegion(chosen==='chest'||chosen==='back'?(side==='front'?'chest':'back'):chosen);
+}
+byId('front').onclick=()=>updateSide('front');
+byId('back').onclick=()=>updateSide('back');
+for(const key of regionKeys){
+ const b=document.createElement('button');b.className='regionBtn';b.type='button';
+ b.textContent=regionLabels[key];b.dataset.region=key;
+ b.onclick=()=>showRegion(key);
+ byId('regions').append(b);
+}
+document.querySelectorAll('#hotspots [data-region],#hotspots [data-front-region]').forEach(z=>{
+ z.addEventListener('click',()=>showRegion(getZoneRegion(z)));
+ z.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showRegion(getZoneRegion(z))}});
+});
+byId('structureSearch').addEventListener('input',updateItems);
+showRegion('pelvis');
+</script>
+</body>
+</html>

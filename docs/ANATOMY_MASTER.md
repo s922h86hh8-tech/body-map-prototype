@@ -429,3 +429,12 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 3Dから2Dへ戻る選択保持と、2D→図鑑→3D→図鑑→2Dのリンク先を公開ブラウザーで確認。JavaScriptの通常scriptブロック構文を確認し、3D module scriptは既存v0.6から経路文字列のみ変更している。
 - 公開ブラウザーではWebGLモデルの描画が無効なため、v0.7の3D描画自体をブラウザーで確認したものではない。前版3DのiPhone実機録画確認と、今回のv0.14のiPhone実機表示・文章可読性は区別する。
 - 参考: OpenStax, *Anatomy and Physiology 2e*, 1.6 Anatomical Terminology: https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology ; 日本解剖学会「解剖学用語」: https://www.anatomy.or.jp/yougo.html
+
+
+### 参考文献表示の整理・2D入口 Ver.0.15（2026-10-12）
+
+- 公開画面の2D入口から、身体領域・名称の参照リンクを外す。13区分と説明文は施術者向けの入口として独自に構成・執筆し、筋・骨の名称には一般的な解剖学用語を使う旨を表示する。
+- 参照した資料と著作権・利用条件の確認記録は、この設計台帳に内部記録として保持する。表示しないことを根拠資料の未確認や、解剖学的監査済みと同一視しない。
+- 筋図鑑の各筋解説内にある出典は、起始・停止・機能などの説明の根拠として維持する。
+- 連動セット：`2d-body-map-v0.15.html` → `muscle-dictionary-v0.7.html` → `3d-navigation-v0.8.html`。旧版を保持し、3DモデルとGLBには変更を加えない。
+- 画面内の文章とリンク更新後、公開ページで表示・画面遷移を確認する。

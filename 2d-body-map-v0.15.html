@@ -341,7 +341,7 @@ function updateItems(){
   title.append(bold,meta);
   const actions=document.createElement('div');actions.className='muscleActions';
   const dictionary=document.createElement('a');
-  dictionary.href='./muscle-dictionary-v0.6.html?muscle='+encodeURIComponent(item.id)+'&side='+encodeURIComponent(side)+'&region='+encodeURIComponent(chosen);
+  dictionary.href='./muscle-dictionary-v0.7.html?muscle='+encodeURIComponent(item.id)+'&side='+encodeURIComponent(side)+'&region='+encodeURIComponent(chosen);
   dictionary.textContent='図鑑で調べる ↗';
   dictionary.setAttribute('aria-label',item.name+'の図鑑を開く');
   actions.append(dictionary);

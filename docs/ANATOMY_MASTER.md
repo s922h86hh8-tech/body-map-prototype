@@ -419,3 +419,13 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 2D入口に戻った後、人体図の大腿が選択色で表示され、「現在の選択」も「大腿」と表示される。iPhone実機で選択保持を確認した。
 - 先行する公開ブラウザー確認でもURL `side=front&region=thigh` と選択見出しの保持を確認済み。今回の録画はiPhoneでの表示状態を追加確認したもの。
 - この録画は非既定部位「大腿」の往復を示す。13部位すべてのiPhone表示・文章の読みやすさを確認したとは扱わない。解剖学的な内容監査とも区別する。
+
+
+### UI区分における足首の扱い・2D入口 Ver.0.14（2026-10-12）
+
+- 参照用語を確認。OpenStax *Anatomy and Physiology 2e*, 1.6 は足首を tarsal、足部を pedal、趾を digital/phalangeal と別の身体領域として示す。日本解剖学会の用語集も一般名称と解剖学用語を照合する資料として参照する。
+- この試作の13区分では足首を独立選択部位にせず、「足」の範囲に含める設計を維持し、そのUI上のまとめ方を人体図の案内文に明記した。新しい解剖学的区分として足首を足部へ統合したという意味ではない。
+- 新しい連動セット：`2d-body-map-v0.14.html` → `muscle-dictionary-v0.6.html` → `3d-navigation-v0.7.html`。Ver.0.13 / dictionary v0.5 / 3D v0.6 を保持。全身3Dモデル、GLB、人体図形状は変更していない。
+- 3Dから2Dへ戻る選択保持と、2D→図鑑→3D→図鑑→2Dのリンク先を公開ブラウザーで確認。JavaScriptの通常scriptブロック構文を確認し、3D module scriptは既存v0.6から経路文字列のみ変更している。
+- 公開ブラウザーではWebGLモデルの描画が無効なため、v0.7の3D描画自体をブラウザーで確認したものではない。前版3DのiPhone実機録画確認と、今回のv0.14のiPhone実機表示・文章可読性は区別する。
+- 参考: OpenStax, *Anatomy and Physiology 2e*, 1.6 Anatomical Terminology: https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology ; 日本解剖学会「解剖学用語」: https://www.anatomy.or.jp/yougo.html

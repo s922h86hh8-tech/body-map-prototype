@@ -533,3 +533,11 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 現行画面の「表層・中間層・深層」はこの資料の群分類と一致する用語体系ではない。特に骨間筋を「深層」とする現在の規則は、資料上の intermediate 群と異なる。これは直ちに誤りと断定せず、深さによる表示分類と筋群分類の軸が混ざっていないか要確認とする。
 - 次の監査では、元メッシュ名と実際の位置関係を確認し、手の表示区分を「母指球・小指球・中間筋」等へ変えるか、深さ分類を維持するかを判断する。今回は表示コード・説明文・GLBを変更しない。
 - 内部照合資料：OpenStax, *Anatomy and Physiology*, 11.5 “Muscles of the Pectoral Girdle and Upper Limbs,” https://openstax.org/books/anatomy-and-physiology/pages/11-5-muscles-of-the-pectoral-girdle-and-upper-limbs （特に§“Intrinsic Muscles of the Hand”）。
+
+
+### 手の元メッシュ名と分類規則の照合（2026-10-13／暫定）
+
+- `BodyExplorer` の公開 `public/mesh_mapping.json`（総数467）を読み、現行3Dコードの手領域判定語と照合。手として拾う候補は26メッシュ名で、うち筋以外の屈筋支帯2件と、筋の名前・頭名24件を含む。これは解剖学的な個別項目数ではなく、raw mesh名の候補数。
+- 候補名には母指球筋群、小指球筋群、虫様筋群、掌側/背側骨間筋群の名称が含まれる。現行コードは名称パターンで領域と表示層を決めるため、複数頭や分割メッシュの統合後にUI項目がどうなるかは別途確認が必要。
+- この照合で確認できたのは名前・分類規則まで。GLBの実際の位置関係や表層/深層の順序を3D形状上で監査したものではない。したがって層分類の正誤は未判定とし、コード変更は行わない。
+- 元メッシュ名資料：BodyExplorer, `public/mesh_mapping.json`, https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/mesh_mapping.json （参照日 2026-10-13）。

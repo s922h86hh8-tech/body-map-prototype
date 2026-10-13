@@ -447,3 +447,14 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 筋図鑑v0.7→3D v0.8→図鑑v0.7→2D v0.15を公開ページで確認し、region=pelvisが保持される。
 - Pages build and deployment workflow run 38255931081 は成功。Webブラウザーでは3D画面の操作UIと往復リンクを確認したが、3Dモデルは準備中表示のままでモデル描画を確認できない。iPhoneでのv0.15/v0.7/v0.8一連の実機確認は未実施。
 - 旧版ファイル、GLB原本、3Dモデルデータには変更なし。
+
+
+### 2D入口13部位説明・一次照合（2026-10-13）
+
+- GitHub上の `2d-body-map-v0.15.html` の13部位別 `lead/area/structures/focus` を確認。表示文章の改変は行っていない。
+- 頭部・顔面、頸部、肩部、胸部、背部では、領域の広い案内と代表構造・運動の説明に明確な食い違いは見つからなかった。肩甲帯・上肢の筋は肩甲帯の安定、上腕・前腕・手指の運動に関わり、頸部・背部筋は頭部・脊柱を動かし、胸郭・腹壁筋は体幹運動や姿勢に関わるという範囲で資料と整合する。
+- 腰部・腹部は、前・側腹壁と後腹壁／腰椎との関連を学習導線としてまとめるUI表現である。背面の腰を「背部」とする選択案内は保持し、13区分を標準解剖学用語の公式分類とは扱わない。
+- 殿部・骨盤、大腿、下腿、足の説明は、骨盤・股関節・大腿骨、股関節から膝までの大腿、膝から足首までの下腿、足部骨の代表例として、資料上の大区分と明確な矛盾は見つからなかった。足首を「足」に含めるのはこのアプリ独自の選択UI区分。
+- 上腕・前腕・手は、肩〜肘／肘〜手首／手首より遠位の区分と、上腕骨／橈骨・尺骨／手根・中手・指骨の代表例が資料と一致する。
+- これは表示案内の一次照合。各構造の個別起始・停止・作用、人体図の輪郭と解剖学的境界、全構造の網羅性を認定する監査ではない。根拠を超える説明追加・断定は行わず、現行文章は変更しない。
+- 内部照合資料：OpenStax *Anatomy and Physiology 2e*, 1.6 Anatomical Terminology (https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology), 8.2 Bones of the Upper Limb (https://openstax.org/books/anatomy-and-physiology-2e/pages/8-2-bones-of-the-upper-limb), 8.3 The Pelvic Girdle and Pelvis (https://openstax.org/books/anatomy-and-physiology-2e/pages/8-3-the-pelvic-girdle-and-pelvis), 8.4 Bones of the Lower Limb (https://openstax.org/books/anatomy-and-physiology-2e/pages/8-4-bones-of-the-lower-limb), 11.3 Axial Muscles of the Head, Neck, and Back (https://openstax.org/books/anatomy-and-physiology-2e/pages/11-3-axial-muscles-of-the-head-neck-and-back), 11.4 Axial Muscles of the Abdominal Wall, and Thorax (https://openstax.org/books/anatomy-and-physiology-2e/pages/11-4-axial-muscles-of-the-abdominal-wall-and-thorax), 11.5 Muscles of the Pectoral Girdle and Upper Limbs (https://openstax.org/books/anatomy-and-physiology-2e/pages/11-5-muscles-of-the-pectoral-girdle-and-upper-limbs), 11.6 Appendicular Muscles of the Pelvic Girdle and Lower Limbs (https://openstax.org/books/anatomy-and-physiology-2e/pages/11-6-appendicular-muscles-of-the-pelvic-girdle-and-lower-limbs).

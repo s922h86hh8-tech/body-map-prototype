@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>身体の地図｜3D往復操作 試作0.8</title>
+<title>身体の地図｜3D往復操作 試作0.9</title>
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#222}
 *{box-sizing:border-box} body{margin:0;background:#f6f3ed}
@@ -42,6 +42,16 @@ body.guide .focusBar{display:flex}
 <button type="button" id="viewAround" aria-pressed="false" disabled>周囲を広く</button>
 <button type="button" id="viewWhole" aria-pressed="false" disabled>全身</button>
 </div>
+<script>
+(()=>{
+ const p=new URLSearchParams(location.search);
+ const keys=new Set(['head','neck','shoulder','chest','back','abdomen','pelvis','upperarm','forearm','hand','thigh','lowerleg','foot']);
+ if(!p.get('focus')&&keys.has(p.get('viewRegion')||'')){
+  const b=document.getElementById('viewClose');
+  if(b)b.textContent='部位を拡大';
+ }
+})();
+</script>
 <header><b>施術者のための身体の地図</b><div class="sub">全身骨格・骨格筋｜3D Prototype 0.3</div></header>
 <main><div id="view"><div class="loadCard" id="loadCard" role="status" aria-live="polite" aria-atomic="true"><strong id="loadTitle">3Dモデルを準備しています</strong><p id="loadInfo">骨格と筋肉のデータを読み込み中です。</p><div id="loadMeter" class="meter">しばらくお待ちください</div><button id="retryLoad" type="button" hidden>再読み込み</button></div><div class="hint">ドラッグ：回転　ピンチ/ホイール：拡大縮小</div></div>
 <aside>

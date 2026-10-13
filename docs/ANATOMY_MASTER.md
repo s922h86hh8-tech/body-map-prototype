@@ -524,3 +524,12 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 選択部位の筋一覧を表示し、その範囲へ3D視点を合わせる導線はVer.0.16で追加。現行Ver.0.17は `viewRegion` を3Dへ渡し、「選択部位の3Dを見る」と「全身3Dへ」を分けている。
 - よって「以前から大腿専用表示だった」とは記録しない。旧右股関節・深層外旋筋の部分モデル試作と、Ver.0.12/0.13の全身モデル導線、Ver.0.16以降の部位別視点を区別する。
 - これはコードと版履歴の確認であり、旧試作のiPhone実機表示を新たに確認したものではない。GLBや表示コードは変更していない。
+
+
+### 手の筋群分類・一次資料照合（2026-10-13／暫定）
+
+- 現行3D一覧の手の筋は、`layerFor()` により母指対立筋・小指対立筋・母指内転筋・骨間筋を「深層」、虫様筋を「中間層」、その他を「表層」とする。
+- OpenStax *Anatomy and Physiology*, §11.5 は手内在筋を thenar（母指球筋群）、hypothenar（小指球筋群）、intermediate（中間筋群）の3群で説明し、虫様筋・掌側/背側骨間筋を intermediate に含める。母指内転筋は thenar、小指対立筋は hypothenar に含まれる。
+- 現行画面の「表層・中間層・深層」はこの資料の群分類と一致する用語体系ではない。特に骨間筋を「深層」とする現在の規則は、資料上の intermediate 群と異なる。これは直ちに誤りと断定せず、深さによる表示分類と筋群分類の軸が混ざっていないか要確認とする。
+- 次の監査では、元メッシュ名と実際の位置関係を確認し、手の表示区分を「母指球・小指球・中間筋」等へ変えるか、深さ分類を維持するかを判断する。今回は表示コード・説明文・GLBを変更しない。
+- 内部照合資料：OpenStax, *Anatomy and Physiology*, 11.5 “Muscles of the Pectoral Girdle and Upper Limbs,” https://openstax.org/books/anatomy-and-physiology/pages/11-5-muscles-of-the-pectoral-girdle-and-upper-limbs （特に§“Intrinsic Muscles of the Hand”）。

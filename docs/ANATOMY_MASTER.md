@@ -458,3 +458,12 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 上腕・前腕・手は、肩〜肘／肘〜手首／手首より遠位の区分と、上腕骨／橈骨・尺骨／手根・中手・指骨の代表例が資料と一致する。
 - これは表示案内の一次照合。各構造の個別起始・停止・作用、人体図の輪郭と解剖学的境界、全構造の網羅性を認定する監査ではない。根拠を超える説明追加・断定は行わず、現行文章は変更しない。
 - 内部照合資料：OpenStax *Anatomy and Physiology 2e*, 1.6 Anatomical Terminology (https://openstax.org/books/anatomy-and-physiology-2e/pages/1-6-anatomical-terminology), 8.2 Bones of the Upper Limb (https://openstax.org/books/anatomy-and-physiology-2e/pages/8-2-bones-of-the-upper-limb), 8.3 The Pelvic Girdle and Pelvis (https://openstax.org/books/anatomy-and-physiology-2e/pages/8-3-the-pelvic-girdle-and-pelvis), 8.4 Bones of the Lower Limb (https://openstax.org/books/anatomy-and-physiology-2e/pages/8-4-bones-of-the-lower-limb), 11.3 Axial Muscles of the Head, Neck, and Back (https://openstax.org/books/anatomy-and-physiology-2e/pages/11-3-axial-muscles-of-the-head-neck-and-back), 11.4 Axial Muscles of the Abdominal Wall, and Thorax (https://openstax.org/books/anatomy-and-physiology-2e/pages/11-4-axial-muscles-of-the-abdominal-wall-and-thorax), 11.5 Muscles of the Pectoral Girdle and Upper Limbs (https://openstax.org/books/anatomy-and-physiology-2e/pages/11-5-muscles-of-the-pectoral-girdle-and-upper-limbs), 11.6 Appendicular Muscles of the Pelvic Girdle and Lower Limbs (https://openstax.org/books/anatomy-and-physiology-2e/pages/11-6-appendicular-muscles-of-the-pelvic-girdle-and-lower-limbs).
+
+
+### 選択部位から3Dへ進む視点（2026-10-13）
+
+- 2D入口 Ver.0.16 の部位別ボタンから3Dへ進む場合、`viewRegion` を渡して選択部位の範囲へ初期視点を合わせる。
+- 3Dは全身モデルを保持し、初期表示では選択部位に分類された筋・関連構造を表示する。骨格は全身データのままで、カメラの視野内に入る範囲を見せる。別の部位専用GLBへ差し替える処理ではない。
+- ヘッダーの「全身3Dへ」は従来どおり全身を表示する。個別筋の3Dリンクは選択筋フォーカスを維持し、2Dへ戻る際は選択部位を保持する。
+- これはUIとカメラ導線の変更であり、GLB原本、構造配置、解剖学データの変更ではない。部位別のメッシュ表示は既存3D画面の分類規則を利用するため、部位別網羅性や解剖学的境界の正確性を保証しない。
+- iPhone実機での表示確認と、各部位の視野範囲は公開後確認事項。検証対象は大腿・殿部骨盤・全身・個別筋・戻る経路。

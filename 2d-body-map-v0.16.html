@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>身体の地図｜2D入口 Web試作 0.16</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:#22364a;background:#f1f5f7}
+*{box-sizing:border-box}
+body{margin:0}
+#backMarkings{display:none}body[data-side="back"] #backMarkings{display:block}
+#frontMarkings{display:block}body[data-side="back"] #frontMarkings{display:none}
+button,input{font:inherit}
+button{cursor:pointer;touch-action:manipulation}
+header{background:#16344b;color:#fff;padding:16px max(16px,env(safe-area-inset-left));display:flex;gap:12px;align-items:center;justify-content:space-between}
+.brand strong{display:block;font-size:18px;line-height:1.35}
+.brand small{font-size:11px;color:#c8dde9}
+header a{color:white;font-weight:700;font-size:12px;text-decoration:none;border:1px solid #99bdcf77;padding:9px 12px;border-radius:10px}
+main{max-width:1130px;margin:auto;padding:22px 18px 50px}
+.hero{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:17px}
+h1{font-size:26px;letter-spacing:-.02em;margin:0 0 6px}
+h2{font-size:18px;margin:0 0 12px}
+p{line-height:1.7;margin:6px 0;color:#4f6474}
+.tag{font-size:12px;color:#517083;background:#e1ebf0;padding:6px 10px;border-radius:100px;white-space:nowrap}
+.layout{display:grid;grid-template-columns:minmax(310px,1.1fr) minmax(320px,1fr);gap:16px}
+.panel{background:white;border:1px solid #d9e3e9;border-radius:18px;box-shadow:0 3px 16px #19354a0a;overflow:hidden}
+.panelHead{padding:14px 16px;background:#f8fafb;border-bottom:1px solid #e7edf1}
+.panelHead strong{display:block}
+.panelHead small{display:block;color:#748899;font-size:11px;margin-top:5px}
+.panelBody{padding:15px}
+.toggle{display:flex;gap:6px;padding:4px;background:#eef3f6;border-radius:12px}
+.toggle button{flex:1;background:transparent;border:0;padding:10px 14px;border-radius:9px;font-weight:700;color:#536b7b}
+.toggle button.active{background:#213f55;color:#fff}
+.figure{background:radial-gradient(ellipse at center,#f8fcfe 0%,#e9f2f7 100%);border:1px solid #dce8ee;border-radius:15px;margin-top:12px;position:relative;display:grid;place-items:center;padding:12px;min-height:510px}
+.figure svg{display:block;height:min(68vh,570px);max-width:100%;width:auto;overflow:visible}
+.silhouette{fill:#c6d9e2;stroke:#6e92a4;stroke-width:1.8;stroke-linejoin:round}
+.bodyZone{fill:#8cb5c9;stroke:#739bb0;stroke-width:1.7;transition:fill .12s}
+.bodyZone:hover,.bodyZone:focus{fill:#53a9cf;outline:none}
+.bodyZone.selected{fill:#ef9f73;stroke:#b86141;stroke-width:2.4}
+.zoneLabel{font-size:11px;fill:#536b7b;font-weight:700;pointer-events:none}
+.figureNotes{font-size:11px;color:#64798a;text-align:center;margin:10px auto 0;max-width:500px;line-height:1.75}
+.regionHelp{font-size:12px;line-height:1.7;color:#4d697c;background:#f7fafc;border:1px solid #dce7ed;padding:10px 12px;border-radius:10px;margin:10px 0 2px}
+.regionGrid{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0 3px}
+.regionBtn{border:1px solid #d2e0e7;background:#f9fbfc;border-radius:10px;padding:8px 11px;color:#34566a;font-size:12px}
+.regionBtn[aria-pressed=true]{background:#204d69;color:#fff;border-color:#204d69}
+.regionBtn[hidden]{display:none!important}
+.backControls{display:flex;justify-content:flex-start;gap:9px;padding:12px 15px 0}
+.backControls button{font-weight:700;font-size:13px;border:1px solid #c2d6e1;background:#e9f3f8;color:#17425c;border-radius:12px;padding:11px 14px}
+#figureAnchor{scroll-margin-top:12px}
+.picked{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;margin:12px 0 0;border:1px solid #cfe0eb;background:#f1f8fc;border-radius:12px}
+.picked span{font-size:12px;color:#496577}
+.picked strong{color:#17405b;font-size:14px}
+.picked button{border:0;border-radius:9px;background:#205575;color:#fff;font-weight:700;font-size:12px;padding:9px 12px;flex-shrink:0}
+.muscleActions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.muscleActions a{background:#f0f5fa;border:1px solid #cbdde8;border-radius:8px;padding:9px 10px;text-decoration:none;color:#225474;font-size:12px;font-weight:700;white-space:nowrap}
+@media(max-width:400px){.picked{padding:10px;gap:7px}.picked strong{font-size:12px}.picked button{font-size:11px;padding:9px}}
+.summary{background:#f1f7f9;border-radius:12px;padding:14px;margin:12px 0}
+.quickGuide{font-size:12px;line-height:1.65;color:#375971;background:#f1f7fa;border:1px solid #d9e7ed;border-radius:10px;padding:10px 11px;margin:12px 0 0}
+.keyDot{display:inline-block;width:10px;height:10px;background:#8cb5c9;border:1px solid #739bb0;border-radius:3px;margin:0 3px 0 5px}
+.keySelected{background:#ef9f73;border-color:#b86141}
+.summaryEyebrow{font-size:11px;font-weight:700;color:#627f8f;margin-bottom:5px}
+.regionFacts{margin:13px 0 0;padding:0;display:grid;gap:9px}
+.regionFacts div{background:#fff;border:1px solid #ddeaf0;border-radius:9px;padding:10px}
+.regionFacts dt{font-size:12px;font-weight:800;color:#245773;margin-bottom:4px}
+.regionFacts dd{font-size:13px;line-height:1.65;margin:0;color:#34566a}
+.progressNote{font-size:12px;line-height:1.7;padding:11px 13px;background:#eef5fa;border:1px solid #d9e6ee;color:#3b6279;border-radius:10px}
+#sampleSearch[hidden]{display:none}
+
+.summary h3{margin:0 0 5px;font-size:20px}
+.summary p{margin:0;font-size:13px}
+.sectionTitle{font-size:13px;color:#6a8394;font-weight:700;letter-spacing:.02em;margin:15px 0 8px}
+.search{width:100%;padding:12px 13px;border:1px solid #cad9e1;border-radius:11px;font-size:14px;background:#fff}
+.muscle{display:flex;gap:10px;align-items:center;justify-content:space-between;border:1px solid #e1eaf0;border-radius:11px;padding:11px 12px;margin-top:8px}
+.muscle strong{display:block;font-size:14px}
+.muscle small{display:block;font-size:11px;color:#8295a1;margin-top:4px}
+.muscle button{background:#eaf3fa;border:1px solid #b6d3e6;border-radius:8px;padding:9px 10px;color:#225474;font-size:12px;white-space:nowrap}
+.muted{padding:13px;background:#fafbfc;border:1px dashed #b9cbd6;border-radius:10px;color:#637b8a;font-size:13px;line-height:1.65}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+.buttonLink{display:inline-flex;align-items:center;justify-content:center;padding:11px 15px;border-radius:10px;text-decoration:none;background:#193f5c;color:white;font-size:13px;font-weight:700}
+.buttonLink.secondary{background:#f2f6fa;border:1px solid #cad9e4;color:#2c586f}
+.notice{background:#fff7e9;border:1px solid #f3e2c7;color:#6d5a3c;font-size:12px;line-height:1.7;padding:12px;border-radius:12px;margin:17px 0 0}
+footer{max-width:1130px;margin:0 auto;padding:0 18px 26px;color:#7b8994;font-size:11px}
+@media(max-width:800px){
+header{padding:12px 14px}
+.brand strong{font-size:15px}
+header a{font-size:11px;padding:8px}
+main{padding:16px 12px 38px}
+h1{font-size:22px}
+.hero{display:block}
+.tag{display:inline-block;margin-top:6px}
+.layout{grid-template-columns:1fr;gap:13px}
+.figure{min-height:420px}
+.figure svg{height:min(62dvh,510px)}
+.panelBody{padding:12px}
+}
+</style>
+</head>
+<body data-side="front">
+<header>
+<div class="brand"><strong>施術者のための身体の地図</strong><small>調べる・つながる・3Dで確かめる</small></div>
+<a id="top3DLink" href="./3d-navigation-v0.9.html?guide=1&amp;from=body">全身3Dへ ↗</a>
+</header>
+<main>
+<div class="hero"><div><h1>身体の部位から探す</h1><p>身体の部位から、骨・筋・関節を調べる入口です。気になる部位を選ぶと、その部位の説明と、現在使える図鑑・3Dへの案内が表示されます。</p></div><span class="tag">2D入口｜Prototype 0.16</span></div>
+<div class="layout">
+<section class="panel" id="figureAnchor" aria-label="2D部位選択">
+<div class="panelHead"><strong>① 身体の部位を選ぶ</strong><small>正面・背面を切り替え、知りたい部位をタップ</small></div>
+<div class="panelBody">
+<div class="toggle"><button id="front" type="button" class="active" aria-pressed="true">正面</button><button id="back" type="button" aria-pressed="false">背面</button></div>
+<p class="quickGuide"><strong>使い方：</strong>正面・背面を選ぶ → 人体図の部位をタップ → 「選んだ部位を調べる」で説明へ進む。</p>
+<div class="figure">
+<svg id="bodyMap" viewBox="0 0 340 700" aria-labelledby="mapTitle" role="img">
+<title id="mapTitle">身体の部位選択用の簡略人体図・比率調整版</title>
+<g class="silhouette" aria-hidden="true">
+<ellipse cx="170" cy="66" rx="33" ry="41"/>
+<path d="M156 108 L151 128 L108 139 L104 181 L114 255 L121 314 L125 344 L151 359 L163 359 L170 350 L177 359 L189 359 L215 344 L219 314 L226 255 L236 181 L232 139 L189 128 L184 108Z"/>
+<path d="M108 142 L85 150 L70 188 L64 251 L76 267 L91 206 L105 178Z"/>
+<path d="M232 142 L255 150 L270 188 L276 251 L264 267 L249 206 L235 178Z"/>
+<path d="M65 250 L76 266 L67 359 L52 374 L44 367 L53 344Z"/>
+<path d="M275 250 L264 266 L273 359 L288 374 L296 367 L287 344Z"/>
+<path d="M51 369 L44 403 Q43 413 50 417 L62 403 L66 376Z"/>
+<path d="M289 369 L296 403 Q297 413 290 417 L278 403 L274 376Z"/>
+<path d="M123 338 L164 349 L161 370 L160 435 L154 502 L131 502 L120 437Z"/>
+<path d="M217 338 L176 349 L179 370 L180 435 L186 502 L209 502 L220 437Z"/>
+<path d="M130 498 L154 497 L154 565 L150 644 L129 644 L125 563Z"/>
+<path d="M210 498 L186 497 L186 565 L190 644 L211 644 L215 563Z"/>
+<path d="M129 639 L149 639 L159 664 L154 674 L112 674 L110 666Z"/>
+<path d="M211 639 L191 639 L181 664 L186 674 L228 674 L230 666Z"/>
+</g>
+<g id="frontMarkings" aria-hidden="true" fill="none" stroke="#8caeba" stroke-width="1.5" stroke-linecap="round" opacity=".55">
+ <path d="M170 152 L170 211 M152 218 Q170 227 188 218 M170 239 L170 312"/>
+</g>
+<g id="backMarkings" aria-hidden="true" fill="none" stroke="#5c8095" stroke-width="2.4" stroke-linecap="round" opacity=".7">
+ <path d="M170 139 L170 347"/>
+ <path d="M138 177 L159 199 L143 250 L119 216Z M202 177 L181 199 L197 250 L221 216Z"/>
+</g>
+<g id="hotspots">
+<ellipse class="bodyZone" data-region="head" cx="170" cy="66" rx="32" ry="40" tabindex="0" role="button" aria-label="頭部"/>
+<path class="bodyZone" data-region="neck" d="M155 109 L185 109 L189 132 L151 132Z" tabindex="0" role="button" aria-label="頸部"/>
+<path class="bodyZone" data-region="shoulder" d="M108 139 L148 128 L142 161 L100 171Z M232 139 L192 128 L198 161 L240 171Z" tabindex="0" role="button" aria-label="肩部"/>
+<path class="bodyZone" data-front-region="chest" data-back-region="back" d="M142 150 L198 150 L212 214 L128 214Z" tabindex="0" role="button" aria-label="胸部"/>
+<path class="bodyZone" data-front-region="abdomen" data-back-region="back" d="M124 219 L216 219 L219 310 L121 310Z" tabindex="0" role="button" aria-label="腰部・腹部"/>
+<path class="bodyZone" data-region="pelvis" d="M123 315 L217 315 L213 346 L190 359 L174 350 L166 350 L150 359 L127 346Z" tabindex="0" role="button" aria-label="殿部・骨盤"/>
+<path class="bodyZone" data-region="upperarm" d="M102 166 L80 172 L66 250 L79 259 L94 207Z M238 166 L260 172 L274 250 L261 259 L246 207Z" tabindex="0" role="button" aria-label="上腕"/>
+<path class="bodyZone" data-region="forearm" d="M62 266 L78 274 L65 365 L49 368Z M278 266 L262 274 L275 365 L291 368Z" tabindex="0" role="button" aria-label="前腕"/>
+<path class="bodyZone" data-region="hand" d="M50 372 L66 377 L59 412 L45 410Z M290 372 L274 377 L281 412 L295 410Z" tabindex="0" role="button" aria-label="手"/>
+<path class="bodyZone" data-region="thigh" d="M128 351 L158 363 L155 494 L132 494Z M212 351 L182 363 L185 494 L208 494Z" tabindex="0" role="button" aria-label="大腿"/>
+<path class="bodyZone" data-region="lowerleg" d="M131 506 L153 506 L149 635 L127 635Z M209 506 L187 506 L191 635 L213 635Z" tabindex="0" role="button" aria-label="下腿"/>
+<path class="bodyZone" data-region="foot" d="M128 642 L148 642 L156 670 L113 670Z M212 642 L192 642 L184 670 L227 670Z" tabindex="0" role="button" aria-label="足"/>
+</g>
+</svg>
+</div>
+<div class="picked" aria-live="polite"><div><span>現在の選択</span><div><strong id="pickedRegion">殿部・骨盤</strong></div></div><button type="button" id="jumpToDetails">選んだ部位を調べる ↓</button></div>
+<p class="figureNotes"><span class="keyDot" aria-hidden="true"></span>青：選べる部位　<span class="keyDot keySelected" aria-hidden="true"></span>オレンジ：現在の選択<br>この人体図は、部位を選ぶための簡略図です。色分けや輪郭は、筋・骨の正確な境界や走行を示すものではありません。</p>
+<p class="regionHelp">この13区分は、部位を探しやすくするための案内です。背面の腰は「背部」、正面のお腹周辺は「腰部・腹部」から選びます。肘・膝・足首に独立した選択部位は設けず、足首は「足」の範囲に含めています。</p>
+<div id="regions" class="regionGrid" aria-label="部位一覧"></div>
+</div>
+</section>
+<section class="panel" id="regionDetails" aria-label="図鑑と3D連動">
+<div class="backControls"><button type="button" id="backToFigureInline">↑ 人体図へ戻る</button></div>
+<div class="panelHead"><strong>② 選んだ部位を知る</strong><small>位置の目安・代表的な構造・次に調べること</small></div>
+<div class="panelBody">
+<div class="summary">
+ <div class="summaryEyebrow">選択している部位</div>
+ <h3 id="selectedTitle">殿部・骨盤</h3>
+ <p id="selectedDescription">骨盤と股関節を中心に調べる入口です。</p>
+ <dl class="regionFacts">
+  <div><dt>位置の目安</dt><dd id="regionArea"></dd></div>
+  <div><dt>代表的な構造</dt><dd id="regionStructures"></dd></div>
+  <div><dt>ここから見ていくこと</dt><dd id="regionFocus"></dd></div>
+ </dl>
+</div>
+<div class="progressNote" id="regionProgress" role="status"></div>
+<div id="sampleSearch"><label class="sectionTitle" for="structureSearch">試作中の筋を名前で探す</label>
+<input id="structureSearch" class="search" type="search" placeholder="例：内閉鎖筋、梨状筋" autocomplete="off"></div>
+<div class="sectionTitle" id="availableTitle">現在開ける個別構造</div>
+<div id="items" aria-live="polite"></div>
+<div class="actions">
+<a id="full3DLink" class="buttonLink" href="./3d-navigation-v0.9.html?guide=1&amp;from=body">選択部位の3Dを見る ↗</a>
+</div>
+<div class="notice">
+<b>表示内容について</b>
+<div>ここに挙げる筋・骨などは代表例であり、部位内のすべての構造を網羅した一覧ではありません。個別構造の起始・停止・機能などは資料照合・監査を進め、確認できた内容から掲載します。全身3Dは現在、選択部位へ自動的に移動する機能には対応していません。</div>
+<div style="margin-top:7px">本ページの13区分と説明文は、施術者が身体の部位を探すための入口として独自に構成・執筆しています。筋・骨などの名称は一般的な解剖学用語を用いています。</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<footer>身体の地図｜2D入口 Prototype 0.16　専用解剖イラスト・全構造データ・監査済み解説は制作途中です。</footer>
+<script>const regionLabels={
+ head:'頭部・顔面',neck:'頸部',shoulder:'肩部',chest:'胸部',back:'背部',
+ abdomen:'腰部・腹部',pelvis:'殿部・骨盤',upperarm:'上腕',forearm:'前腕',
+ hand:'手',thigh:'大腿',lowerleg:'下腿',foot:'足'
+};
+// 位置の目安と代表例。個別構造の起始・停止などの監査済み情報とは分けて扱う。
+const regionGuides={
+  "head": {
+    "lead": "頭部と顔面をまとめ、骨格と筋の位置関係を調べる入口です。",
+    "area": "頭頂から顔面、下顎の周囲まで。",
+    "structures": "頭蓋骨、下顎骨、咀嚼筋、表情筋など。",
+    "focus": "頭部と顔面の違いに注目し、あごの動きや表情に関わる構造を見ていきます。"
+  },
+  "neck": {
+    "lead": "頭と胸郭の間で、頭の向きや姿勢に関わる構造を調べます。",
+    "area": "あごの下から鎖骨付近までの首の前側・側面・後側。",
+    "structures": "頸椎、胸鎖乳突筋、斜角筋など。",
+    "focus": "頸椎と筋の位置関係を見て、首を向ける・傾ける動きを整理します。"
+  },
+  "shoulder": {
+    "lead": "肩甲骨と上腕骨のつながりから、腕の動きと肩周囲を見ていきます。",
+    "area": "首の付け根から肩先、肩甲骨の周囲。",
+    "structures": "肩甲骨、鎖骨、上腕骨、三角筋、回旋筋腱板など。",
+    "focus": "肩関節だけでなく、肩甲骨と胸郭の位置関係も確認します。"
+  },
+  "chest": {
+    "lead": "胸郭を囲む骨と、その周囲の筋を見ていく部位です。",
+    "area": "身体の正面で、鎖骨の下から肋骨下部付近まで。",
+    "structures": "胸骨、肋骨、大胸筋、小胸筋など。",
+    "focus": "胸郭と肩周囲の構造を見比べ、腕の動きや呼吸に伴う胸郭の動きを学びます。"
+  },
+  "back": {
+    "lead": "脊柱と肩甲骨、その周囲の筋がどう重なるかを見ていきます。",
+    "area": "身体の背面で、肩甲骨周辺から腰の周囲まで。",
+    "structures": "肩甲骨、胸椎・腰椎、僧帽筋、広背筋、脊柱起立筋など。",
+    "focus": "背部の浅い層と深い層を区別し、脊柱や肩甲骨との関係を確認します。"
+  },
+  "abdomen": {
+    "lead": "お腹を中心に、体幹の前側・側面と腰部につながる構造を調べます。",
+    "area": "正面の肋骨下部から骨盤上部にかけて。脇腹から腰部につながる範囲も関連して扱います。",
+    "structures": "腹直筋、腹斜筋群、腹横筋、腰椎など。",
+    "focus": "腹部の筋と腰部のつながりを見て、体幹を曲げる・ひねる動きとの関係を整理します。"
+  },
+  "pelvis": {
+    "lead": "骨盤と股関節の位置関係から、殿部と深い位置にある筋を調べる部位です。",
+    "area": "腰の下から殿部、左右の股関節の付け根周辺。",
+    "structures": "寛骨、仙骨、大腿骨近位部、大殿筋、中殿筋、深層外旋筋群など。",
+    "focus": "骨盤と大腿骨の関係を見て、股関節の動きに関わる周囲の筋をたどります。"
+  },
+  "upperarm": {
+    "lead": "肩から肘までの骨と筋を調べる部位です。",
+    "area": "肩関節付近から肘の上まで。",
+    "structures": "上腕骨、上腕二頭筋、上腕筋、上腕三頭筋など。",
+    "focus": "肩関節と肘関節をまたぐ筋と、肘の曲げ伸ばしを整理します。"
+  },
+  "forearm": {
+    "lead": "肘から手首までを通る骨と筋を調べる部位です。",
+    "area": "肘の下から手首の上まで。",
+    "structures": "橈骨、尺骨、手関節や指を動かす屈筋群・伸筋群など。",
+    "focus": "手首・指の動きと、前腕の回内・回外に関わる構造を見ます。"
+  },
+  "hand": {
+    "lead": "手首から指先までの骨と筋のつながりを見ていきます。",
+    "area": "手首、手のひら、手の甲、指の周囲。",
+    "structures": "手根骨、中手骨、指骨、母指球・小指球の筋群など。",
+    "focus": "指の細かな動き、握る動きと手の小さな筋の配置を確認します。"
+  },
+  "thigh": {
+    "lead": "股関節と膝関節の間の骨・筋を調べます。",
+    "area": "脚の付け根から膝の上まで。",
+    "structures": "大腿骨、大腿四頭筋、ハムストリングス、内転筋群など。",
+    "focus": "股関節と膝関節をまたぐ筋の違いと、立つ・歩く動作との関係を見ます。"
+  },
+  "lowerleg": {
+    "lead": "膝から足首までの骨と筋を調べます。",
+    "area": "膝の下から足首の上まで。",
+    "structures": "脛骨、腓骨、腓腹筋、ヒラメ筋、前脛骨筋など。",
+    "focus": "足首の動きと、足部へ向かう筋・腱のつながりを確認します。"
+  },
+  "foot": {
+    "lead": "足首から足趾まで、身体を支える足の構造を調べます。",
+    "area": "足首、足の甲、足底、足趾の周囲。",
+    "structures": "足根骨、中足骨、趾骨、足底の筋群、腱や靱帯など。",
+    "focus": "足部の骨の並びと、足趾・足首の動きに関わる筋を層ごとに整理します。"
+  }
+};
+const samples=[
+ {id:'obturator_internus',name:'内閉鎖筋',region:'pelvis'},
+ {id:'piriformis',name:'梨状筋',region:'pelvis'},
+ {id:'gemellus_superior',name:'上双子筋',region:'pelvis'},
+ {id:'gemellus_inferior',name:'下双子筋',region:'pelvis'},
+ {id:'quadratus_femoris',name:'大腿方形筋',region:'pelvis'}
+];
+const regionKeys=['head','neck','shoulder','chest','back','abdomen','pelvis','upperarm','forearm','hand','thigh','lowerleg','foot'];
+const initialParams=new URLSearchParams(location.search);
+const initialSide=initialParams.get('side')==='back'?'back':'front';
+const initialRegion=initialParams.get('region');
+let side='front',chosen='pelvis';
+const byId=id=>document.getElementById(id);
+const allowed=(key,view)=>key!=='back'&&key!=='chest'&&key!=='abdomen'||(view==='front'?key!=='back':key!=='chest'&&key!=='abdomen');
+function getZoneRegion(el){return el.dataset.region||(side==='front'?el.dataset.frontRegion:el.dataset.backRegion)}
+function persistSelection(){
+ const url=new URL(location.href);
+ url.searchParams.set('side',side);
+ url.searchParams.set('region',chosen);
+ history.replaceState(history.state,'',url.pathname+url.search+url.hash);
+ const fullLink='./3d-navigation-v0.9.html?guide=1&from=body&side='+encodeURIComponent(side)+'&region='+encodeURIComponent(chosen);
+ byId('top3DLink').href=fullLink;
+ byId('full3DLink').href=fullLink+'&viewRegion='+encodeURIComponent(chosen);
+}
+function showRegion(key){
+ if(!Object.prototype.hasOwnProperty.call(regionLabels,key)||!allowed(key,side))return;
+ chosen=key;
+ byId('selectedTitle').textContent=regionLabels[key];
+ byId('pickedRegion').textContent=regionLabels[key];
+ const info=regionGuides[key];
+ byId('selectedDescription').textContent=info.lead;
+ byId('regionArea').textContent=info.area;
+ byId('regionStructures').textContent=info.structures;
+ byId('regionFocus').textContent=info.focus;
+ const ready=key==='pelvis';
+ byId('sampleSearch').hidden=!ready;
+ byId('availableTitle').textContent=ready?'個別の筋図鑑（5筋）':'この部位の個別構造';
+ byId('regionProgress').textContent=ready
+  ?'殿部深層の5筋に、起始・停止・働き・周囲の構造を読む図鑑の試作を追加しました。各筋の3D表示へも進めます。'
+  :'この部位の個別図鑑・監査済みの解剖図は準備中です。代表的な構造の説明を入口としてご覧ください。';
+ byId('structureSearch').value='';
+ updateItems();
+ document.querySelectorAll('#hotspots [data-region],#hotspots [data-front-region]').forEach(z=>{
+  const target=getZoneRegion(z);
+  z.classList.toggle('selected',target===key);
+  z.setAttribute('aria-label',regionLabels[target]||target);
+  z.setAttribute('aria-pressed',String(target===key));
+ });
+ document.querySelectorAll('.regionBtn').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.region===key)));
+ persistSelection();
+}
+function updateItems(){
+ const q=byId('structureSearch').value.trim();
+ const matches=samples.filter(x=>x.region===chosen&&(!q||x.name.includes(q)));
+ const parent=byId('items');parent.textContent='';
+ if(!matches.length){
+  const message=document.createElement('div');message.className='muted';
+  message.textContent=q?'選択中の部位では、この名前の連動試作がまだありません。別の部位を選ぶか、検索語を変えてください。':'この部位の個別構造ページは順次追加します。位置の説明は上の欄で確認できます。';
+  parent.append(message);return;
+ }
+ for(const item of matches){
+  const card=document.createElement('div');card.className='muscle';
+  const title=document.createElement('div'),bold=document.createElement('strong'),meta=document.createElement('small');
+  bold.textContent=item.name;meta.textContent='基本情報・位置関係・3Dを確認';
+  title.append(bold,meta);
+  const actions=document.createElement('div');actions.className='muscleActions';
+  const dictionary=document.createElement('a');
+  dictionary.href='./muscle-dictionary-v0.8.html?muscle='+encodeURIComponent(item.id)+'&side='+encodeURIComponent(side)+'&region='+encodeURIComponent(chosen);
+  dictionary.textContent='図鑑で調べる ↗';
+  dictionary.setAttribute('aria-label',item.name+'の図鑑を開く');
+  actions.append(dictionary);
+  const btn=document.createElement('button');btn.type='button';btn.textContent='3Dで確認 ↗';
+  btn.setAttribute('aria-label',item.name+'を3Dで確認');
+  btn.addEventListener('click',()=>{
+   // 3Dから戻ってきても選んだ部位が復元できるよう、現在のURLに保持する。
+   persistSelection();
+   location.href='./3d-navigation-v0.9.html?guide=1&focus='+encodeURIComponent(item.id)+'&from=body&side='+encodeURIComponent(side)+'&region='+encodeURIComponent(chosen);
+  });
+  actions.append(btn);
+  card.append(title,actions);parent.append(card);
+ }
+}
+function updateSide(next){
+ side=next==='back'?'back':'front';
+ document.body.dataset.side=side;
+ byId('front').classList.toggle('active',side==='front');
+ byId('back').classList.toggle('active',side==='back');
+ for(const key of ['front','back'])byId(key).setAttribute('aria-pressed',String(key===side));
+ document.querySelectorAll('.regionBtn').forEach(b=>b.hidden=!allowed(b.dataset.region,side));
+ if(!allowed(chosen,side)){
+  // 背面では胸部・腹部の位置は背部として扱う。
+  chosen=side==='back'?'back':'chest';
+ }
+ showRegion(chosen);
+}
+byId('front').onclick=()=>updateSide('front');
+byId('back').onclick=()=>updateSide('back');
+for(const key of regionKeys){
+ const b=document.createElement('button');
+ b.className='regionBtn';b.type='button';
+ b.textContent=regionLabels[key];b.dataset.region=key;
+ b.onclick=()=>showRegion(key);
+ byId('regions').append(b);
+}
+document.querySelectorAll('#hotspots [data-region],#hotspots [data-front-region]').forEach(z=>{
+ z.addEventListener('click',()=>showRegion(getZoneRegion(z)));
+ z.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();showRegion(getZoneRegion(z))}});
+});
+byId('structureSearch').addEventListener('input',updateItems);
+byId('jumpToDetails').onclick=()=>byId('regionDetails').scrollIntoView({behavior:'smooth',block:'start'});
+const returnToFigure=()=>byId('figureAnchor').scrollIntoView({behavior:'smooth',block:'start'});
+byId('backToFigureInline').onclick=returnToFigure;
+// 共有URL・ブラウザの戻る操作から選択状態を復元。
+updateSide(initialSide);
+if(Object.prototype.hasOwnProperty.call(regionLabels,initialRegion)&&allowed(initialRegion,initialSide))showRegion(initialRegion);
+</script>
+</body>
+</html>

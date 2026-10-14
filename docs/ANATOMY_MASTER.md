@@ -663,3 +663,13 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 条件を明確化する最短経路は、旧版・GLB原本を保全したうえで、BodyParts3D部分を公式現行Archiveから直接取得して再構成すること。Z-Anatomy由来66メッシュは引き続きCC BY-SA 4.0の別素材として扱い、出典・ライセンスを識別できる形で組み込む。再構成後のメッシュ集約方法とアプリ配布時のShareAlike適用範囲は、変更作業前に個別アセット構成として確認する。
 - クレジット表示の設計は小さく控えめな入口を維持する。ただし、CC BY-SA 2.1 JPはクレジットの合理的な表示、ライセンスURIの添付/表示、ライセンス・免責通知を見やすい形で維持するよう定めるため、入口だけで終わらせず、開いた詳細を読みやすく表示する。通常画面を覆う大きなバナーは設けない。
 - 公式一次資料：LSDB Archive BodyParts3D License https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html 、Update History https://dbarchive.biosciencedbc.jp/en/bodyparts3d/update.html 、Download https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html （2026-10-14閲覧）；Creative Commons CC BY-SA 2.1 JP legal code https://creativecommons.org/licenses/by-sa/2.1/jp/legalcode.ja （同日閲覧）。
+
+
+### BodyParts3Dの旧/現行許諾と既存GLBの扱いを追加照合（2026-10-14）
+
+- 正確なRelease 4.0配布位置 `/data/bodyparts3d/20130619/README_e.html` を公式LSDB Archiveで直接確認。ページは2025/02/27の日付を表示し、同じREADME本文で当該データベースをCC BY 4.0として指定。`isa_BP3D_4.0_obj_99.zip` とRelease 4.0データ名も載る。ライセンス条項は部分/全体の取得・再配布・派生物作成を認め、配布時の指定クレジットを要求する。
+- 同READMEの変更履歴は、データ更新 2013/06/19 と、ライセンス更新 2025/02/27を別行で記録。旧ファイル名の版番号 `4.0` はデータ版であり、旧ライセンスの継続を意味しない。したがって、現在公式Archiveから取得するRelease 4.0データの許諾はBY 4.0と確認できる。
+- ただし、BodyExplorerのREADME、変換コードおよび生成GLBメタデータは、使用したBodyParts3D由来部分を旧CC BY-SA 2.1 JPと表記する。BodyExplorer自身のREADMEはモデルデータをソースデータセットのライセンス条件に従うものとしている。公式の現行元ライセンスと中間配布物の表記が異なるため、既存GLBについて中間者の表記を単純に書き換えない。
+- 公式 `lifesciencedb.jp/bp3d` Anatomyographyインタラクティブページの検索可能なライセンス表記にも旧CC BY-SA 2.1 JPが残る一方、公式NBDC/LSDB Archiveのライセンスページ、バージョン付きREADME、更新履歴は2025年のCC BY4更新を明示する。これはサービス表示と現行アーカイブ条件の案内不一致として記録し、BodyExplorer作成済GLBへの遡及的な契約・個別許諾判断を推測で決めない。
+- 今後の実装判断：BodyParts3D部分を現行公式Archiveから改めて取得・再構成すれば、当該401メッシュ由来部分は現行BY4の指定クレジットと変更表示で扱う根拠が得られる。既存BodyExplorer GLBの原本は保全し、置換版と混同しない。Z-Anatomy由来66メッシュは別途CC BY-SA4.0条件を維持し、合成・配布ファイルの権利表示を個別に設計する。
+- 公式一次資料：Release 4.0 README https://dbarchive.biosciencedbc.jp/data/bodyparts3d/20130619/README_e.html 、公式更新履歴 https://dbarchive.biosciencedbc.jp/en/bodyparts3d/update.html 、現行ライセンス https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html 、旧表示が残る公式Anatomography https://lifesciencedb.jp/bp3d/?lng=en （2026-10-14確認）。

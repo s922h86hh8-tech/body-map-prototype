@@ -1,0 +1,80 @@
+{
+  "schema": "body-map-cleanroom-anatomy-facts-v0.1",
+  "created": "2026-10-15",
+  "scope": "殿部深層の代表5筋。これは解剖学的事実と確認状態の記録であり、3D形状データではない。",
+  "provenance_rule": "BodyExplorer、BodyParts3D、Z-Anatomy等のGLB、メッシュ、スクリーンショットから形状や座標を転写しない。以下の文章資料で確認した付着・走行の事実だけを独立設計に用いる。",
+  "geometry_status": "未作成。寸法、座標、筋腹の断面や外形は未確定。推測で埋めず、別途解剖学監査を経て設定する。",
+  "structures": [
+    {
+      "id": "piriformis",
+      "display_ja": "梨状筋",
+      "origin_fact": "仙骨前面（骨盤面）の複数部位から起こる。典型例としてS2-S4付近が記載されるが、起始の範囲には資料差・個体差がある。",
+      "route_fact": "大坐骨孔を通って骨盤外へ向かい、股関節後方を外側へ走る。",
+      "insertion_fact": "大腿骨大転子の上部、内側の梨状筋窩付近に停止する。停止腱は閉鎖筋・双子筋群の共同腱と合流する場合がある。",
+      "variation_to_audit": "起始範囲、停止の細部、分束・腱合流に変異がある。代表形を個体共通の唯一形状として扱わない。",
+      "sources": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK519497/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5193530/"
+      ]
+    },
+    {
+      "id": "obturator_internus",
+      "display_ja": "内閉鎖筋",
+      "origin_fact": "閉鎖膜の骨盤面と閉鎖孔周囲の骨性縁から起こる。",
+      "route_fact": "骨盤内側面から後方へ集まり、小坐骨孔を回り込んで骨盤外へ向きを変える。上・下双子筋が腱に沿って合流する。",
+      "insertion_fact": "大腿骨大転子の内側面（転子窩周辺）に停止する。双子筋との共同腱として記載される。",
+      "variation_to_audit": "起始の細かな区画と筋腱境界は本文資料だけでは座標化できない。",
+      "sources": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK589636/",
+        "https://www.ncbi.nlm.nih.gov/books/NBK519524/"
+      ]
+    },
+    {
+      "id": "gemellus_superior",
+      "display_ja": "上双子筋",
+      "origin_fact": "坐骨棘から起こる。",
+      "route_fact": "内閉鎖筋腱の上側に沿って外側へ進み、共同腱へ加わる。",
+      "insertion_fact": "内閉鎖筋・下双子筋とともに、大転子内側面へ停止する。",
+      "variation_to_audit": "独立停止となる例も報告される。代表的な共同腱形と変異例を区別する。",
+      "sources": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK557420/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5193530/"
+      ]
+    },
+    {
+      "id": "gemellus_inferior",
+      "display_ja": "下双子筋",
+      "origin_fact": "坐骨結節の上部から起こる。",
+      "route_fact": "内閉鎖筋腱の下側に沿って外側へ進み、共同腱へ加わる。",
+      "insertion_fact": "内閉鎖筋・上双子筋とともに、大転子内側面へ停止する。",
+      "variation_to_audit": "起始の範囲と腱への合流形には変異がある。",
+      "sources": [
+        "https://www.ncbi.nlm.nih.gov/books/NBK557420/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC5193530/"
+      ]
+    },
+    {
+      "id": "quadratus_femoris",
+      "display_ja": "大腿方形筋",
+      "origin_fact": "坐骨結節の外側縁から起こる。",
+      "route_fact": "坐骨と大腿骨近位部の間を横方向へ走る。共同腱をつくる内閉鎖筋・双子筋群とは別の筋として扱う。",
+      "insertion_fact": "大腿骨の転子間稜および方形結節付近に停止する。",
+      "variation_to_audit": "停止範囲の記載に幅があり、付着面を追加照合する。",
+      "sources": [
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC4765300/",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC4555602/"
+      ]
+    }
+  ],
+  "shared_relations": [
+    "代表的な後方配置は上から梨状筋、上双子筋、内閉鎖筋、下双子筋、大腿方形筋の順。ただし、この順序は平面の上下関係を示す概略で、層・奥行きと個体差を別途確認する。",
+    "内閉鎖筋・上双子筋・下双子筋は共同腱を形成し、大転子内側面へ向かう代表形として記録する。",
+    "梨状筋腱も近傍で合流する例があるため、共同腱関係を固定的な一本構造として断定しない。"
+  ],
+  "next_validation": [
+    "起始・停止の詳細区画を少なくとも2つの独立資料で照合する。",
+    "骨盤・大腿骨の座標系と左右・前後・上下軸を別途定義し、資料で裏付けられない距離は「未確定」とする。",
+    "独自メッシュは確認済みランドマークを結ぶ機能的な概略形から始め、写真・既存GLBの輪郭に似せる工程を避ける。",
+    "試作後に形状をコードレビューし、ソース資料記録・作成者・日付・差分・ハッシュを保存する。"
+  ]
+}

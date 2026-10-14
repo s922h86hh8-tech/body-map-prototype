@@ -630,3 +630,13 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - NIH 3Dには12,000点超のモデルがあるが、個々の登録ごとに利用条件・対象構造を確認する必要がある。今回の調査では全身筋骨格を網羅する、費用・帰属表示とも不要と確認済みの一式は特定できていない。素材を差し替える際は、モデルごとのライセンス、対象部位、二次加工条件を先に照合する。
 - 現時点ではGLB原本・表示コードを変更していない。条件を満たす代替素材が確定するまでは、無表示で利用可能と扱わない。本文の参考文献表示方針と、第三者3D素材のライセンス遵守は別に管理する。
 - 調査参照：BodyExplorer README https://github.com/JohanBellander/BodyExplorer/blob/main/README.md （2026-10-14閲覧）；Z-Anatomyライセンス https://github.com/Z-Anatomy/Models-of-human-anatomy （2026-10-14閲覧）；NIH 3D https://3d.nih.gov/ （2026-10-14閲覧）。
+
+
+### 表示義務なしの3D代替候補・一次調査（2026-10-14）
+
+- NIH 3D利用条件では、登録モデルごとに投稿者がライセンスを設定し、利用者が個別条件を確認する必要がある。サイト全体を一律のパブリックドメインとは扱えない。
+- NIH 3Dの個別例「Human Heart 3d Model」は心臓単体であり、全身筋骨格の代替にはならない。個別ページのライセンス欄はブラウザー取得結果から具体条件を読めず、無表示・無費用で使えるモデルとして採用しない。
+- University of Denver “3D Models of the Visible Human Male and Female” は骨盤から足首までの骨・筋・靭帯・軟骨を含み、下肢の有力な形状候補だが、公式ページでCC BY 4.0と明記されているため著者・出典表示なしの条件に合わない。全身モデルでもない。
+- Z-Anatomy、BodyParts3D、University of Denverの公開モデルはいずれも、今回の「費用なし・帰属表示なし」の厳格条件を満たす候補として採用しない。NIH 3Dのパブリックドメイン／CC0表記が個別ファイルで確認できる小規模候補を追加調査する余地はあるが、全身筋骨格を網羅する適合セットは今回確認できていない。
+- 次の選択肢は、(a)個別条件を満たすPD/CC0メッシュだけで一から構成する、(b)対象を限定した独自簡略モデルを制作する、(c)表示義務を受け入れる、のいずれか。現在のユーザー要件は(c)を採らないため、(a)または(b)の実現性・網羅性を確認する。調査段階では現行GLB・公開画面は変更しない。
+- 参照：NIH 3D Terms https://3d.nih.gov/terms 、NIH 3D Human Heart entry https://3d.nih.gov/entries/3DPX-022787 、University of Denver Visible Human lower-extremity models https://digitalcommons.du.edu/visiblehuman/ （いずれも2026-10-14閲覧）。

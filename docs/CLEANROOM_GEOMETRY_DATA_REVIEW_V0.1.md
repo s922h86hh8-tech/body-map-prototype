@@ -49,3 +49,12 @@
 - TCIA dataset page: https://wiki.cancerimagingarchive.net/display/Public/Pelvic-Reference-Data
 
 内部の制作・権利条件の照合記録。法的意見や個別許諾確認の代用ではない。
+
+
+## 追記: データ配布記録と処理コードのライセンスを分ける
+
+- Recherche Data Gouv のデータ記録は、ランドマーク座標データにEtalab Open Licence 2.0を表示している。
+- 付属GitHubリポジトリ `IBHGC/3D-anatomical-landmarks` は、データ処理コードのREADMEとLICENSEにCC BY-SA 4.0を表示している。READMEにはコードがデータを自動取得するとある。
+- これはデータ本体の記録とは別の対象として整理する。座標CSVの再利用条件はデータ記録のEtalab表示を参照する。コードは本アプリへ取り込まない。座標データにコードライセンスが及ぶか等、資料の対象範囲を超えた法的判断はしない。
+- ランドマークの定義ファイル本文は未読なので、どの骨性点が入っているかは依然未確認。利用候補の評価はその確認後に更新する。
+- 参照: https://entrepot.recherche.data.gouv.fr/dataset.xhtml?persistentId=doi:10.57745/TJJLD6 、https://github.com/IBHGC/3D-anatomical-landmarks/blob/main/README.md 、https://github.com/IBHGC/3D-anatomical-landmarks/blob/main/LICENSE

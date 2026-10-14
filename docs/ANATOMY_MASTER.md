@@ -673,3 +673,12 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 公式 `lifesciencedb.jp/bp3d` Anatomyographyインタラクティブページの検索可能なライセンス表記にも旧CC BY-SA 2.1 JPが残る一方、公式NBDC/LSDB Archiveのライセンスページ、バージョン付きREADME、更新履歴は2025年のCC BY4更新を明示する。これはサービス表示と現行アーカイブ条件の案内不一致として記録し、BodyExplorer作成済GLBへの遡及的な契約・個別許諾判断を推測で決めない。
 - 今後の実装判断：BodyParts3D部分を現行公式Archiveから改めて取得・再構成すれば、当該401メッシュ由来部分は現行BY4の指定クレジットと変更表示で扱う根拠が得られる。既存BodyExplorer GLBの原本は保全し、置換版と混同しない。Z-Anatomy由来66メッシュは別途CC BY-SA4.0条件を維持し、合成・配布ファイルの権利表示を個別に設計する。
 - 公式一次資料：Release 4.0 README https://dbarchive.biosciencedbc.jp/data/bodyparts3d/20130619/README_e.html 、公式更新履歴 https://dbarchive.biosciencedbc.jp/en/bodyparts3d/update.html 、現行ライセンス https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html 、旧表示が残る公式Anatomography https://lifesciencedb.jp/bp3d/?lng=en （2026-10-14確認）。
+
+
+### 公開3Dページの実際のモデル配信元を確認（2026-10-14）
+
+- `3d-navigation-v0.12.html` を確認。ページ内の `FULL_ANATOMY_URL` は `https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/anatomy.glb`、`FULL_SKELETON_URL` は `https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/skeleton.glb` を直接参照している。
+- リポジトリ内の `body_map_prototype02_web_v0.1.glb` は別の旧試作ファイルであり、現行3Dページが使う全身モデル原本ではない。アプリの3DモデルはBodyExplorerの `main` ブランチから実行時に取得されるため、上流ファイル更新で公開表示が変化し得る。
+- 既存画面を維持する間はこの参照先を無断で変更しない。将来モデルを固定・再構成する際は、上流コミットSHA、GLBのバイト単位ハッシュ、メッシュ対応表、BP3D/Z-Anatomy各出典の内訳を記録し、原本を別名で保存したうえで新しいファイルを追加する。旧版を上書き・削除しない。
+- 次のライセンス整理では、①現行BodyExplorer配布物を使う場合の表示条件、②公式LSDB Archiveから再取得したBP3D部分、③Z-Anatomy部分を別々に判定する。権利表示を確定しないまま混合GLBのライセンスラベルだけを変更しない。
+- 今回は台帳のみ更新。3Dページ、モデルURL、公開版は変更していない。

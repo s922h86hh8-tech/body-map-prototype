@@ -682,3 +682,14 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 既存画面を維持する間はこの参照先を無断で変更しない。将来モデルを固定・再構成する際は、上流コミットSHA、GLBのバイト単位ハッシュ、メッシュ対応表、BP3D/Z-Anatomy各出典の内訳を記録し、原本を別名で保存したうえで新しいファイルを追加する。旧版を上書き・削除しない。
 - 次のライセンス整理では、①現行BodyExplorer配布物を使う場合の表示条件、②公式LSDB Archiveから再取得したBP3D部分、③Z-Anatomy部分を別々に判定する。権利表示を確定しないまま混合GLBのライセンスラベルだけを変更しない。
 - 今回は台帳のみ更新。3Dページ、モデルURL、公開版は変更していない。
+
+
+### 3D素材の利用条件・費用と公開時の帰属表示を判定（2026-10-14）
+
+- **公式BodyParts3D現行データ**：LSDB Archiveの公式ライセンスページと日本語ページは、現行の利用条件をCC BY 4.0とし、商用を含む取得・再配布・改変を認める。データ利用料・ライセンス料の記載はなく、配布・改変の条件として指定クレジットを必須とする。指定文は「BodyParts3D © ライフサイエンス統合データベースセンター licensed under CC表示 4.0 国際」（英語表記は公式英語ページを参照）。モデルをWeb配信する場合にも、利用者が認識できる適切な帰属表示を設ける。サーバー/CDN等の運用費はライセンス料とは別。
+- **BodyExplorer現行配布物**：BodyExplorer READMEはアプリのソースコードをMITと分け、BodyParts3DモデルをCC BY-SA 2.1 Japan、Z-AnatomyモデルをCC BY-SA 4.0として扱う。現行3DページはBodyExplorer main の混合 anatomy.glb と skeleton.glb をリモート読込している。3d-navigation-v0.12.html の文面には、利用者向けの帰属・ライセンス表示が確認できない（BodyParts3Dという内部コメントはあるが、画面表示ではない）。
+- **Z-Anatomy**：公式モデル配布ライセンスはCC BY-SA 4.0。商用利用・改変は可能だが、適切なクレジット・ライセンスリンク・変更表示が必要で、派生物を共有する場合は同ライセンス条件がかかる。ライセンス料はない。
+- **現行混合GLBの判定**：公開ページに必要な帰属が見当たらないうえ、BodyParts3Dの公式現行Archive条件（BY 4.0）とBodyExplorerが既存GLBに表示する旧BY-SA 2.1 JP、さらにZ-Anatomy由来要素のBY-SA 4.0が混在する。素材ごとの境界と、結合GLBをどう共有するかについて一次資料だけでは利用条件を安全に確定できない。よって現時点で「クレジットを追記すれば現行混合GLBをそのまま使える」とは判定しない。これは直ちに違法と断定する趣旨ではなく、条件充足の確認が未完了という判断。
+- **採用する作業経路**：既存公開版・外部GLB参照・リポジトリ内旧GLBを保全し、現行アプリを勝手に変更しない。新しい検証版として、公式LSDB Archiveから直接取得するBodyParts3D Release 4.0を主素材にしたモデル構成を設計し、Z-Anatomy由来部分は含めない構成を第一候補とする。公式指定クレジットとCC BY 4.0へのリンク、改変内容を「ⓘ 3D素材」の小さな入口から読める表示にする。モデル生成元・取得日・アーカイブURL・各出力ファイルのSHA-256を台帳に残してから、動作・表示範囲・ライセンス表記を検証する。
+- **着手条件**：上記のBodyParts3D単独構成で必要な構造を再現できるか、公式配布ZIPと対応データを取得・照合して確認する。必要な筋・骨が不足する、または共有条件が複雑になる場合は、その不足分を別ライセンスのアセットとして分離管理する。今回は判断と作業経路のみ記録し、コード・モデル・公開ページは変更していない。
+- 一次資料（2026-10-14確認）：BodyParts3D現行ライセンス https://dbarchive.biosciencedbc.jp/jp/bodyparts3d/lic.html 、英語ライセンス https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html 、更新履歴 https://dbarchive.biosciencedbc.jp/en/bodyparts3d/update.html 、公式ダウンロード https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html 、BodyExplorer README https://github.com/JohanBellander/BodyExplorer/blob/main/README.md 、Z-Anatomy公式ライセンス https://github.com/Z-Anatomy/Models-of-human-anatomy/blob/master/License.txt 、Creative Commons BY-SA 4.0概要 https://creativecommons.org/licenses/by-sa/4.0/deed.en 。

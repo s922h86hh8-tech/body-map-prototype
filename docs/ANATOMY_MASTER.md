@@ -653,3 +653,13 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - ライセンス表記の未解決点：BodyExplorerの固定コミット・変換スクリプト・GLBメタデータはBodyParts3D CC BY-SA 2.1 JPと記載するが、DBCLSの現行LATEST README（2025-02-25更新）はBodyParts3DデータベースをCC BY 4.0とし指定クレジットを案内する。上流のフォルダ名 `BP3D_4.0` はデータリリース番号であり、ライセンス版と混同しない。取り込まれた特定メッシュへどのライセンス許諾が適用されるかは、取得時点・由来ファイル・再許諾関係をさらに確認するまで確定扱いしない。
 - 画面デザイン要望：クレジットは大きなバナーや常時表示の長文にせず、3D操作を邪魔しない小さな「ⓘ 3D素材」等の入口から、出典・ライセンス・変更内容を読める詳細へ開く控えめな設計を優先する。実装時も必要情報を隠しすぎず、モデル画面または関連情報から迷わず到達できる場所に置く。具体の表示文は上記ライセンス条件が固まってから作成する。
 - 参照：BodyExplorer固定コミットの `raw_models/find_bones.py`、`raw_models/decimate_anatomy.py`、`raw_models/export_z_anatomy.py`、`public/mesh_mapping.json`；Z-Anatomy公式README https://github.com/Z-Anatomy/Models-of-human-anatomy ；DBCLS BodyParts3D公式README https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/README_e.html （2026-10-14閲覧）。
+
+
+### BodyParts3D公式現行ライセンスの確定（2026-10-14）
+
+- 公式LSDB ArchiveのBodyParts3Dライセンスページと更新履歴を照合。ライセンスページは2025-02-27更新で、データベースをCC BY 4.0とし、指定クレジット「BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International」を求める。更新履歴は同日にLicenseが更新され、3D Release 4.0データ自体の最終更新は2013-06-19と区別して記録している。
+- 公式ダウンロードページは現行ライセンスを先に読むよう案内し、現在配布する同じ `isa_BP3D_4.0_obj_99.zip` を掲載している。よって「BodyParts3D Release 4.0がデータ内容の版名であること」と「現行公式配布条件がCC BY 4.0であること」は両立する。公式Archiveから現在直接取得するデータについてはBY-SAではなくBY 4.0と確定。
+- ただし、現行アプリが読み込むBodyExplorer組込GLBは、その変換スクリプトとGLB copyright metadataがBodyParts3DをCC BY-SA 2.1 Japanと表示して配布している。これは公式Archiveの現在条件とは別に、当該中間配布物が示す利用条件・提供経路の確認事項として残す。既存GLBをそのまま再配布する際にその表示を無視しない。
+- 条件を明確化する最短経路は、旧版・GLB原本を保全したうえで、BodyParts3D部分を公式現行Archiveから直接取得して再構成すること。Z-Anatomy由来66メッシュは引き続きCC BY-SA 4.0の別素材として扱い、出典・ライセンスを識別できる形で組み込む。再構成後のメッシュ集約方法とアプリ配布時のShareAlike適用範囲は、変更作業前に個別アセット構成として確認する。
+- クレジット表示の設計は小さく控えめな入口を維持する。ただし、CC BY-SA 2.1 JPはクレジットの合理的な表示、ライセンスURIの添付/表示、ライセンス・免責通知を見やすい形で維持するよう定めるため、入口だけで終わらせず、開いた詳細を読みやすく表示する。通常画面を覆う大きなバナーは設けない。
+- 公式一次資料：LSDB Archive BodyParts3D License https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html 、Update History https://dbarchive.biosciencedbc.jp/en/bodyparts3d/update.html 、Download https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html （2026-10-14閲覧）；Creative Commons CC BY-SA 2.1 JP legal code https://creativecommons.org/licenses/by-sa/2.1/jp/legalcode.ja （同日閲覧）。

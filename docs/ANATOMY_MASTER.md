@@ -643,3 +643,13 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 
 
 - 追加確認：NIH 3Dに個別「Human Skeleton」登録（3DPX-016838）がある。骨格単体の候補ではあるが、取得できた公式ページ本文では「Licensing:」の値が表示されず、現在のライセンス条件を確認できなかった。公開日が2026-10-08、登録者がMy Segmenterで、出力が修復済み骨格STL/GLB等であることは確認したが、表示義務なし・費用なしとは確定できないため採用保留。全身筋モデルもこの調査では確認できていない。
+
+
+### 3Dモデルの原資料・クレジットUI方針の詳細確認（2026-10-14）
+
+- 上流BodyExplorerのコミット `7d04bf3c4de2bd9cb234dd51d7e6857c099afafd` にある変換スクリプトと `public/mesh_mapping.json` を確認。筋・腱GLBの467メッシュの出典内訳はBodyParts3D 401、Z-Anatomy 66。対応表の各項目に `source` が保持され、変換スクリプトで両者を結合し、座標変換・ポリゴン削減を行っている。
+- 骨格GLBの変換スクリプトはBodyParts3Dの `isa_BP3D_4.0_obj_99` を入力としており、GLB copyrightメタデータにBodyParts3DのCC Attribution-Share Alike 2.1 Japan表記を埋め込んでいる。
+- 3D筋GLBの同スクリプトも、BodyParts3D CC BY-SA 2.1 JPおよびZ-Anatomy CC BY-SA 4.0をcopyrightメタデータに記録。Z-Anatomyの公式READMEは同DB由来の派生物に対する帰属と同一ライセンス配布を明記する。
+- ライセンス表記の未解決点：BodyExplorerの固定コミット・変換スクリプト・GLBメタデータはBodyParts3D CC BY-SA 2.1 JPと記載するが、DBCLSの現行LATEST README（2025-02-25更新）はBodyParts3DデータベースをCC BY 4.0とし指定クレジットを案内する。上流のフォルダ名 `BP3D_4.0` はデータリリース番号であり、ライセンス版と混同しない。取り込まれた特定メッシュへどのライセンス許諾が適用されるかは、取得時点・由来ファイル・再許諾関係をさらに確認するまで確定扱いしない。
+- 画面デザイン要望：クレジットは大きなバナーや常時表示の長文にせず、3D操作を邪魔しない小さな「ⓘ 3D素材」等の入口から、出典・ライセンス・変更内容を読める詳細へ開く控えめな設計を優先する。実装時も必要情報を隠しすぎず、モデル画面または関連情報から迷わず到達できる場所に置く。具体の表示文は上記ライセンス条件が固まってから作成する。
+- 参照：BodyExplorer固定コミットの `raw_models/find_bones.py`、`raw_models/decimate_anatomy.py`、`raw_models/export_z_anatomy.py`、`public/mesh_mapping.json`；Z-Anatomy公式README https://github.com/Z-Anatomy/Models-of-human-anatomy ；DBCLS BodyParts3D公式README https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/README_e.html （2026-10-14閲覧）。

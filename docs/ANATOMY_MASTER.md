@@ -640,3 +640,6 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - Z-Anatomy、BodyParts3D、University of Denverの公開モデルはいずれも、今回の「費用なし・帰属表示なし」の厳格条件を満たす候補として採用しない。NIH 3Dのパブリックドメイン／CC0表記が個別ファイルで確認できる小規模候補を追加調査する余地はあるが、全身筋骨格を網羅する適合セットは今回確認できていない。
 - 次の選択肢は、(a)個別条件を満たすPD/CC0メッシュだけで一から構成する、(b)対象を限定した独自簡略モデルを制作する、(c)表示義務を受け入れる、のいずれか。現在のユーザー要件は(c)を採らないため、(a)または(b)の実現性・網羅性を確認する。調査段階では現行GLB・公開画面は変更しない。
 - 参照：NIH 3D Terms https://3d.nih.gov/terms 、NIH 3D Human Heart entry https://3d.nih.gov/entries/3DPX-022787 、University of Denver Visible Human lower-extremity models https://digitalcommons.du.edu/visiblehuman/ （いずれも2026-10-14閲覧）。
+
+
+- 追加確認：NIH 3Dに個別「Human Skeleton」登録（3DPX-016838）がある。骨格単体の候補ではあるが、取得できた公式ページ本文では「Licensing:」の値が表示されず、現在のライセンス条件を確認できなかった。公開日が2026-10-08、登録者がMy Segmenterで、出力が修復済み骨格STL/GLB等であることは確認したが、表示義務なし・費用なしとは確定できないため採用保留。全身筋モデルもこの調査では確認できていない。

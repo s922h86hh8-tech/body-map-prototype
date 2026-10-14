@@ -693,3 +693,13 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - **採用する作業経路**：既存公開版・外部GLB参照・リポジトリ内旧GLBを保全し、現行アプリを勝手に変更しない。新しい検証版として、公式LSDB Archiveから直接取得するBodyParts3D Release 4.0を主素材にしたモデル構成を設計し、Z-Anatomy由来部分は含めない構成を第一候補とする。公式指定クレジットとCC BY 4.0へのリンク、改変内容を「ⓘ 3D素材」の小さな入口から読める表示にする。モデル生成元・取得日・アーカイブURL・各出力ファイルのSHA-256を台帳に残してから、動作・表示範囲・ライセンス表記を検証する。
 - **着手条件**：上記のBodyParts3D単独構成で必要な構造を再現できるか、公式配布ZIPと対応データを取得・照合して確認する。必要な筋・骨が不足する、または共有条件が複雑になる場合は、その不足分を別ライセンスのアセットとして分離管理する。今回は判断と作業経路のみ記録し、コード・モデル・公開ページは変更していない。
 - 一次資料（2026-10-14確認）：BodyParts3D現行ライセンス https://dbarchive.biosciencedbc.jp/jp/bodyparts3d/lic.html 、英語ライセンス https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html 、更新履歴 https://dbarchive.biosciencedbc.jp/en/bodyparts3d/update.html 、公式ダウンロード https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html 、BodyExplorer README https://github.com/JohanBellander/BodyExplorer/blob/main/README.md 、Z-Anatomy公式ライセンス https://github.com/Z-Anatomy/Models-of-human-anatomy/blob/master/License.txt 、Creative Commons BY-SA 4.0概要 https://creativecommons.org/licenses/by-sa/4.0/deed.en 。
+
+
+### 権利リスクを抑えた独自3Dモデル制作方針（2026-10-15）
+
+- 文化庁資料の一般原則では、著作権は「創作的表現」を保護し、事実・データや表現に至らないアイデア自体は保護対象ではない。一方、既存モデルのメッシュ・頂点・特徴的な形状表現をコピー、変形、トレースする行為は別問題。独自制作で侵害リスクを下げるには、人体の事実を参照しつつ、既存GLBの形状を制作資料に使わないクリーンな作業過程が必要。個別の侵害判断は具体的な類似性・依拠性などで変わるため、これを法的保証とは扱わない。
+- 制作ルール：BodyExplorer・BodyParts3D・Z-Anatomy等の既存メッシュから頂点、輪郭、面、寸法、配置データを抽出しない。これらのメッシュやスクリーンショットを横に置いたトレース、リトポロジー、単純な色替え・ポリゴン削減での再利用をしない。
+- 新規モデルは、筋骨格の位置・名称・起始・停止・作用などの解剖学的事実を、権利条件を確認した文字資料および複数の独立資料から確認し、座標・形状・色・分割方法を本アプリ独自に設計して作る。説明文も資料の文言を写さず、独自の表現で記述する。資料名・照合箇所・決定根拠は内部監査記録として保存し、画面への参考文献掲示とは切り分ける。
+- 品質面では、まず一つの領域・少数構造による独自形状の技術検証を行い、既存GLBとの形状コピーがないことを制作記録で確認する。その後、解剖学監査で位置・付着・層・隣接関係を検証する。独自形状が臨床学習に必要な見やすさ・精度を満たさない場合は、ライセンス表示を伴う許諾済み素材を別経路で選ぶ。
+- この方針は既存アプリやGLBを改変・削除する指示ではない。公開済みモデルは現状維持し、新しい独自制作版を別ファイル・別バージョンで作り、比較と監査後に切替を判断する。
+- 参考一次資料（2026-10-15閲覧）：文化庁『著作物—第2条（定義）』https://www.bunka.go.jp/seisaku/chosakuken/seidokaisetsu/pdf/93726501_05.pdf 、文化庁『AIと著作権に関する考え方について』https://www.bunka.go.jp/seisaku/bunkashingikai/chosakuken/bunkakai/69/pdf/94022801_01.pdf 。一般論の整理であり、個別案件の法律相談ではない。

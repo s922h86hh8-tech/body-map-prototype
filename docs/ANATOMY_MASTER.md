@@ -738,3 +738,10 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - TCIAのPelvic-Reference-Data座標はCC BY 3.0だが、画像位置合わせ検証用であり、標準骨指標としての適合性が未確認のため不採用。
 - Recherche Data Gouvの813名分ランドマークはEtalab Open Licence 2.0の帰属条件付き候補。ランドマーク定義表の内容・座標系・表示文言を確認するまでデータを取り込まない。
 - 公開DL可能性だけを権利許諾とみなさない。座標や形状は未作成のまま。
+
+
+### 付属ランドマーク処理コードと座標データのライセンスを区別（2026-10-15）
+
+- Recherche Data Gouv上の座標データ記録はEtalab Open Licence 2.0、同データを処理するGitHubコードのREADME/LICENSEはCC BY-SA 4.0と確認。
+- コードとデータを同じライセンスだと決めつけない。コードは使用しない。座標データも定義表・表示条件確認後に採否を判断。
+- 詳細を `docs/CLEANROOM_GEOMETRY_DATA_REVIEW_V0.1.md` に追記。座標・メッシュは未作成。

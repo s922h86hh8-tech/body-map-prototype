@@ -603,3 +603,13 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - **手＋足（14件）**: 虫様筋、小趾対立筋など手足で名称が似る構造。raw名中のhand/foot文脈を優先する修正後、足の構造が手一覧へ入らないことを前節の467名照合で確認済み。
 - 以上は部位の入口分類の確認であり、各構造の起始・停止・機能、形状、層分類を確定する解剖学監査ではない。今回、部位誤りを確定できなかったため、3D分類コードとGLBは変更しない。正規表現の重複は残り、将来的に明示的な構造別マスターへ移行する方針も維持する。
 - 参照資料（内部監査記録）: OpenStax, *Anatomy and Physiology 2e*, §11.3 “Axial Muscles of the Head, Neck, and Back” https://openstax.org/books/anatomy-and-physiology-2e/pages/11-3-axial-muscles-of-the-head-neck-and-back （2026-10-14閲覧。CC BY-NC-SA 4.0。本文の転載・二次利用は別途ライセンス条件に従う）；FIPAT, Terminologia Anatomica Humana, “musculus iliocostalis cervicis” https://ifaa.unifr.ch/Public/TNAEntryPage/auto/unit/LAEN/TAH1796%20Unit%20EN.htm （2026-10-14閲覧）；FIPAT, TA98, “Musculus erector spinae” https://ifaa.unifr.ch/Public/EntryPage/TA98%20Tree/TA98%20EN/04.3.02.0%20TA98%20EN.htm （2026-10-14閲覧）。これらは内部の照合記録であり、アプリ画面の参考文献表示を再導入する決定ではない。
+
+
+### 3Dモデルの配布元・ライセンス表示確認（2026-10-14）
+
+- 3D v0.12のコードは、骨格・筋モデルを `https://raw.githubusercontent.com/JohanBellander/BodyExplorer/main/public/...` から直接読み込む。2026-10-14確認時点のBodyExplorer `main` はコミット `7d04bf3c4de2bd9cb234dd51d7e6857c099afafd`。対応する公開アセットのGit blob SHAは anatomy.glb=`a112885444785a9dd93c5753b46ac790e6e036b3`、skeleton.glb=`46e5ccc6f02e26727246aa78106dedb6f6d65da3`、mesh_mapping.json=`6e702859c44aa0a36eb3b44d988076c48675c493`。コードはコミット固定URLでないため、上流mainの更新で読み込みモデルが変わり得る。原本保全と再現性のため、次の3D版では検証したコミットへ固定する候補とする。
+- 上流BodyExplorer READMEは、467メッシュの3DモデルがBodyParts3D 401件とZ-Anatomy 66件から成り、骨格GLBに201骨メッシュを含むと説明し、モデルデータのライセンスはコードのMITライセンスとは別扱いとしている。READMEはBodyParts3DをCC BY-SA 2.1 Japan、Z-AnatomyをCC BY-SA 4.0と記載し、Z-Anatomy側READMEは帰属表示と派生物への同一ライセンス適用を求める。
+- 一方、DBCLSの2025-02-27付BodyParts3D公式READMEは、現在のBodyParts3DデータベースについてCC BY 4.0と指定クレジットを示している。これはBodyExplorerに含まれる個別メッシュの取得版・改変段階と同一と確認できていない。配布するGLBの正確な由来・適用条件は未確定として扱い、ライセンスが単一である、あるいはアプリ全体に特定ライセンスが及ぶとはこの記録だけで断定しない。
+- 現行3D v0.12のHTML内を確認した範囲では、BodyParts3D/Z-Anatomyの帰属文、ライセンス文、クレジット欄を確認できなかった。ユーザー独自の13区分・説明文の参考文献表示を省く方針とは切り分け、外部モデルのライセンス上必要な帰属表示と共有条件を、次の公開版の前に確定する必要がある。今回、モデルのダウンロードや表示形状の確認は完了していない。クラウドブラウザーでは3Dページが「3Dモデルを準備しています」のままで、画面上にモデルが描画されなかったためである。
+- 467名称の再スキャンでは、raw名に明示された `hand` / `foot` トークンが逆の一覧へ割り当てられる例は0件。これは命名・分類の確認に留まり、3D形状監査の完了を意味しない。GLB原本・分類コードは変更していない。
+- 参照: BodyExplorer README https://github.com/JohanBellander/BodyExplorer/blob/main/README.md （2026-10-14閲覧）；Z-Anatomy README https://github.com/Z-Anatomy/Models-of-human-anatomy （2026-10-14閲覧）；DBCLS, BodyParts3D README https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/README_e.html （2026-10-14閲覧）。これらの資料はモデルの由来・利用条件の調査用であり、アプリ独自の説明文の参考文献欄を再導入する決定ではない。

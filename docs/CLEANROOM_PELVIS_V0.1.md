@@ -42,3 +42,12 @@
 - Surgically Relevant Bony and Soft Tissue Anatomy of the Proximal Femur: https://pmc.ncbi.nlm.nih.gov/articles/PMC4555602/
 
 注: 画面用の参考文献欄ではなく、独自制作と解剖学監査のための内部記録。
+
+
+## 骨単体の模式試作を分離して作成（2026-10-15）
+
+- 5筋と骨盤の解剖学的座標は依然未確定。上の未確定事項を実測値として埋める変更はしていない。
+- 先に外形レビューできるよう、Public Domain Markを一次配布元で確認したGray/Carter 1858年版を形状参考とし、右大腿骨近位部だけの独自模式試作を追加した。
+- この試作の造形値は無単位の設計パラメータ。人体の測定座標とは区別し、画面・glTF・制作記録に未監査と記録する。
+- `experiments/cleanroom-femur-study-v0.1.html` と新規glTFを別ブランチへ保存。公開アプリへのモデル切替は行わない。
+- 今回の技術検証と制作来歴: `docs/CLEANROOM_FEMUR_STUDY_V0.1.md`。これを5筋の監査済みモデル完成とは扱わない。

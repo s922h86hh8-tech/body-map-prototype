@@ -1,6 +1,6 @@
 # 身体の地図｜設計台帳（Anatomy Master）
 
-更新日: 2026-10-12  
+更新日: 2026-10-15  
 対象: 3D Prototype 0.3 / branch `prototype-0.3`
 
 このファイルは、画面には表示しない「身体の地図」の設計正本です。  
@@ -703,3 +703,12 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 品質面では、まず一つの領域・少数構造による独自形状の技術検証を行い、既存GLBとの形状コピーがないことを制作記録で確認する。その後、解剖学監査で位置・付着・層・隣接関係を検証する。独自形状が臨床学習に必要な見やすさ・精度を満たさない場合は、ライセンス表示を伴う許諾済み素材を別経路で選ぶ。
 - この方針は既存アプリやGLBを改変・削除する指示ではない。公開済みモデルは現状維持し、新しい独自制作版を別ファイル・別バージョンで作り、比較と監査後に切替を判断する。
 - 参考一次資料（2026-10-15閲覧）：文化庁『著作物—第2条（定義）』https://www.bunka.go.jp/seisaku/chosakuken/seidokaisetsu/pdf/93726501_05.pdf 、文化庁『AIと著作権に関する考え方について』https://www.bunka.go.jp/seisaku/bunkashingikai/chosakuken/bunkakai/69/pdf/94022801_01.pdf 。一般論の整理であり、個別案件の法律相談ではない。
+
+
+### iPhone録画で添付HTMLの3D空白を確認・Web検証版へ（2026-10-15）
+
+- 録画では画面の枠・説明・ボタンのみ表示され、独自大腿骨は見えない。添付プレビューでJavaScriptが動かなかった可能性があるが、原因は録画だけで断定しない。iPhoneでの3D成功とは記録しない。
+- Pagesの直近deployment/runとブランチ参照を確認し、独立した `experiments/cleanroom-femur-study-v0.2.html` を `prototype-0.3` へ追加してWeb検証する。URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.2.html
+- v0.2は起動案内・JavaScript無効時の案内とWebリンクを追加した版。骨形状・既存GLB・本体導線は変更しない。旧v0.1は `cleanroom-pelvis-v0.1` に保全。
+- Chromiumで方向・タッチ操作・glTF・画面幅・WebGL失敗時を再確認し、JavaScript無効時の案内を確認済み。iPhone Safariで新URLを開く実機確認は待ち。
+- 詳細と検証結果は `cleanroom-pelvis-v0.1` の `docs/CLEANROOM_FEMUR_IPHONE_PREVIEW_V0.2.md` と `docs/validation/cleanroom-femur-v0.2.json` に保存。

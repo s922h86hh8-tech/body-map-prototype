@@ -31,3 +31,8 @@
 4. 独自筋形状は未確定のまま。筋腹外形を作る際は、別途監査根拠と「模式」または「計測由来」の区別を明記する。
 
 関連資料: `docs/CLEANROOM_PELVIS_LANDMARK_AUDIT_V0.1.md`, `assets/cleanroom/deep-gluteal-facts.v0.1.json`
+
+
+## 模式形状との区別（2026-10-15）
+
+`experiments/cleanroom-femur-study-v0.1.html` は造形レビュー用の無単位の描画値を使う。軸の向きは本規約と同じだが、mmの計測座標ではない。将来の監査用座標へ変換するには別の検証が必要。`physicalScaleValidated:false` をglTFへ保存する。現在の模式値を実測座標として取り込まない。

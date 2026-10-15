@@ -1,0 +1,121 @@
+{
+  "id": "body-map-original-femur-study-v0.1",
+  "physicalScaleValidated": false,
+  "coordinateConvention": "Right hip: +X lateral, +Y anterior, +Z superior; arbitrary drawing units",
+  "primitives": [
+    {
+      "kind": "ellipsoid",
+      "name": "head",
+      "part": 1,
+      "c": [
+        0,
+        0,
+        0
+      ],
+      "r": [
+        22,
+        22,
+        22
+      ]
+    },
+    {
+      "kind": "capsule",
+      "name": "neck",
+      "part": 2,
+      "a": [
+        9,
+        0,
+        -8
+      ],
+      "b": [
+        51,
+        -4,
+        -30
+      ],
+      "r0": 12,
+      "r1": 14
+    },
+    {
+      "kind": "ellipsoid",
+      "name": "greater_trochanter",
+      "part": 3,
+      "c": [
+        58,
+        -6,
+        -22
+      ],
+      "r": [
+        16,
+        18,
+        26
+      ]
+    },
+    {
+      "kind": "capsule",
+      "name": "proximal_shaft",
+      "part": 0,
+      "a": [
+        55,
+        -3,
+        -42
+      ],
+      "b": [
+        44,
+        6,
+        -170
+      ],
+      "r0": 16,
+      "r1": 11.5
+    },
+    {
+      "kind": "ellipsoid",
+      "name": "lesser_trochanter",
+      "part": 4,
+      "c": [
+        37,
+        -17,
+        -51
+      ],
+      "r": [
+        10,
+        10,
+        12
+      ]
+    },
+    {
+      "kind": "capsule",
+      "name": "intertrochanteric_crest",
+      "part": 0,
+      "a": [
+        59,
+        -20,
+        -27
+      ],
+      "b": [
+        38,
+        -20,
+        -53
+      ],
+      "r0": 3.8,
+      "r1": 4.5
+    }
+  ],
+  "blend": 6,
+  "cutZ": -150,
+  "grid": {
+    "min": [
+      -29,
+      -34,
+      -173
+    ],
+    "max": [
+      82,
+      31,
+      30
+    ],
+    "step": 2.2
+  },
+  "parameterRole": "Original illustrative design parameters, not measured anatomical coordinates",
+  "anatomyAudit": "pending",
+  "source": "Henry Gray and H. V. Carter, Anatomy descriptive and surgical (1858), Wellcome b33951950 pp.112-113; Public Domain Mark. No tracing or geometry extraction."
+}

@@ -29,8 +29,20 @@
     "error": "net::ERR_EMPTY_RESPONSE",
     "interpretation": "No hosted rendering conclusion"
   },
-  "iPhoneSafari": "pending user test of live URL",
+  "iPhoneSafari": "not verified as Safari; see iphoneRecording",
   "anatomicalAccuracy": "not audited",
   "geometryChanged": false,
-  "existingApplicationAndGlbsChanged": false
+  "existingApplicationAndGlbsChanged": false,
+  "iphoneRecording": {
+    "file": "ScreenRecording_10-15-2026 20-44-49_1.mp4",
+    "durationSeconds": 17.6,
+    "observed": "The published page displays the 3D femur in an iPhone screen recording. Direction changes, green feature highlighting, and changes in displayed size are visible.",
+    "browserIdentity": "The recording shows an iPhone browser view, but does not conclusively identify Safari or the browser application.",
+    "notEstablished": [
+      "anatomical accuracy",
+      "physical scale accuracy",
+      "exact gesture used for size changes"
+    ],
+    "uiObservation": "The browser's bottom floating toolbar overlaps part of the page at some scroll positions in the recording; source of the overlay is not established."
+  }
 }

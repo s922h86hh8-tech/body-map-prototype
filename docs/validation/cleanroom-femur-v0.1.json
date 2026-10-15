@@ -1,0 +1,49 @@
+{
+  "status": "passed",
+  "browser": "155.0.8059.79",
+  "geometry": {
+    "vertices": 21366,
+    "triangles": 42728,
+    "finite": true,
+    "badEdges": 0,
+    "components": 1,
+    "zeroAreaTriangles": 0,
+    "positiveVolume": true,
+    "physicalScaleValidated": false,
+    "anatomyAudit": "pending"
+  },
+  "checks": [
+    "parameter record matches display",
+    "front/back/lateral/oblique",
+    "touch rotation",
+    "two-finger zoom",
+    "reset",
+    "feature selection",
+    "keyboard",
+    "glTF download and buffers",
+    "exported triangle area",
+    "320/390/1280px overflow",
+    "WebGL unavailable fallback",
+    "no external requests"
+  ],
+  "anatomyAccuracy": "not tested",
+  "iPhoneSafari": "not tested",
+  "checkedOn": "2026-10-15",
+  "artifacts": {
+    "experiments/cleanroom-femur-study-v0.1.html": {
+      "bytes": 21081,
+      "sha256": "81ca930f18dd11a112eea19ca124570e2b0bab1479c39f441d4a29705af4363a",
+      "gitBlobSha": "ffab43e049f1bd77a637c6558ca534e774921576"
+    },
+    "assets/cleanroom/femur-shape-parameters.v0.1.json": {
+      "bytes": 1979,
+      "sha256": "2af68b5a86376e4c862cea355cb07b0deb780f81f164f981d01e493f63a1ac34",
+      "gitBlobSha": "10e3c892491bcae99cf5ac629c88999c63022e73"
+    },
+    "assets/cleanroom/right-proximal-femur-study.v0.1.gltf": {
+      "bytes": 1026803,
+      "sha256": "a5c3f011e3fa941548cdbcd45f59685e91f3953abf514c4e233f3f3c17a949e4",
+      "gitBlobSha": "05c739d19b4515c79502d27b6bf309928ba592ea"
+    }
+  }
+}

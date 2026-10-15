@@ -767,3 +767,11 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - v0.2は起動案内・JavaScript無効時の案内とWebリンクを追加した版。骨形状・既存GLB・本体導線は変更しない。旧v0.1は `cleanroom-pelvis-v0.1` に保全。
 - Chromiumで方向・タッチ操作・glTF・画面幅・WebGL失敗時を再確認し、JavaScript無効時の案内を確認済み。iPhone Safariで新URLを開く実機確認は待ち。
 - 詳細と検証結果は `cleanroom-pelvis-v0.1` の `docs/CLEANROOM_FEMUR_IPHONE_PREVIEW_V0.2.md` と `docs/validation/cleanroom-femur-v0.2.json` に保存。
+
+### 2026-10-15：形状試作 0.2 公開後の確認
+
+- GitHub Pages の公開処理は成功。公開HTMLはHTTP 200、22,301 bytes、SHA-256がローカル検証済みHTMLと一致した。
+- 公開URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.2.html
+- ローカルの3D・操作・フォールバック検証は合格。公開URLを開いたクラウドブラウザではページとエラー案内の表示を確認したが、3Dは起動できなかった。この環境の結果をiPhone Safariの結果とは扱わない。
+- iPhoneでの改善確認と解剖学的監査は未完了。既存アプリ・GLB・形状データの変更なし。
+- 公開後検証記録: `docs/validation/cleanroom-femur-v0.2-hosted.json`。

@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-10-15",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.2.html",
+  "publishedCommit": "c7965137eea70217c0571f8484fe2649b63a24ba",
+  "githubPages": {
+    "workflowRun": 38728708680,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "http": {
+    "status": 200,
+    "bytes": 22301,
+    "sha256": "308a4271451b63b1baa7fe870eb0c039070cb028a61e9988022f75b89c930929",
+    "matchesTestedHtml": true
+  },
+  "localBrowser": {
+    "suite": "docs/validation/cleanroom-femur-v0.2.json",
+    "status": "passed"
+  },
+  "hostedBrowser": {
+    "postRedirectUrl": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.2.html",
+    "pageLoaded": true,
+    "threeDimensionalDisplay": "not started",
+    "visibleError": "この環境では3D表示を開始できませんでした。WebGLが使えるブラウザで開いてください。",
+    "scope": "Cloud browser environment only; does not establish iPhone behavior"
+  },
+  "directLocalBrowserToHostedUrl": {
+    "status": "navigation failed",
+    "error": "net::ERR_EMPTY_RESPONSE",
+    "interpretation": "No hosted rendering conclusion"
+  },
+  "iPhoneSafari": "pending user test of live URL",
+  "anatomicalAccuracy": "not audited",
+  "geometryChanged": false,
+  "existingApplicationAndGlbsChanged": false
+}

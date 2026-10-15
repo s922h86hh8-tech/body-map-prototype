@@ -14,12 +14,12 @@ const {chromium} = require(process.env.BODYMAP_PLAYWRIGHT_MODULE || 'playwright'
     args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader']
   });
   try {
-    const url = pathToFileURL(path.resolve(__dirname, '../../experiments/cleanroom-femur-study-v0.1.html')).href;
+    const url = process.env.BODYMAP_STUDY_URL || pathToFileURL(path.resolve(__dirname, process.env.BODYMAP_STUDY_FILE || '../../experiments/cleanroom-femur-study-v0.1.html')).href;
     const page = await browser.newPage({viewport: {width: 390, height: 844}, hasTouch: true});
     const errors = [], externalRequests = [];
     page.on('pageerror', e => errors.push(e.message));
     page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
-    page.on('request', r => { if (!r.url().startsWith('file:')) externalRequests.push(r.url()); });
+    page.on('request', r => { if (r.url() !== url && !r.url().startsWith('file:') && !r.url().startsWith('data:')) externalRequests.push(r.url()); });
     await page.goto(url);
     await page.waitForFunction(() => document.body.dataset.ready === 'true');
     const geometry = await page.evaluate(() => {
@@ -94,6 +94,16 @@ const {chromium} = require(process.env.BODYMAP_PLAYWRIGHT_MODULE || 'playwright'
       await page.setViewportSize({width, height});
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     }
+    let noScriptMessage = false;
+    if (await page.locator('#loading').count()) {
+      assert.equal(await page.locator('#loading').isVisible(), false);
+      const staticContext = await browser.newContext({javaScriptEnabled: false});
+      const staticPage = await staticContext.newPage(); await staticPage.goto(url);
+      noScriptMessage = await staticPage.locator('#noscript-message').isVisible();
+      assert.equal(noScriptMessage, true);
+      assert.equal(await staticPage.locator('#noscript-message a').getAttribute('href'), 'https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.2.html');
+      await staticContext.close();
+    }
     const fallback = await browser.newPage();
     await fallback.addInitScript(() => { HTMLCanvasElement.prototype.getContext = () => null; });
     await fallback.goto(url);
@@ -101,7 +111,7 @@ const {chromium} = require(process.env.BODYMAP_PLAYWRIGHT_MODULE || 'playwright'
     assert.equal(await fallback.locator('#download').isDisabled(), true);
     assert.deepEqual(errors, []); assert.deepEqual(externalRequests, []);
     console.log(JSON.stringify({status: 'passed', browser: await browser.version(), geometry,
-      checks: ['parameter record matches display', 'front/back/lateral/oblique', 'touch rotation', 'two-finger zoom',
+      noScriptMessage, checks: ['parameter record matches display', 'front/back/lateral/oblique', 'touch rotation', 'two-finger zoom',
         'reset', 'feature selection', 'keyboard', 'glTF download and buffers', 'exported triangle area',
         '320/390/1280px overflow', 'WebGL unavailable fallback', 'no external requests'],
       anatomyAccuracy: 'not tested', iPhoneSafari: 'not tested'}, null, 2));

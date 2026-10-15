@@ -758,3 +758,12 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 座標データ調査も完了。Recherche Data Gouv v2.0定義表と最新CSVヘッダーを確認したが、今回必要な筋付着の骨性点が不足するため不採用。参加者座標は使わない。監査JSONと取得応答ハッシュを保存。
 - 制作・出典・確認の正本: `docs/CLEANROOM_FEMUR_STUDY_V0.1.md`、検証結果とハッシュ: `docs/validation/cleanroom-femur-v0.1.json`。
 - 公開ブランチへの取り込み、公開アプリへのリンク追加・モデル差替えは行っていない。次は骨単体の外形レビューと骨性ランドマーク監査を進める。
+
+
+### iPhone録画で添付HTMLの3D空白を確認・Web検証版へ（2026-10-15）
+
+- 録画では画面の枠・説明・ボタンのみ表示され、独自大腿骨は見えない。添付プレビューでJavaScriptが動かなかった可能性があるが、原因は録画だけで断定しない。iPhoneでの3D成功とは記録しない。
+- Pagesの直近deployment/runとブランチ参照を確認し、独立した `experiments/cleanroom-femur-study-v0.2.html` を `prototype-0.3` へ追加してWeb検証する。URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.2.html
+- v0.2は起動案内・JavaScript無効時の案内とWebリンクを追加した版。骨形状・既存GLB・本体導線は変更しない。旧v0.1は `cleanroom-pelvis-v0.1` に保全。
+- Chromiumで方向・タッチ操作・glTF・画面幅・WebGL失敗時を再確認し、JavaScript無効時の案内を確認済み。iPhone Safariで新URLを開く実機確認は待ち。
+- 詳細と検証結果は `cleanroom-pelvis-v0.1` の `docs/CLEANROOM_FEMUR_IPHONE_PREVIEW_V0.2.md` と `docs/validation/cleanroom-femur-v0.2.json` に保存。

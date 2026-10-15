@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "browser": "155.0.8059.79",
+  "geometry": {
+    "vertices": 21366,
+    "triangles": 42728,
+    "finite": true,
+    "badEdges": 0,
+    "components": 1,
+    "zeroAreaTriangles": 0,
+    "positiveVolume": true,
+    "physicalScaleValidated": false,
+    "anatomyAudit": "pending"
+  },
+  "noScriptMessage": true,
+  "checks": [
+    "parameter record matches display",
+    "front/back/lateral/oblique",
+    "touch rotation",
+    "two-finger zoom",
+    "reset",
+    "feature selection",
+    "keyboard",
+    "glTF download and buffers",
+    "exported triangle area",
+    "320/390/1280px overflow",
+    "WebGL unavailable fallback",
+    "no external requests"
+  ],
+  "anatomyAccuracy": "not tested",
+  "iPhoneSafari": "not tested",
+  "checkedOn": "2026-10-15",
+  "sourceVideoObservation": "User recording: UI visible, 3D absent in an apparent attachment preview; exact cause not proven.",
+  "delivery": "Independent GitHub Pages URL; hosted verification is recorded separately.",
+  "pageSha256": "308a4271451b63b1baa7fe870eb0c039070cb028a61e9988022f75b89c930929",
+  "pageGitBlobSha": "d5c772e9ba10cf1ce5d4beed3ed653bf74c307d1",
+  "anatomyGeometryChanged": false,
+  "javaScriptDisabledGuidance": "Verified visible with JavaScript disabled."
+}

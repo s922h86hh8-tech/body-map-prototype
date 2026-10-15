@@ -1,0 +1,75 @@
+{
+  "schema": "body-map-landmark-fit-audit-v0.1",
+  "checked_on": "2026-10-15",
+  "source": {
+    "title": "3D anatomic landmarks",
+    "author": "Claudio Vergari",
+    "doi": "10.57745/TJJLD6",
+    "version": "2.0",
+    "release_time_utc": "2026-09-17T10:15:30Z",
+    "license": {
+      "name": "etalab 2.0",
+      "uri": "https://spdx.org/licenses/etalab-2.0.html",
+      "iconUri": "https://entrepot.recherche.data.gouv.fr/assets/licence-ouverte.png"
+    },
+    "usage": "Definition-table and latest-header inspection only; no participant coordinates used in geometry.",
+    "attribution": "Claudio Vergari (Arts et Metiers), 3D anatomic landmarks, updated 2026-09-17, https://doi.org/10.57745/TJJLD6. Etalab Open Licence 2.0."
+  },
+  "inspected_files": [
+    {
+      "id": 723126,
+      "response_url": "https://entrepot.recherche.data.gouv.fr/api/access/datafile/723126",
+      "response_bytes": 8874,
+      "response_sha256": "d61d317b865f8e2729a203d23332a27a688d7b07476f6cb66f869307c44f7cb5",
+      "note": "TSV API response; digest is for received response bytes, not the stored-file MD5."
+    },
+    {
+      "id": 770788,
+      "response_url": "https://entrepot.recherche.data.gouv.fr/api/access/datafile/770788?format=original",
+      "scope": "First CSV line only; no subject rows downloaded.",
+      "header_sha256": "d73854ebc468e42d7c66ff628d0d4dd1127b5c71bc0fd7198e6d0010b7483900",
+      "columns": 2045
+    }
+  ],
+  "observed_labels": [
+    "LowerLimb_femur_l_condyle_ext",
+    "LowerLimb_femur_l_condyle_int",
+    "LowerLimb_femur_l_diaphysis_mid",
+    "LowerLimb_femur_l_femoral_head_center",
+    "LowerLimb_femur_l_femoral_head_radius",
+    "LowerLimb_femur_l_neck_center",
+    "LowerLimb_femur_l_trochanter_barycenter",
+    "LowerLimb_femur_l_trochlea",
+    "LowerLimb_femur_r_condyle_ext",
+    "LowerLimb_femur_r_condyle_int",
+    "LowerLimb_femur_r_diaphysis_mid",
+    "LowerLimb_femur_r_femoral_head_center",
+    "LowerLimb_femur_r_femoral_head_radius",
+    "LowerLimb_femur_r_neck_center",
+    "LowerLimb_femur_r_trochanter_barycenter",
+    "LowerLimb_femur_r_trochlea",
+    "Pelvis_ischium_acetabulum_l",
+    "Pelvis_ischium_acetabulum_r",
+    "Pelvis_sacrum_sacrum_anterior",
+    "Pelvis_sacrum_sacrum_center",
+    "Pelvis_sacrum_sacrum_left",
+    "Pelvis_sacrum_sacrum_posterior",
+    "Pelvis_sacrum_sacrum_right"
+  ],
+  "required_landmarks_without_matching_explicit_labels": [
+    "ischial_spine",
+    "ischial_tuberosity",
+    "obturator_membrane_attachment_surface",
+    "lesser_sciatic_foramen_route",
+    "sacral_S2_S4_piriformis_attachment_surface",
+    "greater_trochanter_medial_attachment_surface",
+    "intertrochanteric_crest_quadratus_attachment_surface"
+  ],
+  "interpretation_limits": [
+    "A trochanter_barycenter label does not specify a greater-trochanter tendon footprint.",
+    "The description table lists five pelvis points, while the latest main-file header lists seven (adding sacrum_left and sacrum_right). Neither supplies the listed muscle-attachment landmarks.",
+    "These labels cannot reconstruct a pelvic or muscle surface."
+  ],
+  "decision": "Not adopted as the geometric basis of the five deep gluteal muscles.",
+  "geometry_source_coordinates_imported": false
+}

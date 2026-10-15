@@ -793,3 +793,14 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 採用判定: 形状レビュー用模式試作を継続。深層5筋の配置土台としての採用条件は未達。
 - 次の修正は、軸の定義→大転子の骨面・転子窩→筋の停止面領域の順とする。骨盤側の起始/通路との照合後に筋を接続する。
 - 詳細: `docs/CLEANROOM_FEMUR_ANATOMY_AUDIT_V0.1.md`、計算記録: `docs/validation/cleanroom-femur-landmarks-v0.1.json`、再現: `tools/cleanroom/audit-femur-landmarks.cjs`。旧版・GLB・独自glTF・公開HTMLの変更なし。
+
+### 2026-10-15：大転子の骨面・形状試作v0.2 / 検証ページv0.3
+
+- 一次監査を受け、大転子上内側の縁と転子窩の模式的な凹みを独自に造形した。位置関係は原資料・一次論文で照合し、深さ・幅・座標は今回の描画値と明記した。人体の実測値や筋の停止面とは扱わない。
+- 近位の頸部・骨体の造形軸をパラメータへ明示。未検証の角度・比率は今回変更していない。膝側の基準や実寸スケールは未確立。
+- 内側・後内側の方向、全体/骨面拡大、転子窩選択→後内側拡大を追加。従来の4方向・回転/拡大縮小・glTF保存を保持し、リセットは全体/後ろへ戻る。iPhone録画で下端に浮動バーが重なったため新ページのモバイル下余白を増やした。
+- 技術検証: 21512頂点/43020三角形、閉じた連結成分1、境界・非多様体辺0、面積0の三角形0。凹みの生成・法線・glTFを確認。6方向と表示範囲の制御コールバックをNode VMで検証した。
+- 実際のHTMLのシェーダーをオフスクリーンOpenGL ESでコンパイル・描画し、凹みの見え方を確認した。これはブラウザWebGLやiPhone新ページの実機確認ではない。解剖学的正確性も未承認。
+- 公開する独立検証ページ: `experiments/cleanroom-femur-study-v0.3.html`。URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.3.html
+- 旧HTML・独自glTF v0.1・造形パラメータv0.1・既存GLBは保全し、本体のモデル切替/導線は変更しない。
+- 詳細、描画値、出典、検証と再現手順は `cleanroom-pelvis-v0.1` の `docs/CLEANROOM_FEMUR_SURFACE_V0.2.md` と `docs/validation/cleanroom-femur-surface*-v0.2.json` に保存。

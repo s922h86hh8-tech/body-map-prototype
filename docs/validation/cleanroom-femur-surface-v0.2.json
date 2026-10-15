@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "scope": "Node VM geometry and control callbacks; no browser rendering",
+  "geometry": {
+    "vertices": 21512,
+    "triangles": 43020,
+    "components": 1,
+    "badEdges": 0,
+    "zeroAreaTriangles": 0,
+    "nearZeroAreaTriangles": 0,
+    "minDoubleArea": 1.6258078625053399e-7,
+    "eulerCharacteristic": 2,
+    "signedVolumeDrawingUnits": 169138.4493290963
+  },
+  "fossa": {
+    "vertices": 342,
+    "normalsTowardVoid": 342,
+    "removedVolumeDrawingUnits": 994.7262199180259,
+    "openSurfaceEvidence": "One connected closed genus-zero mesh, no separate enclosed cavity component"
+  },
+  "controls": [
+    "six view callbacks",
+    "schematic fossa selection and close view",
+    "reset to whole posterior"
+  ],
+  "exportGeometry": {
+    "vertices": 21512,
+    "triangles": 43020,
+    "components": 1,
+    "badEdges": 0,
+    "zeroAreaTriangles": 0,
+    "nearZeroAreaTriangles": 0,
+    "minDoubleArea": 4.082721144749881e-12,
+    "eulerCharacteristic": 2,
+    "signedVolumeDrawingUnits": 0.0211465350472271
+  },
+  "files": {
+    "page": {
+      "path": "experiments/cleanroom-femur-study-v0.3.html",
+      "sha256": "744dd83db04d0735e395e4c5684ee130489ac4e8c69feac4651275f5eeef13e7"
+    },
+    "gltf": {
+      "path": "assets/cleanroom/right-proximal-femur-study.v0.2.gltf",
+      "sha256": "00b2e158950ae6fdd5f2af33eb8eebbff54bed143f36fb5843440137648232ff"
+    }
+  },
+  "anatomyAccuracy": "not approved",
+  "physicalScaleValidated": false,
+  "browserRendering": "not tested by this script",
+  "iPhoneNewVersion": "not tested"
+}

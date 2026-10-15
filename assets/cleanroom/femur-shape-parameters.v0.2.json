@@ -1,0 +1,202 @@
+{
+  "id": "body-map-original-femur-study-v0.2",
+  "physicalScaleValidated": false,
+  "coordinateConvention": "Right hip: +X lateral, +Y anterior, +Z superior; arbitrary drawing units",
+  "primitives": [
+    {
+      "kind": "ellipsoid",
+      "name": "head",
+      "part": 1,
+      "c": [
+        0,
+        0,
+        0
+      ],
+      "r": [
+        22,
+        22,
+        22
+      ]
+    },
+    {
+      "kind": "capsule",
+      "name": "neck",
+      "part": 2,
+      "a": [
+        9,
+        0,
+        -8
+      ],
+      "b": [
+        51,
+        -4,
+        -30
+      ],
+      "r0": 12,
+      "r1": 14
+    },
+    {
+      "kind": "ellipsoid",
+      "name": "greater_trochanter",
+      "part": 3,
+      "c": [
+        58,
+        -6,
+        -22
+      ],
+      "r": [
+        16,
+        18,
+        26
+      ]
+    },
+    {
+      "kind": "capsule",
+      "name": "proximal_shaft",
+      "part": 0,
+      "a": [
+        55,
+        -3,
+        -42
+      ],
+      "b": [
+        44,
+        6,
+        -170
+      ],
+      "r0": 16,
+      "r1": 11.5
+    },
+    {
+      "kind": "ellipsoid",
+      "name": "lesser_trochanter",
+      "part": 4,
+      "c": [
+        37,
+        -17,
+        -51
+      ],
+      "r": [
+        10,
+        10,
+        12
+      ]
+    },
+    {
+      "kind": "capsule",
+      "name": "intertrochanteric_crest",
+      "part": 0,
+      "a": [
+        59,
+        -20,
+        -27
+      ],
+      "b": [
+        38,
+        -20,
+        -53
+      ],
+      "r0": 3.8,
+      "r1": 4.5
+    },
+    {
+      "kind": "capsule",
+      "name": "greater_trochanter_superomedial_ridge",
+      "part": 3,
+      "a": [
+        52,
+        7,
+        -9
+      ],
+      "b": [
+        52,
+        -21,
+        -9
+      ],
+      "r0": 2.8,
+      "r1": 3.2
+    }
+  ],
+  "blend": 6,
+  "cutZ": -150,
+  "grid": {
+    "min": [
+      -29,
+      -34,
+      -173
+    ],
+    "max": [
+      82,
+      31,
+      30
+    ],
+    "step": 2.2
+  },
+  "parameterRole": "Original illustrative design parameters, not measured anatomical coordinates",
+  "anatomyAudit": "pending",
+  "source": "Gray/Carter 1858 Wellcome b33951950 p.113, Public Domain Mark; qualitative fact check: Philippon 2014 DOI10.1177/2325967114535188. No tracing, vertex extraction, or specimen coordinates.",
+  "cavities": [
+    {
+      "kind": "ellipsoid",
+      "name": "trochanteric_fossa_schematic",
+      "part": 5,
+      "c": [
+        47,
+        -21,
+        -22
+      ],
+      "r": [
+        7,
+        8,
+        10
+      ],
+      "blend": 2.5
+    }
+  ],
+  "constructionAxes": {
+    "role": "Recorded drawing axes, not clinical measurement axes",
+    "neck": {
+      "a": [
+        9,
+        0,
+        -8
+      ],
+      "b": [
+        51,
+        -4,
+        -30
+      ]
+    },
+    "proximalShaft": {
+      "a": [
+        55,
+        -3,
+        -42
+      ],
+      "b": [
+        44,
+        6,
+        -170
+      ]
+    },
+    "headCenter": [
+      0,
+      0,
+      0
+    ],
+    "distalKneeReference": null
+  },
+  "drawingLandmarks": {
+    "role": "Original construction anchors, anatomical accuracy pending",
+    "greaterTrochanterAnteriorRidgeAnchor": [
+      52,
+      7,
+      -9
+    ],
+    "greaterTrochanterPosteriorRidgeAnchor": [
+      52,
+      -21,
+      -9
+    ]
+  }
+}

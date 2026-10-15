@@ -1,0 +1,92 @@
+{
+  "auditId": "body-map-femur-construction-audit-v0.1",
+  "scope": "Static construction, camera convention and explicitly represented landmarks only",
+  "anatomicalApproval": false,
+  "inputFiles": {
+    "page": {
+      "path": "experiments/cleanroom-femur-study-v0.2.html",
+      "sha256": "308a4271451b63b1baa7fe870eb0c039070cb028a61e9988022f75b89c930929"
+    },
+    "parameters": {
+      "path": "assets/cleanroom/femur-shape-parameters.v0.1.json",
+      "sha256": "2af68b5a86376e4c862cea355cb07b0deb780f81f164f981d01e493f63a1ac34"
+    }
+  },
+  "parameterRecordMatchesPage": true,
+  "coordinateConvention": "Right hip: +X lateral, +Y anterior, +Z superior; arbitrary drawing units",
+  "coarseRelations": {
+    "headMedialToGreaterTrochanterCenter": true,
+    "lesserTrochanterCenterMedialToLocalShaft": true,
+    "lesserTrochanterCenterPosteriorToLocalShaft": true,
+    "crestPrimitiveEndpointsPosteriorToHeadCoronalPlane": true
+  },
+  "directions": {
+    "front": {
+      "label": "前から",
+      "observerDirectionAnatomical": [
+        0,
+        0.99920011,
+        0.03998933
+      ],
+      "headMinusGreaterTrochanterHorizontalDrawingUnits": 58
+    },
+    "back": {
+      "label": "後ろから",
+      "observerDirectionAnatomical": [
+        0,
+        -0.99920011,
+        0.03998933
+      ],
+      "headMinusGreaterTrochanterHorizontalDrawingUnits": -58
+    },
+    "lateral": {
+      "label": "外側から",
+      "observerDirectionAnatomical": [
+        0.99980001,
+        0,
+        0.01999867
+      ],
+      "headMinusGreaterTrochanterHorizontalDrawingUnits": 6
+    },
+    "oblique": {
+      "label": "斜めから",
+      "observerDirectionAnatomical": [
+        0.59312297,
+        -0.78021512,
+        0.19866933
+      ],
+      "headMinusGreaterTrochanterHorizontalDrawingUnits": -42.54174188
+    }
+  },
+  "constructionDiagnostics": {
+    "neckPrimitiveAndDistalShaftIncludedAngleDegrees": 112.22669783,
+    "headCenterToNeckPrimitiveLineDrawingUnits": 3.0718717,
+    "greaterTrochanterPrimitiveTopMinusHeadCenterZDrawingUnits": 4,
+    "isValidatedNeckShaftAngle": false,
+    "physicalScaleValidated": false,
+    "interpretation": "Primitive construction measurements only; clinical axes and a specimen scale are not established."
+  },
+  "explicitNamedPrimitives": [
+    "head",
+    "neck",
+    "greater_trochanter",
+    "proximal_shaft",
+    "lesser_trochanter",
+    "intertrochanteric_crest"
+  ],
+  "absentExplicitDefinitions": [
+    "fovea_capitis",
+    "trochanteric_fossa",
+    "intertrochanteric_line",
+    "greater_trochanter_anterior_tip",
+    "greater_trochanter_posterior_tip",
+    "greater_trochanter_superomedial_border",
+    "quadratus_femoris_attachment_surface",
+    "piriformis_attachment_surface",
+    "conjoint_tendon_attachment_surface",
+    "distal_condylar_reference_axis"
+  ],
+  "highlights": "Nearest primitive regions; not audited anatomical surfaces or muscle footprints",
+  "browserRenderTest": "Not performed by this script",
+  "nextGate": "Define and audit axes, greater-trochanter landmarks and attachment surfaces before adding deep muscles."
+}

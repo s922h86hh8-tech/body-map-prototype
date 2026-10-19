@@ -61,37 +61,37 @@ v0.2には2026-10-15のユーザー提供録画の記録があり、3D/方向変
 
 | ファイル | 内容・確認済み事項 | 未確認事項/範囲 |
 | --- | --- | --- |
-| docs/ANATOMY_MASTER.md | アプリ全体の設計正本、独自制作方針と履歴 | 全身モデルの監査は別。台帳全体を今回再監査していない |
-| docs/CLEANROOM_PELVIS_V0.1.md | 5筋制作制約、骨単体試作への分離 | 5筋形状/座標/外形は未作成 |
-| docs/CLEANROOM_PELVIS_LANDMARK_AUDIT_V0.1.md | 骨盤/大腿骨の文章資料上の相対関係、作業ゲート | 完全な骨面座標や筋腹形状なし |
-| docs/CLEANROOM_COORDINATE_FRAME_V0.1.md | +X外側/+Y前/+Z上の制作座標規約 | 原点の数値、mm計測点群なし |
-| docs/CLEANROOM_GEOMETRY_DATA_REVIEW_V0.1.md | Recherche Data Gouv、MedPelvis3D、TCIAの候補評価 | 候補全件を今回再調査していない |
-| docs/CLEANROOM_FEMUR_STUDY_V0.1.md | 最初の骨単体試作、制作来歴と技術検証 | v0.1記録はv0.3検証ではない。厳密自己交差等に制限 |
-| docs/CLEANROOM_FEMUR_ANATOMY_AUDIT_V0.1.md | v0.2 HTML/形状v0.1の方向式、粗い位置関係、軸・資料 | v0.3追加形状、骨面精度、実寸、停止面は未監査 |
-| docs/CLEANROOM_FEMUR_SURFACE_V0.2.md | v0.3ページ/形状v0.2の設計、値、操作、技術記録 | 実機と解剖学的正確さは未確認 |
-| docs/CLEANROOM_FEMUR_IPHONE_PREVIEW_V0.2.md | 添付HTML空白、v0.2録画、下部バーの重なり | 録画ブラウザ特定不可。v0.3未確認 |
-| docs/HANDOFF_CLEANROOM_FEMUR_2026-10-19.md | 前回の短い引継ぎ、公開確認の要約 | 本書で資料別の範囲を拡張 |
-| assets/cleanroom/deep-gluteal-facts.v0.1.json | 5筋の文章上の起始/走行/停止と出典URL | 形状値ではない。全記載を今回独立再照合していない |
-| assets/cleanroom/landmark-fit-audit.v0.1.json | ライセンス/定義表/CSVヘッダーの調査と応答ハッシュ | 参加者座標は使用せず。筋付着面の座標資料ではない |
-| assets/cleanroom/femur-shape-parameters.v0.1.json | 旧形状の無単位プリミティブ値、監査pending | 実測/標準寸法ではない |
-| assets/cleanroom/femur-shape-parameters.v0.2.json | 縁/凹み追加を含む現行描画パラメータ | 解剖学精度は未承認 |
-| assets/cleanroom/right-proximal-femur-study.v0.1.gltf | 保全された旧生成モデル | 現行追加形状を含まず。解剖学承認なし |
-| assets/cleanroom/right-proximal-femur-study.v0.2.gltf | 現行模式形状の出力。メッシュ検査対象 | 実寸/臨床正確性は未承認 |
-| experiments/cleanroom-femur-study-v0.1.html | 初版ページ | 旧版。現行操作を含まない |
-| experiments/cleanroom-femur-study-v0.2.html | 起動案内などを加えた旧公開ページ、録画対象 | 現行形状v0.2/新操作を含まない |
-| experiments/cleanroom-femur-study-v0.3.html | 現行公開ページ。6方向、範囲切替、凹み選択 | WebGL実ブラウザ/タッチ/iPhoneは未確認 |
-| docs/validation/cleanroom-femur-v0.1.json | v0.1の過去のブラウザ/形状値 | 現行版の証明ではない |
-| docs/validation/cleanroom-femur-v0.2.json | v0.2旧ページのブラウザ検査、JS無効案内 | v0.3操作の記録ではない |
-| docs/validation/cleanroom-femur-v0.2-hosted.json | 公開v0.2、旧クラウドWebGLとiPhone録画の記録 | v0.3ではない。Safariとは確定しない |
-| docs/validation/cleanroom-femur-landmarks-v0.1.json | v0.2 HTML/形状v0.1の計算監査結果 | v0.3追加面は対象外 |
-| docs/validation/cleanroom-femur-surface-v0.2.json | 現行形状/操作/glTFのNode VM検査 | DOM/ブラウザ/実機/解剖学検証なし |
-| docs/validation/cleanroom-femur-surface-gles-v0.2.json | 実HTMLシェーダーのオフスクリーン描画 | ブラウザWebGL/iPhone試験ではない |
-| docs/validation/cleanroom-femur-surface-hosted-v0.2.json | 現行v0.3公開URL、HTTP/ハッシュ/workflow | クラウドWebGL不可、iPhone未確認 |
-| tools/cleanroom/audit-femur-landmarks.cjs | v0.2 HTML/形状v0.1対象の方向/軸計算スクリプト | v0.3の凹みは監査しない |
-| tools/cleanroom/check-femur-study.cjs | 主にv0.1ページを実Chromiumで検査 | スクリプトの存在は最新実行を意味しない |
-| tools/cleanroom/check-femur-surface-study.cjs | v0.3形状/操作コールバック/glTF構造検査 | UI/実機/解剖学監査はしない |
-| tools/cleanroom/build-femur-surface-page.py | v0.2ページ+形状値からv0.3生成 | この更新作業で再生成一致を再実行していない |
-| tools/cleanroom/render-femur-surface.py | EGL/GLESによるシェーダー描画 | ブラウザ操作試験ではない |
+| [docs/ANATOMY_MASTER.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/ANATOMY_MASTER.md) | アプリ全体の設計正本、独自制作方針と履歴 | 全身モデルの監査は別。台帳全体を今回再監査していない |
+| [docs/CLEANROOM_PELVIS_V0.1.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_PELVIS_V0.1.md) | 5筋制作制約、骨単体試作への分離 | 5筋形状/座標/外形は未作成 |
+| [docs/CLEANROOM_PELVIS_LANDMARK_AUDIT_V0.1.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_PELVIS_LANDMARK_AUDIT_V0.1.md) | 骨盤/大腿骨の文章資料上の相対関係、作業ゲート | 完全な骨面座標や筋腹形状なし |
+| [docs/CLEANROOM_COORDINATE_FRAME_V0.1.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_COORDINATE_FRAME_V0.1.md) | +X外側/+Y前/+Z上の制作座標規約 | 原点の数値、mm計測点群なし |
+| [docs/CLEANROOM_GEOMETRY_DATA_REVIEW_V0.1.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_GEOMETRY_DATA_REVIEW_V0.1.md) | Recherche Data Gouv、MedPelvis3D、TCIAの候補評価 | 候補全件を今回再調査していない |
+| [docs/CLEANROOM_FEMUR_STUDY_V0.1.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_FEMUR_STUDY_V0.1.md) | 最初の骨単体試作、制作来歴と技術検証 | v0.1記録はv0.3検証ではない。厳密自己交差等に制限 |
+| [docs/CLEANROOM_FEMUR_ANATOMY_AUDIT_V0.1.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_FEMUR_ANATOMY_AUDIT_V0.1.md) | v0.2 HTML/形状v0.1の方向式、粗い位置関係、軸・資料 | v0.3追加形状、骨面精度、実寸、停止面は未監査 |
+| [docs/CLEANROOM_FEMUR_SURFACE_V0.2.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_FEMUR_SURFACE_V0.2.md) | v0.3ページ/形状v0.2の設計、値、操作、技術記録 | 実機と解剖学的正確さは未確認 |
+| [docs/CLEANROOM_FEMUR_IPHONE_PREVIEW_V0.2.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_FEMUR_IPHONE_PREVIEW_V0.2.md) | 添付HTML空白、v0.2録画、下部バーの重なり | 録画ブラウザ特定不可。v0.3未確認 |
+| [docs/HANDOFF_CLEANROOM_FEMUR_2026-10-19.md](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/HANDOFF_CLEANROOM_FEMUR_2026-10-19.md) | 前回の短い引継ぎ、公開確認の要約 | 本書で資料別の範囲を拡張 |
+| [assets/cleanroom/deep-gluteal-facts.v0.1.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/assets/cleanroom/deep-gluteal-facts.v0.1.json) | 5筋の文章上の起始/走行/停止と出典URL | 形状値ではない。全記載を今回独立再照合していない |
+| [assets/cleanroom/landmark-fit-audit.v0.1.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/assets/cleanroom/landmark-fit-audit.v0.1.json) | ライセンス/定義表/CSVヘッダーの調査と応答ハッシュ | 参加者座標は使用せず。筋付着面の座標資料ではない |
+| [assets/cleanroom/femur-shape-parameters.v0.1.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/assets/cleanroom/femur-shape-parameters.v0.1.json) | 旧形状の無単位プリミティブ値、監査pending | 実測/標準寸法ではない |
+| [assets/cleanroom/femur-shape-parameters.v0.2.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/assets/cleanroom/femur-shape-parameters.v0.2.json) | 縁/凹み追加を含む現行描画パラメータ | 解剖学精度は未承認 |
+| [assets/cleanroom/right-proximal-femur-study.v0.1.gltf](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/assets/cleanroom/right-proximal-femur-study.v0.1.gltf) | 保全された旧生成モデル | 現行追加形状を含まず。解剖学承認なし |
+| [assets/cleanroom/right-proximal-femur-study.v0.2.gltf](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/assets/cleanroom/right-proximal-femur-study.v0.2.gltf) | 現行模式形状の出力。メッシュ検査対象 | 実寸/臨床正確性は未承認 |
+| [experiments/cleanroom-femur-study-v0.1.html](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/experiments/cleanroom-femur-study-v0.1.html) | 初版ページ | 旧版。現行操作を含まない |
+| [experiments/cleanroom-femur-study-v0.2.html](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/experiments/cleanroom-femur-study-v0.2.html) | 起動案内などを加えた旧公開ページ、録画対象 | 現行形状v0.2/新操作を含まない |
+| [experiments/cleanroom-femur-study-v0.3.html](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/experiments/cleanroom-femur-study-v0.3.html) | 現行公開ページ。6方向、範囲切替、凹み選択 | WebGL実ブラウザ/タッチ/iPhoneは未確認 |
+| [docs/validation/cleanroom-femur-v0.1.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/validation/cleanroom-femur-v0.1.json) | v0.1の過去のブラウザ/形状値 | 現行版の証明ではない |
+| [docs/validation/cleanroom-femur-v0.2.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/validation/cleanroom-femur-v0.2.json) | v0.2旧ページのブラウザ検査、JS無効案内 | v0.3操作の記録ではない |
+| [docs/validation/cleanroom-femur-v0.2-hosted.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/validation/cleanroom-femur-v0.2-hosted.json) | 公開v0.2、旧クラウドWebGLとiPhone録画の記録 | v0.3ではない。Safariとは確定しない |
+| [docs/validation/cleanroom-femur-landmarks-v0.1.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/validation/cleanroom-femur-landmarks-v0.1.json) | v0.2 HTML/形状v0.1の計算監査結果 | v0.3追加面は対象外 |
+| [docs/validation/cleanroom-femur-surface-v0.2.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/validation/cleanroom-femur-surface-v0.2.json) | 現行形状/操作/glTFのNode VM検査 | DOM/ブラウザ/実機/解剖学検証なし |
+| [docs/validation/cleanroom-femur-surface-gles-v0.2.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/validation/cleanroom-femur-surface-gles-v0.2.json) | 実HTMLシェーダーのオフスクリーン描画 | ブラウザWebGL/iPhone試験ではない |
+| [docs/validation/cleanroom-femur-surface-hosted-v0.2.json](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/validation/cleanroom-femur-surface-hosted-v0.2.json) | 現行v0.3公開URL、HTTP/ハッシュ/workflow | クラウドWebGL不可、iPhone未確認 |
+| [tools/cleanroom/audit-femur-landmarks.cjs](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/tools/cleanroom/audit-femur-landmarks.cjs) | v0.2 HTML/形状v0.1対象の方向/軸計算スクリプト | v0.3の凹みは監査しない |
+| [tools/cleanroom/check-femur-study.cjs](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/tools/cleanroom/check-femur-study.cjs) | 主にv0.1ページを実Chromiumで検査 | スクリプトの存在は最新実行を意味しない |
+| [tools/cleanroom/check-femur-surface-study.cjs](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/tools/cleanroom/check-femur-surface-study.cjs) | v0.3形状/操作コールバック/glTF構造検査 | UI/実機/解剖学監査はしない |
+| [tools/cleanroom/build-femur-surface-page.py](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/tools/cleanroom/build-femur-surface-page.py) | v0.2ページ+形状値からv0.3生成 | この更新作業で再生成一致を再実行していない |
+| [tools/cleanroom/render-femur-surface.py](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/tools/cleanroom/render-femur-surface.py) | EGL/GLESによるシェーダー描画 | ブラウザ操作試験ではない |
 
 ## 今回ブランチで確認できなかった資料
 

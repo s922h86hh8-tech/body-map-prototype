@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-10-19",
+  "page": "experiments/cleanroom-femur-study-v0.3.html",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.3.html",
+  "publicBranch": "prototype-0.3",
+  "publicCommit": "c9cb9cb07a049117820a5216f24e162554c7d07d",
+  "pagesWorkflow": {
+    "runId": 38745373556,
+    "status": "success"
+  },
+  "http": {
+    "status": 200,
+    "bytes": 25378,
+    "sha256": "744dd83db04d0735e395e4c5684ee130489ac4e8c69feac4651275f5eeef13e7",
+    "matchesValidatedHtml": true
+  },
+  "browser": {
+    "pageAndControlsLoaded": true,
+    "webgl": "unavailable in cloud browser; error fallback shown",
+    "iphone": "not verified for v0.3"
+  },
+  "rendering": {
+    "status": "passed",
+    "method": "offscreen Mesa OpenGL ES 3.2; actual page shaders",
+    "browserWebglTest": false
+  },
+  "geometry": {
+    "status": "passed",
+    "vertices": 21512,
+    "triangles": 43020,
+    "components": 1,
+    "badEdges": 0,
+    "zeroAreaTriangles": 0,
+    "nearZeroAreaTriangles": 0,
+    "fossaSurfaceVertices": 342
+  },
+  "anatomyAccuracy": "not approved; schematic drawing values only",
+  "preserved": [
+    "existing application",
+    "existing GLB files",
+    "previous study page and model versions"
+  ],
+  "followUp": [
+    "verify live v0.3 on iPhone",
+    "check browser toolbar overlap and all controls",
+    "continue anatomical audit before any clinical/educational accuracy claim"
+  ]
+}

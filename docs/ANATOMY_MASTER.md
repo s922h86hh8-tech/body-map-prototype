@@ -804,3 +804,12 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 公開する独立検証ページ: `experiments/cleanroom-femur-study-v0.3.html`。URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.3.html
 - 旧HTML・独自glTF v0.1・造形パラメータv0.1・既存GLBは保全し、本体のモデル切替/導線は変更しない。
 - 詳細、描画値、出典、検証と再現手順は `cleanroom-pelvis-v0.1` の `docs/CLEANROOM_FEMUR_SURFACE_V0.2.md` と `docs/validation/cleanroom-femur-surface*-v0.2.json` に保存。
+
+
+### 2026-10-19：独自大腿骨試作 v0.3 公開確認と引継ぎ
+
+- 公開ページ `experiments/cleanroom-femur-study-v0.3.html` をHTTPで再確認。HTTP 200、25,378 bytes、SHA-256 `744dd83db04d0735e395e4c5684ee130489ac4e8c69feac4651275f5eeef13e7`。検証JSONに記録したページハッシュと一致する。
+- 公開コミット `c9cb9cb07a049117820a5216f24e162554c7d07d` のPages workflow run `38745373556` は成功。公開ブランチには独立実験ページと台帳追記のみを追加し、本体アプリ・既存GLBは差し替えていない。
+- クラウド確認ブラウザではページ本文と操作項目は読み込まれたが、環境のWebGLが起動せずエラー案内が表示された。オフスクリーンOpenGL ES描画は成功しているが、これはブラウザでの3D動作確認を代替しない。
+- **次の担当への未完了事項:** iPhone実機で公開v0.3の3D表示、方向ボタン、拡大/全体切替、転子窩の選択と拡大、下端の浮動ツールバーとの重なりを確認する。形状の解剖学的精度・実寸・筋停止面は未監査・未承認。指摘があれば再現条件と画面を記録してから修正する。
+- 作業の背景、現状、検証値、保全対象、次の順序を `docs/HANDOFF_CLEANROOM_FEMUR_2026-10-19.md` に記録。公開確認の詳細は `docs/validation/cleanroom-femur-surface-hosted-v0.2.json`。

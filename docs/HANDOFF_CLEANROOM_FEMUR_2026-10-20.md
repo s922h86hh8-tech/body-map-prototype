@@ -108,3 +108,8 @@ v0.2には2026-10-15のユーザー提供録画の記録があり、3D/方向変
 3. cleanroom-femur-surface-v0.2.json、cleanroom-femur-surface-gles-v0.2.json、cleanroom-femur-surface-hosted-v0.2.jsonの対象と限界を確認。
 4. iPhoneでv0.3を確認した新証跡があれば、その記録と実ファイルを照合。
 5. 変更前にブランチHEADとHTML/形状JSONのハッシュを確かめ、差分があれば先に調査。
+
+## 継続作業の追記（2026-10-22）
+- [監査基準・v0.3の評価範囲](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_FEMUR_AUDIT_BASIS_2026-10-22.md) を追加し、一次資料の軸定義と現行パラメータを照合した。最新状況は同文書と設計台帳の10月22日追記を参照。
+- 計測定義の対応表と造形値の再計算まで完了。骨面評価点の抽出、具体的な軸当てはめ手順、転子窩の表面精度、独立別資料との照合、iPhone v0.3実機確認は未完了。
+- 原文の10月20日時点の状態を履歴として保持。形状・公開ページの変更はない。

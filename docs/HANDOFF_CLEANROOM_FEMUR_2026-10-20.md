@@ -113,3 +113,8 @@ v0.2には2026-10-15のユーザー提供録画の記録があり、3D/方向変
 - [監査基準・v0.3の評価範囲](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_FEMUR_AUDIT_BASIS_2026-10-22.md) を追加し、一次資料の軸定義と現行パラメータを照合した。最新状況は同文書と設計台帳の10月22日追記を参照。
 - 計測定義の対応表と造形値の再計算まで完了。骨面評価点の抽出、具体的な軸当てはめ手順、転子窩の表面精度、独立別資料との照合、iPhone v0.3実機確認は未完了。
 - 原文の10月20日時点の状態を履歴として保持。形状・公開ページの変更はない。
+
+## 表面測定の実装・実行（2026-10-22追記）
+- [表面の数値診断](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_FEMUR_SURFACE_DIAGNOSTICS_V0.1.md) と測定コード tools/cleanroom/measure-femur-surface-v0.1.cjs、実行結果 docs/validation/cleanroom-femur-surface-diagnostics-v0.1.json を追加。
+- buildMesh()由来表面の球当てはめ、断面輪郭、一方向の凹みプロファイルを計算済み。臨床計測・解剖学的承認ではない。
+- 頸部75%断面が2輪郭となり、軸点を囲む輪郭の中心も不安定。頸部の評価領域定義が必要。iPhone未確認。形状・公開ページの改訂はなし。

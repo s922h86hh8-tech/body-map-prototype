@@ -1,0 +1,473 @@
+{
+  "schema": "body-map-surface-diagnostics-v0.1",
+  "auditDate": "2026-10-22",
+  "status": "calculation completed; anatomical approval withheld",
+  "page": {
+    "path": "experiments/cleanroom-femur-study-v0.3.html",
+    "sha256": "744dd83db04d0735e395e4c5684ee130489ac4e8c69feac4651275f5eeef13e7"
+  },
+  "parameters": {
+    "path": "assets/cleanroom/femur-shape-parameters.v0.2.json",
+    "sha256": "14aa81efb551991734d75a88d65ab280ede2bd581c1e5bca0bc2abd7ddee1ffc"
+  },
+  "scriptSha256": "9f2eec8a31da71290c97bf77b53d0917c638f054285723e45e1a333db9cb2f16",
+  "units": "arbitrary drawing units, not mm",
+  "mesh": {
+    "vertices": 21512,
+    "triangles": 43020
+  },
+  "numericSelfChecks": [
+    "known sphere center/radius",
+    "ray triangle hit/miss",
+    "octahedron closed section, centroid/perimeter and containing contour",
+    "two disjoint contours and correct enclosing-contour selection",
+    "no enclosing contour rejected",
+    "sphere field entry"
+  ],
+  "headFits": [
+    {
+      "selection": "nearest-primitive label 1; entire authored region",
+      "vertices": 5269,
+      "center": [
+        0.15078135626167977,
+        -0.005403079517531989,
+        -0.12057282681173676
+      ],
+      "radius": 22.054846575315445,
+      "rmsRadialResidual": 0.1893640984131051,
+      "maxAbsoluteRadialResidual": 1.298352054991728
+    },
+    {
+      "selection": "label 1 and distance to authored sphere within tolerance",
+      "toleranceDrawingUnits": 0.5,
+      "vertices": 5031,
+      "center": [
+        0.041694110189307354,
+        -0.00035575522635676766,
+        -0.03676501582429692
+      ],
+      "radius": 22.00482131080898,
+      "rmsRadialResidual": 0.061990064118172095,
+      "maxAbsoluteRadialResidual": 0.4543784049133279
+    },
+    {
+      "selection": "label 1 and distance to authored sphere within tolerance",
+      "toleranceDrawingUnits": 1,
+      "vertices": 5174,
+      "center": [
+        0.09374078601244773,
+        0.0007534142621804726,
+        -0.080687667412078
+      ],
+      "radius": 22.029959722721795,
+      "rmsRadialResidual": 0.12712039057464233,
+      "maxAbsoluteRadialResidual": 0.8753432131964161
+    },
+    {
+      "selection": "label 1 and distance to authored sphere within tolerance",
+      "toleranceDrawingUnits": 2,
+      "vertices": 5269,
+      "center": [
+        0.15078135626167977,
+        -0.005403079517531989,
+        -0.12057282681173676
+      ],
+      "radius": 22.054846575315445,
+      "rmsRadialResidual": 0.1893640984131051,
+      "maxAbsoluteRadialResidual": 1.298352054991728
+    }
+  ],
+  "sections": {
+    "method": "whole-mesh plane intersections; segment-length-weighted contour centroid; planes from authored axes",
+    "values": {
+      "neck": [
+        {
+          "fraction": 0.25,
+          "origin": [
+            19.5,
+            -1,
+            -13.5
+          ],
+          "normal": [
+            0.8826958385893169,
+            -0.08406627034183971,
+            -0.4623644868801184
+          ],
+          "segments": 166,
+          "components": 1,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 79.29494239127257,
+          "perimeterWeightedCentroid": [
+            19.569322669452408,
+            -1.0612025460517724,
+            -13.356528986308742
+          ],
+          "centroidToConstructionAxisDistance": 0.17069070247914564,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 166,
+              "perimeter": 79.29494239127257,
+              "perimeterWeightedCentroid": [
+                19.569322669452408,
+                -1.0612025460517724,
+                -13.356528986308742
+              ],
+              "containsAxisOrigin": true,
+              "centroidToConstructionAxisDistance": 0.17069070247914564
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 166,
+            "perimeter": 79.29494239127257,
+            "perimeterWeightedCentroid": [
+              19.569322669452408,
+              -1.0612025460517724,
+              -13.356528986308742
+            ],
+            "containsAxisOrigin": true,
+            "centroidToConstructionAxisDistance": 0.17069070247914564
+          },
+          "anatomicalAxisApproved": false
+        },
+        {
+          "fraction": 0.5,
+          "origin": [
+            30,
+            -2,
+            -19
+          ],
+          "normal": [
+            0.8826958385893169,
+            -0.08406627034183971,
+            -0.4623644868801184
+          ],
+          "segments": 169,
+          "components": 1,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 81.53971878736479,
+          "perimeterWeightedCentroid": [
+            30.000145659329263,
+            -2.0002885020840036,
+            -18.999669468174314
+          ],
+          "centroidToConstructionAxisDistance": 0.0004622784663672292,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 169,
+              "perimeter": 81.53971878736479,
+              "perimeterWeightedCentroid": [
+                30.000145659329263,
+                -2.0002885020840036,
+                -18.999669468174314
+              ],
+              "containsAxisOrigin": true,
+              "centroidToConstructionAxisDistance": 0.0004622784663672292
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 169,
+            "perimeter": 81.53971878736479,
+            "perimeterWeightedCentroid": [
+              30.000145659329263,
+              -2.0002885020840036,
+              -18.999669468174314
+            ],
+            "containsAxisOrigin": true,
+            "centroidToConstructionAxisDistance": 0.0004622784663672292
+          },
+          "anatomicalAxisApproved": false
+        },
+        {
+          "fraction": 0.75,
+          "origin": [
+            40.5,
+            -3,
+            -24.5
+          ],
+          "normal": [
+            0.8826958385893169,
+            -0.08406627034183971,
+            -0.4623644868801184
+          ],
+          "segments": 269,
+          "components": 2,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 129.40352995100767,
+          "perimeterWeightedCentroid": [
+            43.766348568914104,
+            -4.359549436456343,
+            -18.017052834535495
+          ],
+          "centroidToConstructionAxisDistance": 7.385527171029854,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 18,
+              "perimeter": 6.235462284433878,
+              "perimeterWeightedCentroid": [
+                28.535702430014968,
+                -16.324245291702923,
+                -44.91834167148003
+              ],
+              "containsAxisOrigin": false,
+              "centroidToConstructionAxisDistance": 27.158582539409437
+            },
+            {
+              "index": 1,
+              "closed": true,
+              "vertices": 251,
+              "perimeter": 123.16806766657373,
+              "perimeterWeightedCentroid": [
+                44.537409781173764,
+                -3.753829048343456,
+                -16.655157863514912
+              ],
+              "containsAxisOrigin": true,
+              "centroidToConstructionAxisDistance": 8.85496945910125
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 1,
+            "closed": true,
+            "vertices": 251,
+            "perimeter": 123.16806766657373,
+            "perimeterWeightedCentroid": [
+              44.537409781173764,
+              -3.753829048343456,
+              -16.655157863514912
+            ],
+            "containsAxisOrigin": true,
+            "centroidToConstructionAxisDistance": 8.85496945910125
+          },
+          "anatomicalAxisApproved": false
+        }
+      ],
+      "proximalShaft": [
+        {
+          "fraction": 0.25,
+          "origin": [
+            52.25,
+            -0.75,
+            -74
+          ],
+          "normal": [
+            -0.08541258277910502,
+            0.06988302227381318,
+            -0.9938918723386765
+          ],
+          "segments": 196,
+          "components": 1,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 93.36584161017183,
+          "perimeterWeightedCentroid": [
+            52.249619825815344,
+            -0.7496451880601411,
+            -73.99994238106642
+          ],
+          "centroidToConstructionAxisDistance": 0.0005232053754045825,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 196,
+              "perimeter": 93.36584161017183,
+              "perimeterWeightedCentroid": [
+                52.249619825815344,
+                -0.7496451880601411,
+                -73.99994238106642
+              ],
+              "containsAxisOrigin": true,
+              "centroidToConstructionAxisDistance": 0.0005232053754045825
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 196,
+            "perimeter": 93.36584161017183,
+            "perimeterWeightedCentroid": [
+              52.249619825815344,
+              -0.7496451880601411,
+              -73.99994238106642
+            ],
+            "containsAxisOrigin": true,
+            "centroidToConstructionAxisDistance": 0.0005232053754045825
+          },
+          "anatomicalAxisApproved": false
+        },
+        {
+          "fraction": 0.5,
+          "origin": [
+            49.5,
+            1.5,
+            -106
+          ],
+          "normal": [
+            -0.08541258277910502,
+            0.06988302227381318,
+            -0.9938918723386765
+          ],
+          "segments": 198,
+          "components": 1,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 86.28924839738096,
+          "perimeterWeightedCentroid": [
+            49.5000502725728,
+            1.5000453471346722,
+            -106.00000113182878
+          ],
+          "centroidToConstructionAxisDistance": 0.00006771244520232114,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 198,
+              "perimeter": 86.28924839738096,
+              "perimeterWeightedCentroid": [
+                49.5000502725728,
+                1.5000453471346722,
+                -106.00000113182878
+              ],
+              "containsAxisOrigin": true,
+              "centroidToConstructionAxisDistance": 0.00006771244520232114
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 198,
+            "perimeter": 86.28924839738096,
+            "perimeterWeightedCentroid": [
+              49.5000502725728,
+              1.5000453471346722,
+              -106.00000113182878
+            ],
+            "containsAxisOrigin": true,
+            "centroidToConstructionAxisDistance": 0.00006771244520232114
+          },
+          "anatomicalAxisApproved": false
+        },
+        {
+          "fraction": 0.75,
+          "origin": [
+            46.75,
+            3.75,
+            -138
+          ],
+          "normal": [
+            -0.08541258277910502,
+            0.06988302227381318,
+            -0.9938918723386765
+          ],
+          "segments": 178,
+          "components": 1,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 79.2113269631072,
+          "perimeterWeightedCentroid": [
+            46.749438677107534,
+            3.7502026730617737,
+            -137.9999375108643
+          ],
+          "centroidToConstructionAxisDistance": 0.0006000538739610175,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 178,
+              "perimeter": 79.2113269631072,
+              "perimeterWeightedCentroid": [
+                46.749438677107534,
+                3.7502026730617737,
+                -137.9999375108643
+              ],
+              "containsAxisOrigin": true,
+              "centroidToConstructionAxisDistance": 0.0006000538739610175
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 178,
+            "perimeter": 79.2113269631072,
+            "perimeterWeightedCentroid": [
+              46.749438677107534,
+              3.7502026730617737,
+              -137.9999375108643
+            ],
+            "containsAxisOrigin": true,
+            "centroidToConstructionAxisDistance": 0.0006000538739610175
+          },
+          "anatomicalAxisApproved": false
+        }
+      ]
+    }
+  },
+  "fossaLabelRegion": {
+    "vertices": 342,
+    "min": [
+      41.400001525878906,
+      -23,
+      -32.821659088134766
+    ],
+    "max": [
+      54.297401428222656,
+      -13.110050201416016,
+      -11.454978942871094
+    ],
+    "meaning": "procedural label 5, not audited anatomical fossa boundary"
+  },
+  "fossaDirectionalProfile": {
+    "method": "ray through cavity center, directed from outside toward greater-trochanter construction center",
+    "rayOrigin": [
+      -0.30909309020140086,
+      -85.51239966845645,
+      -22
+    ],
+    "rayDirection": [
+      0.5913636636275175,
+      0.8064049958557056,
+      0
+    ],
+    "carvedFieldEntry": {
+      "distanceFromRayOrigin": 87.6033592212653,
+      "position": [
+        51.49635036496351,
+        -14.868613138686129,
+        -22
+      ]
+    },
+    "uncarvedFieldEntry": {
+      "distanceFromRayOrigin": 81.0967838593821,
+      "position": [
+        47.64859812129172,
+        -20.115548016420377,
+        -22
+      ]
+    },
+    "directionalRecession": 6.506575361883193,
+    "meshIntersectionDistances": [
+      87.53415488793337,
+      115.79386347846838
+    ],
+    "firstMeshVsFieldDifference": -0.06920433333192477
+  },
+  "limitations": [
+    "author-derived labels and planes; no independent anatomical segmentation",
+    "vertex-weighted algebraic sphere fit; no area weighting or clinical validation",
+    "section centroid is a contour statistic, not a validated neck or shaft axis",
+    "one directional ray is not maximum fossa depth or tendon footprint",
+    "no anatomical tolerance, clinical angle or physical scale approval; iPhone not tested"
+  ],
+  "anatomicalApproval": false,
+  "physicalScaleValidated": false,
+  "iPhoneNewVersion": "not tested"
+}

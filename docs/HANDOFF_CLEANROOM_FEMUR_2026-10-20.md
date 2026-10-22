@@ -118,3 +118,9 @@ v0.2には2026-10-15のユーザー提供録画の記録があり、3D/方向変
 - [表面の数値診断](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_FEMUR_SURFACE_DIAGNOSTICS_V0.1.md) と測定コード tools/cleanroom/measure-femur-surface-v0.1.cjs、実行結果 docs/validation/cleanroom-femur-surface-diagnostics-v0.1.json を追加。
 - buildMesh()由来表面の球当てはめ、断面輪郭、一方向の凹みプロファイルを計算済み。臨床計測・解剖学的承認ではない。
 - 頸部75%断面が2輪郭となり、軸点を囲む輪郭の中心も不安定。頸部の評価領域定義が必要。iPhone未確認。形状・公開ページの改訂はなし。
+
+## 頸部91断面と独立資料の照合（2026-10-22追記）
+- [頸部の範囲・形状レビュー](https://github.com/s922h86hh8-tech/body-map-prototype/blob/cleanroom-pelvis-v0.1/docs/CLEANROOM_FEMUR_NECK_REGION_REVIEW_V0.1.md) を追加。
+- 測定コードv0.2で造形軸沿い91断面を実計算。造形ラベル95%以上の20–63%区間と、28%の最小面積サンプルを記録したが、解剖学的ROI/峡部として未承認。
+- 現行頸部のほぼ円形の断面を次の改訂検討項目へ追加。独立論文との方法差、無単位とmmの違いを保持。
+- コード/結果/文書のみ追加更新。次は楕円状断面の独自造形方式を別版で検討。iPhone実機未確認。

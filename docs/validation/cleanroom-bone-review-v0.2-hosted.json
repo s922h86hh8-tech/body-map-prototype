@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-23",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.2.html",
+  "public_commit": "b5e3f7911a562d1e44675a479d3817ff2c14c943",
+  "work_implementation_commit": "271d7ac0206b54b9fe4d8a08dfc56542fe4babfa",
+  "pages_run": {
+    "id": 39966281185,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "http": {
+    "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.2.html",
+    "status": 200,
+    "bytes": 44137,
+    "sha256": "9c863e23907a2d5d37911cb23a841203e06dfb10bb6dbed8520ebe79a84afc73"
+  },
+  "verified_html_matches": true,
+  "browser": "Cloud Chrome; not iPhone",
+  "observed": [
+    "New skull fixed front/right/top and oblique image",
+    "Skull orbit and jaw focus; old/new selection retains enlarged view",
+    "Jaw and teeth checkbox states off/on",
+    "New/old lumbar selection and correct vertex counts",
+    "Lumbar facet/spinous focus buttons, reset/top actions",
+    "Final skull reset visibly restored whole model"
+  ],
+  "browser_screenshot": "docs/validation/cleanroom-bone-review-v0.2-browser.jpg",
+  "vm_controls": "See technical validation JSON for five focuses, camera signs, fixed views unchanged, pinch/rotation and other callback assertions",
+  "iphone_tested": false,
+  "independent_anatomical_audit": false,
+  "anatomical_approval": false,
+  "whole_body_adoption": "on hold",
+  "limitations": [
+    "Arbitrary authored coordinates; no independently measured dimensions",
+    "Approximate facets and coronoid/condyle surfaces; jaw occlusion unvalidated",
+    "No rigorous self-intersection check",
+    "Full-page screenshot timed out; saved viewport proof"
+  ]
+}

@@ -1,0 +1,137 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>身体の地図｜独自全身骨格 0.2</title><style>
+[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:#101c24;color:#edf2ef;font:15px/1.6 system-ui,sans-serif}header{padding:16px 20px;border-bottom:1px solid #32434a}h1{font-size:21px;margin:0}small,.muted{color:#b5c4c6}main{display:grid;grid-template-columns:minmax(0,1fr) 290px;max-width:1400px;margin:auto}.stage{position:relative;min-width:0}canvas{width:100%;height:76dvh;min-height:420px;display:block;touch-action:none;background:radial-gradient(ellipse at center,#243640,#101c24)}.badge{position:absolute;left:16px;top:12px;pointer-events:none}.badge strong{display:block;color:#94e6c4}aside{padding:16px;background:#182831}.regions{display:grid;grid-template-columns:1fr 1fr;gap:6px}button,select,a.action{font:inherit;color:#edf2ef;background:#263b44;border:1px solid #52646c;border-radius:9px;padding:9px 11px;text-decoration:none}button{cursor:pointer;min-height:44px}button[aria-pressed=true]{background:#316651;border-color:#94e6c4}label{display:inline-flex;gap:6px;align-items:center}nav{display:flex;flex-wrap:wrap;gap:7px;padding:10px 16px}.info{padding:0 16px 20px;max-width:800px}h2{font-size:18px;margin:16px 0 6px}p{margin:8px 0}.status{color:#efce9c}.action{display:inline-block;margin-top:8px}footer{padding:14px 20px 110px;color:#b5c4c6;font-size:13px}details{margin-top:12px}select{max-width:100%}@media(max-width:700px){main{display:block}canvas{height:64dvh;min-height:390px}aside{padding:12px 16px}.regions{grid-template-columns:repeat(3,1fr)}header{padding:12px 16px}h1{font-size:19px}button{padding:8px;font-size:14px}}
+</style><header><h1>身体の地図 <small>独自全身骨格 0.2</small></h1><div class="status">模式モデル・全身形状は解剖学的監査前</div></header><main><section class="stage"><canvas id="view" aria-label="全身骨格。ドラッグで回転、2本指または拡大ボタンで拡大縮小" tabindex="0"></canvas><div class="badge"><strong id="current">全身</strong><span id="direction">前から</span> · <span id="count"></span></div><nav aria-label="表示操作"><button data-view="front">前</button><button data-view="back">後ろ</button><button data-view="right">右側</button><button data-view="left">左側</button><button data-view="oblique">斜め</button><button data-view="top">上から</button><button id="plus" aria-label="拡大">＋</button><button id="minus" aria-label="縮小">−</button><button id="reset">全身に戻す</button></nav><div class="info"><p>ドラッグで回転。2本指で拡大縮小。キーボードは矢印キー・＋・−・0。</p><h2 id="title">全身の位置関係</h2><p id="description">頭蓋、脊柱、胸郭、骨盤、上下肢を組み立てた独自の模式骨格です。</p><p id="limitations" class="muted"></p><a class="action" id="detail" href="cleanroom-femur-study-v0.4.html" hidden>右大腿骨近位部の詳細試作へ →</a></div></section><aside><h2 style="margin-top:0">部位から見る</h2><div class="regions" id="regions"></div><p><label>左右 <select id="side"><option value="both">両側</option><option value="R">右</option><option value="L">左</option></select></label></p><p><label><input type="checkbox" id="isolate"> 選んだ部位だけ表示</label></p><p class="muted">緑色が選択範囲。周囲の骨を残して位置関係を確認できます。身体の右は正面表示の画面左です。</p><details><summary>形状と制作状況</summary><p>v0.2では肩・骨盤・膝の高さと腕脚の配分を、成人の人体寸法統計を参考に調整しました。骨の関節中心を実測したモデルではありません。</p><p>比率の参考：<a href="https://www.airc.aist.go.jp/dhrt/fbodydb/index.html">産業技術総合研究所 AIST/HQL人体寸法・形状データベース2003</a>（青年男性群の公開集計値）。頭部・足部・骨面の詳細寸法は独自の模式設計です。頭蓋と椎骨などの構造はGray 1918の原著記述と照合し、画像輪郭・頂点を取り込まず造形しました。</p><p>第三者のメッシュ・スキャン・画像輪郭を使わず、このページの式から生成しています。寸法は無単位の描画値です。</p><p>頭蓋・椎骨・肩甲骨・骨盤の形を追加していますが、縫合・細かな関節面、手根骨・足根骨の個別形状などは未制作です。骨の部品数は人体の骨数を表しません。筋・腱・靱帯もまだ含みません。</p><p>大腿骨の詳細試作は別ページに保持しています。この全身版の大腿骨は位置確認用の簡略形状です。</p></details></aside></main><footer><a href="cleanroom-whole-body-v0.1.html">旧版0.1と比較</a> · 独自制作の全身への第一段階。実寸計測や施術判断に使用できる精度には未到達です。iPhone実機での操作確認は未実施。</footer><noscript>表示にはJavaScriptを有効にしてください。</noscript>
+<script>
+'use strict';
+// Original authored construction. X=subject right, Y=anterior, Z=superior.
+// Arbitrary drawing units; no third-party meshes or measured coordinates.
+const REGIONS=[
+['head','頭部・顔面','眼窩・鼻部・頬骨弓・上下顎と歯列を追加。','骨の縫合・鼻腔内部・細かな孔と関節面は未制作。骨面の監査は未完了。'],
+['neck','頸部','環椎・軸椎と典型頸椎の形を分け、椎孔・突起を追加。','個々の関節面と横突孔・椎孔の寸法や形状精度は未承認。'],
+['shoulder','肩部','鎖骨と肩甲骨の概形。','肩甲骨体・肩甲棘・肩峰・烏口突起を追加。関節面は簡略形状。'],
+['chest','胸部','左右12対の肋骨と胸骨。','肋軟骨・各肋骨の詳細形状は未制作。'],
+['back','背部','胸椎12個に椎体・椎弓・横突起・後下方へ向く棘突起を追加。','胸郭の後部は胸部に分類。筋は未制作。'],
+['lumbar','腰部・腹部','腰椎5個に幅の広い椎体・椎弓・棘突起・横突起を追加。','腹部の筋・臓器は含まない。'],
+['pelvis','殿部・骨盤','左右の寛骨、仙骨、尾骨の概形。','腸骨翼・恥骨枝・坐骨枝・仙骨孔を追加。関節面・筋付着は未承認。'],
+['arm','上腕','左右の上腕骨。','骨頭・顆・結節の精密形状は未制作。'],
+['forearm','前腕','左右の橈骨と尺骨。','回内外の動きや関節面は未制作。'],
+['hand','手','手根部・中手骨・指節の模式配置。','手根骨はまとめて表示。母指の向きと関節面は要監査。'],
+['thigh','大腿','左右の大腿骨と膝蓋骨。','全身版は簡略形状。右近位部の詳細試作は別ページ。'],
+['leg','下腿','左右の脛骨と腓骨。','膝・足関節面と骨間の正確な距離は未監査。'],
+['foot','足','足根部・中足骨・趾節の模式配置。','足根骨はまとめて表示。足弓と各関節は未制作。']];
+const objects=[];
+const add=(name,region,side,verts,faces)=>objects.push({name,region,side,verts,faces});
+const V={sub:(a,b)=>a.map((v,i)=>v-b[i]),add:(a,b)=>a.map((v,i)=>v+b[i]),mul:(a,s)=>a.map(v=>v*s),cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],unit:a=>{let n=Math.hypot(...a);return a.map(v=>v/n)}};
+function ell(name,reg,side,c,r){let vs=[],fs=[],n=12,m=8;vs.push([c[0],c[1],c[2]+r[2]]);for(let j=1;j<m;j++)for(let i=0;i<n;i++){let t=j*Math.PI/m,p=i*2*Math.PI/n;vs.push([c[0]+r[0]*Math.sin(t)*Math.cos(p),c[1]+r[1]*Math.sin(t)*Math.sin(p),c[2]+r[2]*Math.cos(t)])}let bot=vs.length;vs.push([c[0],c[1],c[2]-r[2]]);for(let i=0;i<n;i++){fs.push([0,1+i,1+(i+1)%n]);fs.push([bot,1+(m-2)*n+(i+1)%n,1+(m-2)*n+i])}for(let j=0;j<m-2;j++)for(let i=0;i<n;i++){let a=1+j*n+i,b=1+j*n+(i+1)%n;fs.push([a,a+n,b],[b,a+n,b+n])}add(name,reg,side,vs,fs)}
+function tube(name,reg,side,pts,r){let vs=[],fs=[],n=8;pts.forEach((p,j)=>{let d=V.unit(V.sub(pts[Math.min(j+1,pts.length-1)],pts[Math.max(0,j-1)]));let u=V.unit(V.cross(d,Math.abs(d[2])<.9?[0,0,1]:[0,1,0])),v=V.cross(d,u);for(let i=0;i<n;i++){let a=i*2*Math.PI/n;vs.push(V.add(p,V.add(V.mul(u,r*Math.cos(a)),V.mul(v,r*Math.sin(a)))))}});for(let j=0;j<pts.length-1;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n;fs.push([a,b,a+n],[b,b+n,a+n])}let a=vs.length;vs.push(pts[0],pts.at(-1));for(let i=0;i<n;i++)fs.push([a,(i+1)%n,i],[a+1,(pts.length-1)*n+i,(pts.length-1)*n+(i+1)%n]);add(name,reg,side,vs,fs)}
+function bone(name,reg,s,a,b,r){tube(name,reg,s,[a,b],r);ell(name+'近位',reg,s,a,[r*1.4,r*1.35,r*1.4]);ell(name+'遠位',reg,s,b,[r*1.4,r*1.35,r*1.4])}
+const PROPORTIONS={"version":"0.2","morphology_source":"Gray 1918 original descriptions; skull, cervical/thoracic/lumbar spine, scapula, hip bone; source list in handoff","units":"arbitrary drawing units","height":177,"source":"https://www.airc.aist.go.jp/dhrt/fbodydb/2003_Statistics.pdf","cohort":"young adult male, N=49; ratio of aggregate means, not population mean of individual ratios","means_mm":{"height":1696.7,"acromiale":1363.5,"iliocristale":957.2,"trochanterion_laterale":832.0,"mid_patella":448.9,"upper_arm":315.5,"forearm":250.8},"design":{"cranial_center":[0,-1.7,168],"cranial_radii":[7.5,9.2,9],"ankle_z":7,"hip_head_above_trochanter":3,"foot_y_scale":1.3},"limitations":"Surface anthropometry guides vertical layout only. Bone centers, widths, head and foot dimensions are original schematic design; no skeletal measurement or individual scan."};
+const BODY_H=PROPORTIONS.height, M=PROPORTIONS.means_mm;
+const A={shoulder:BODY_H*M.acromiale/M.height,crest:BODY_H*M.iliocristale/M.height,trochanter:BODY_H*M.trochanterion_laterale/M.height,knee:BODY_H*M.mid_patella/M.height};
+A.radial=A.shoulder-BODY_H*M.upper_arm/M.height;A.wrist=A.radial-BODY_H*M.forearm/M.height;
+// Original qualitative construction from anatomical descriptions, not traced vertices.
+// No dimensions here are measured bone dimensions.
+function implicitMesh(name,reg,side,field,lo,hi,step){
+ const n=lo.map((v,i)=>Math.ceil((hi[i]-v)/step)+1),idx=(x,y,z)=>x+n[0]*(y+n[1]*z),values=new Float64Array(n[0]*n[1]*n[2]),coords=[];
+ for(let z=0;z<n[2];z++)for(let y=0;y<n[1];y++)for(let x=0;x<n[0];x++){let p=[lo[0]+x*step,lo[1]+y*step,lo[2]+z*step],k=idx(x,y,z);coords[k]=p;values[k]=field(p)}
+ const vs=[],fs=[],cache=new Map(),corners=[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]],tets=[[0,1,2,6],[0,2,3,6],[0,3,7,6],[0,7,4,6],[0,4,5,6],[0,5,1,6]];
+ function vertex(a,b){let t=values[a]/(values[a]-values[b]);const end=t<1e-7?a:t>1-1e-7?b:null,key=end!==null?'p'+end:a<b?a+':'+b:b+':'+a;if(cache.has(key))return cache.get(key);let p=end!==null?coords[end]:coords[a].map((v,i)=>v+t*(coords[b][i]-v)),k=vs.length;vs.push(p);cache.set(key,k);return k}
+ function tri(a,b,c){if(a===b||b===c||a===c)return;let norm=V.cross(V.sub(vs[b],vs[a]),V.sub(vs[c],vs[a]));if(Math.hypot(...norm)<1e-10)return;let p=vs[a].map((v,i)=>(v+vs[b][i]+vs[c][i])/3),g=[0,1,2].map(i=>{let h=[...p],l=[...p];h[i]+=.02;l[i]-=.02;return field(h)-field(l)});if(norm.reduce((s,v,i)=>s+v*g[i],0)<0)[b,c]=[c,b];fs.push([a,b,c])}
+ for(let z=0;z<n[2]-1;z++)for(let y=0;y<n[1]-1;y++)for(let x=0;x<n[0]-1;x++){let c=corners.map(a=>idx(x+a[0],y+a[1],z+a[2]));if(c.every(k=>values[k]<0)||c.every(k=>values[k]>=0))continue;for(let t of tets){let a=t.map(k=>c[k]).filter(k=>values[k]<0),b=t.map(k=>c[k]).filter(k=>values[k]>=0);if(a.length===1)tri(...b.map(k=>vertex(a[0],k)));else if(a.length===3)tri(...a.map(k=>vertex(k,b[0])));else if(a.length===2){let q=[vertex(a[0],b[0]),vertex(a[0],b[1]),vertex(a[1],b[0]),vertex(a[1],b[1])];tri(q[0],q[1],q[2]);tri(q[1],q[3],q[2])}}}
+ add(name,reg,side,vs,fs);
+}
+function ed(p,c,r){return (Math.hypot(...p.map((v,i)=>(v-c[i])/r[i]))-1)*Math.min(...r)}
+function smoothMin(a,b,k){let h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25}
+function skullField(p){
+ let d=ed(p,[0,-1.7,168],[7.5,9.2,9]);
+ d=smoothMin(d,ed(p,[0,4.6,160.1],[5.6,4.6,4.5]),1.1);
+ for(let s of [-1,1]){d=smoothMin(d,ed(p,[s*5.9,5.6,161.3],[1.4,1.7,1.6]),.8);d=Math.max(d,-ed(p,[s*3.45,8.9,163.6],[2.3,4.2,2.25]))}
+ // Piriform aperture approximation: narrower upper end, wider lower end.
+ const nw=1.15+.25*Math.max(0,160.8-p[2]);
+ d=Math.max(d,-ed(p,[0,9,159.9],[nw,3.6,2.15]));
+ // Qualitative foramen magnum opening; internal cranial anatomy is not modeled.
+ d=Math.max(d,-ed(p,[0,-1,156.8],[2.6,3.1,3.3]));return d;
+}
+function skull(){
+ implicitMesh('頭蓋・眼窩・梨状口','head','M',skullField,[-9,-12,154],[9,11,178],.7);
+ for(let s of [-1,1]){tube('頬骨弓','head','M',[[s*6.3,6,161],[s*7.6,3,161],[s*7.3,-.8,161]],.62);ell('乳様突起','head','M',[s*5.9,-1.7,157.9],[1,1.1,1.7]);
+ let outline=[[s*5.8,-.2,159],[s*6.1,1.3,153.1],[s*4.9,4.5,153.4],[s*5.1,3.6,158.5],[s*5.9,1.7,157.5]],rv=[...outline.map(p=>[p[0]-.4,p[1],p[2]]),...outline.map(p=>[p[0]+.4,p[1],p[2]])],rf=[];for(let i=1;i<4;i++)rf.push([0,i,i+1],[5,5+i+1,5+i]);for(let i=0;i<5;i++){let k=(i+1)%5;rf.push([i,k,i+5],[k,k+5,i+5])}add('下顎枝','head','M',rv,rf);ell('下顎頭','head','M',[s*5.8,-.2,159],[1.1,.7,.65]);tube('下顎筋突起','head','M',[[s*5.9,2.2,154.8],[s*5.1,3.6,158.5]],.6)}
+ let jaw=[],upper=[];for(let i=0;i<=20;i++){let t=i*Math.PI/20;jaw.push([5.8*Math.cos(t),3.1+5.7*Math.sin(t),152.8-.7*Math.sin(t)]);upper.push([4.8*Math.cos(t),3.4+5.3*Math.sin(t),156])}
+ tube('下顎体','head','M',jaw,1.05);tube('上顎歯槽弓','head','M',upper,.85);
+ for(let i=0;i<16;i++){let t=(i+.5)*Math.PI/16,x=4.7*Math.cos(t),y=3.5+5.4*Math.sin(t),rz=.5;ell('上顎歯冠'+(i+1),'head','M',[x,y,155.1],[.43,.56,rz]);ell('下顎歯冠'+(i+1),'head','M',[x*.96,y-.1,153.95],[.42,.52,rz])}
+}
+// Ringed loft with flat endplates and a shallow kidney indentation posteriorly.
+function vertebralBody(name,reg,c,w,depth,h){let vs=[],fs=[],n=16;
+ for(let j=0;j<4;j++){let z=[-h,-h*.67,h*.67,h][j],q=j===0||j===3?1:.92;for(let i=0;i<n;i++){let t=i*2*Math.PI/n,x=w*Math.cos(t)*q,y=depth*Math.sin(t)*q;if(y<0)y+=.42*Math.exp(-x*x/(w*w*.18));vs.push([c[0]+x,c[1]+y,c[2]+z])}}
+ let a=vs.length;vs.push([c[0],c[1],c[2]-h],[c[0],c[1],c[2]+h]);for(let i=0;i<n;i++){let k=(i+1)%n;fs.push([a,k,i],[a+1,3*n+i,3*n+k]);for(let j=0;j<3;j++){let u=j*n+i,v=j*n+k;fs.push([u,v,u+n],[v,v+n,u+n])}}add(name,reg,'M',vs,fs)
+}
+function spine(){
+ for(let i=0;i<24;i++){
+  const neck=i<7,thor=i>=7&&i<19,reg=neck?'neck':thor?'back':'lumbar',level=neck?'C'+(i+1):thor?'T'+(i-6):'L'+(i-18);
+  let z=neck?157-i*1.2:thor?147.2-(i-7)*2.4:117.7-(i-19)*3.1;
+  let y=neck?1.4+1.1*Math.sin(i*Math.PI/6):thor?-3.3*Math.sin((i-7)*Math.PI/11):2.5*Math.sin((i-19)*Math.PI/5);
+  let w=neck?2.1:thor?2.5+(i-7)*.07:3.7+(i-19)*.12,depth=neck?1.4:thor?2:2.5,h=neck?.43:thor?.8:1.07;
+  if(i===0){let ring=[];for(let k=0;k<=20;k++){let t=k*2*Math.PI/20;ring.push([3.2*Math.cos(t),y-1.5+2.5*Math.sin(t),z])}tube('C1環椎輪','neck','M',ring,.5);for(let s of [-1,1])ell('C1外側塊','neck','M',[s*2.8,y-1.2,z],[.8,1.1,.75]);continue}
+  vertebralBody('椎体'+(i+1),reg,[0,y,z],w,depth,h);
+  if(i===1){tube('C2歯突起','neck','M',[[0,y,z+.3],[0,y,z+1.5]],.55);ell('C2歯突起先端','neck','M',[0,y,z+1.5],[.55,.55,.6])}
+  const archY=y-depth-2.4,span=neck?2.4:thor?2.7:3.2;
+  for(let s of [-1,1]){
+   tube(level+'椎弓根・椎弓板',reg,'M',[[s*w*.75,y-depth*.4,z],[s*span,y-depth-1.4,z],[s*1.4,archY,z],[0,archY-.5,z]],neck?.42:.62);
+   if(neck){let pts=[];for(let k=0;k<=12;k++){let t=k*2*Math.PI/12;pts.push([s*(3.1+.7*Math.cos(t)),y-1+.75*Math.sin(t),z])}tube(level+'横突孔周囲','neck','M',pts,.3)}
+   else tube(level+'横突起',reg,'M',[[s*span,y-depth-1,z],[s*(thor?5.2:6),y-depth-(thor?2:1.2),z+(thor?.3:0)]],thor?.55:.5);
+   ell(level+'関節突起模式',reg,'M',[s*span,y-depth-1.3,z+h*.65],[.65,.75,h*.8]);
+  }
+  if(neck&&i<6){for(let s of [-1,1])tube(level+'二分棘突起',reg,'M',[[0,archY-.3,z],[s*.55,archY-1.8,z-.25]],.35)}
+  else tube(level+'棘突起',reg,'M',[[0,archY-.3,z],[0,archY-(thor?3.6:2.7),z-(thor?(i>9&&i<15?2.1:1):.1)]],thor?.6:neck?.45:.95);
+ }
+}
+// Curved thin plate with a ridge, acromion and coracoid, rather than a tetrahedron.
+function scapula(s){let side=s>0?'R':'L',z=A.shoulder,p=(x,y,h)=>[s*x,y,h];
+ let rows=[[5.5,-6.5,z-1],[10,-8,z-3],[18,-6,z-1],[19.5,-5,z-4],[13,-8,z-17],[8,-8,z-11]],vs=rows.map(v=>p(...v)),fs=[[0,1,5],[1,4,5],[1,3,4],[1,2,3]];add('肩甲骨体','shoulder',side,vs,fs);
+ tube('肩甲棘','shoulder',side,[p(6,-7,z-4),p(12,-9,z-4),p(18,-7,z-2)],.75);tube('肩峰','shoulder',side,[p(18,-7,z-2),p(21,-3,z+.1),p(21.5,1,z)],1);tube('烏口突起','shoulder',side,[p(18,-4,z-3),p(18,1,z-2),p(17.5,3,z-3)],.6);ell('関節窩模式','shoulder',side,p(20,-2,z-3.2),[.8,1.4,2]);
+}
+// Iliac fan surfaces and pubic/ischial rami leave a real opening in projection.
+function pelvisSide(s){let side=s>0?'R':'L',p=(x,y,z)=>[s*x,y,z],top=A.crest-1,hip=A.trochanter+3;
+ let rim=[[4,-4,top-3],[6,-7,top],[11,-7,top+.7],[16,-4,top-.5],[17,0,top-3],[15,4,top-5]],base=[10,-1,hip+1],vs=[p(...base),...rim.map(v=>p(...v))],fs=[];for(let i=1;i<rim.length;i++)fs.push([0,i,i+1]);add('腸骨翼','pelvis',side,vs,fs);tube('腸骨稜','pelvis',side,rim.map(v=>p(...v)),.7);
+ ell('寛骨臼周縁模式','pelvis',side,p(10.8,1,hip),[2.9,2.5,2.5]);
+ tube('恥骨枝','pelvis',side,[p(10,2,hip),p(5,6,hip-4),p(1,6,hip-7)],1.2);
+ tube('坐骨・下恥骨枝','pelvis',side,[p(10,-1,hip),p(10,-3,hip-8),p(7,-1,hip-11),p(1,6,hip-7)],1.25);
+}
+// Tapered, slightly bowed shafts and separate articular-end lobes.
+function shaft(name,reg,side,a,b,r0,r1){let pts=[],vs=[],fs=[],n=12;for(let j=0;j<=8;j++){let t=j/8,p=a.map((v,i)=>v+(b[i]-v)*t);p[1]+=.55*Math.sin(t*Math.PI);let r=(r0+(r1-r0)*t)*(1-.22*Math.sin(t*Math.PI));for(let i=0;i<n;i++){let q=i*2*Math.PI/n;vs.push([p[0]+r*Math.cos(q),p[1]+r*.78*Math.sin(q),p[2]])}}for(let j=0;j<8;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n;fs.push([a,b,a+n],[b,b+n,a+n])}let k=vs.length;vs.push(a,b);for(let i=0;i<n;i++)fs.push([k,(i+1)%n,i],[k+1,8*n+i,8*n+(i+1)%n]);add(name,reg,side,vs,fs)}
+function sacrum(){implicitMesh('仙骨・仙骨孔','pelvis','M',p=>{let width=2.2+(p[2]-86)*.25,d=ed(p,[0,-2,94],[Math.max(2,width),2.6,9]);for(let s of [-1,1])for(let k=0;k<4;k++)d=Math.max(d,-ed(p,[s*(2.5-k*.3),-2,98-k*2.8],[.65,5,.65]));return d},[-7,-6,84],[7,3,104],.7);tube('尾骨','pelvis','M',[[0,-2,86],[0,-.5,83],[0,1,81.5]],.7)}
+
+function build(){
+skull();spine();sacrum();
+bone('胸骨','chest','M',[0,10,A.shoulder-1],[0,12,122],1.8);
+for(const s of [-1,1]){let side=s>0?'R':'L',p=(x,y,z)=>[s*x,y,z];
+for(let i=0;i<12;i++){let z=145.5-i*2.4,w=9+8*Math.sin((i+2)/15*Math.PI),pts=[];for(let j=0;j<=16;j++){let a=j*Math.PI*(i<7?1:.85)/16;pts.push(p(1.5+w*Math.sin(a),-3+7.5*(1-Math.cos(a)),z-4*Math.sin(a/2)))}tube('肋骨'+(i+1),'chest',side,pts,.65)}
+tube('鎖骨','shoulder',side,[p(1,9,A.shoulder),p(8,10,A.shoulder+1),p(16,6,A.shoulder+.5),p(21,3,A.shoulder)],1.25);
+scapula(s);pelvisSide(s);let hip=A.trochanter+3;
+shaft('上腕骨体','arm',side,p(22,1,A.shoulder-3.5),p(27,1,A.radial+2),1.7,1.45);ell('上腕骨頭','arm',side,p(21,0,A.shoulder-2.8),[2.7,2.5,2.7]);ell('上腕骨遠位端','arm',side,p(27,1,A.radial+1),[3,1.8,1.7]);
+bone('橈骨','forearm',side,p(29,2,A.radial),p(33,3,A.wrist),1.15);bone('尺骨','forearm',side,p(26,0,A.radial+1.5),p(29,2,A.wrist),1.05);
+let wrist=A.wrist;
+ell('手根部一括','hand',side,p(31,3,wrist-2.5),[3,1.6,2]);
+for(let d=0;d<5;d++){let x=27.5+d*1.65,z=wrist-5.5-(d===0?1:0),end=wrist-11.5+Math.abs(d-2)*.8;bone('中手骨'+(d+1),'hand',side,p(x,3,z),p(x+(d===0?-3:0),3,end),.55);let n=d===0?2:3;for(let k=0;k<n;k++)bone('指節'+(d+1)+'-'+(k+1),'hand',side,p(x+(d===0?-3:0),3,end-k*2.5),p(x+(d===0?-3:0),3,end-(k+1)*2.5+.3),.5)}
+ell('大腿骨頭','thigh',side,p(8,1,hip),[3.2,3.2,3.2]);bone('大腿骨頸部','thigh',side,p(8,1,hip),p(14,0,A.trochanter),2.1);shaft('大腿骨体','thigh',side,p(14,0,A.trochanter),p(11,0,A.knee+1),2.3,2);ell('大転子模式','thigh',side,p(14,-.3,A.trochanter+1),[2.1,2.2,3.5]);for(let q of [-1,1])ell('大腿骨顆','thigh',side,p(11+q*1.7,-.4,A.knee+1),[1.8,2.5,2.6]);ell('膝蓋骨','thigh',side,p(11,3.5,A.knee),[2.1,1.2,2.4]);
+shaft('脛骨体','leg',side,p(11,0,A.knee-3),p(10,0,7),2,1.3);ell('脛骨近位端','leg',side,p(11,0,A.knee-3),[3.2,2.3,1.5]);ell('内果模式','leg',side,p(9,0,6.5),[1.2,1.4,2]);bone('腓骨','leg',side,p(15,-.6,A.knee-3.5),p(13,-.6,6),.85);
+ell('足根部一括','foot',side,p(11,2,2.3),[3.2,5.8,2.3]);for(let d=0;d<5;d++){let x=8.5+d*1.4,end=15.6-Math.abs(d-1)*.65;bone('中足骨'+(d+1),'foot',side,p(x,6.5,1.5),p(x,end,1.5),.6);let n=d===0?2:3;for(let k=0;k<n;k++)bone('趾節'+(d+1)+'-'+(k+1),'foot',side,p(x,end+k*2.08,1.5),p(x,end+(k+1)*2.08-.2,1.5),.48)}
+}}
+build();
+const canvas=document.getElementById('view'),ctx=canvas.getContext('2d');
+const state={region:null,side:'both',isolate:false,yaw:0,pitch:0,zoom:1};let W=0,H=0,projected=[];
+const $=id=>document.getElementById(id);
+function chosen(o){return (!state.region||o.region===state.region)&&(state.side==='both'||o.side==='M'||o.side===state.side)}
+function bounds(){let vs=objects.filter(chosen).flatMap(o=>o.verts);let lo=[0,1,2].map(i=>Math.min(...vs.map(v=>v[i]))),hi=[0,1,2].map(i=>Math.max(...vs.map(v=>v[i])));return {c:lo.map((v,i)=>(v+hi[i])/2),span:Math.hypot(...V.sub(hi,lo))}}
+function transform(p,c){let x=p[0]-c[0],y=p[1]-c[1],z=p[2]-c[2],a=state.yaw,b=state.pitch;let u=x*Math.cos(a)+y*Math.sin(a),d=-x*Math.sin(a)+y*Math.cos(a);return [-u,z*Math.cos(b)-d*Math.sin(b),z*Math.sin(b)+d*Math.cos(b)]}
+function draw(){if(!ctx)return;let r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);W=r.width;H=r.height;canvas.width=Math.round(W*d);canvas.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,W,H);let b=bounds(),fit=objects.filter(chosen).flatMap(o=>o.verts.map(p=>transform(p,b.c))),sx=Math.max(...fit.map(p=>p[0]))-Math.min(...fit.map(p=>p[0])),sz=Math.max(...fit.map(p=>p[1]))-Math.min(...fit.map(p=>p[1])),scale=Math.min(W*.82/Math.max(sx,1),H*.85/Math.max(sz,1))*state.zoom,faces=[];objects.forEach(o=>{let selected=chosen(o);if(state.isolate&&!selected)return;let vs=o.verts.map(p=>transform(p,b.c));o.faces.forEach(f=>{let ps=f.map(i=>vs[i]);let n=V.unit(V.cross(V.sub(ps[1],ps[0]),V.sub(ps[2],ps[0])));let lit=.55+.45*Math.abs(n[0]*.3+n[1]*.4+n[2]*.86);let occlusion=1;if(o.name==='頭蓋・眼窩・梨状口'){let c=f.map(i=>o.verts[i]).reduce((a,p)=>a.map((v,i)=>v+p[i]/3),[0,0,0]);let eye=Math.min(ed(c,[3.45,8.9,163.6],[2.3,4.2,2.25]),ed(c,[-3.45,8.9,163.6],[2.3,4.2,2.25])),nose=ed(c,[0,9,159.9],[1.15+.25*Math.max(0,160.8-c[2]),3.6,2.15]);if(c[1]<9&&(Math.abs(eye)<.22||Math.abs(nose)<.22))occlusion=.5+.4*Math.max(0,(c[1]-5)/4)}faces.push({ps,z:ps.reduce((s,p)=>s+p[2],0)/3,lit:lit*occlusion,selected,seam:o.name==='頭蓋・眼窩・梨状口'})})});faces.sort((a,b)=>a.z-b.z);for(let f of faces){let base=state.region||state.side!=='both'?(f.selected?[107,213,164]:[68,85,94]):[221,217,190];ctx.fillStyle=`rgb(${base.map(v=>Math.round(v*f.lit)).join(',')})`;ctx.beginPath();f.ps.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](W/2+p[0]*scale,H/2-p[1]*scale));ctx.closePath();ctx.fill();if(f.seam){ctx.strokeStyle=ctx.fillStyle;ctx.lineWidth=.35;ctx.stroke()}}$('count').textContent=objects.filter(chosen).length+' 描画部品'}
+function update(){const reg=REGIONS.find(r=>r[0]===state.region);$('current').textContent=(reg?reg[1]:'全身')+(state.side==='R'?'・右':state.side==='L'?'・左':'');$('title').textContent=reg?reg[1]:'全身の位置関係';$('description').textContent=reg?reg[2]:'頭蓋、脊柱、胸郭、骨盤、上下肢を組み立てた独自の模式骨格です。';$('limitations').textContent=reg?reg[3]:'13部位から選んで拡大できます。すべて模式形状・未監査です。';$('detail').hidden=state.region!=='thigh';document.querySelectorAll('[data-region]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.region===state.region)));draw()}
+function selectRegion(id){state.region=id;state.zoom=1;update()}
+for(let r of REGIONS){let b=document.createElement('button');b.textContent=r[1];b.dataset.region=r[0];b.setAttribute('aria-pressed','false');b.addEventListener('click',()=>selectRegion(r[0]));$('regions').appendChild(b)}
+function setView(v){state.yaw={front:0,back:Math.PI,right:Math.PI/2,left:-Math.PI/2,oblique:-.55,top:0}[v];state.pitch=v==='top'?1.25:v==='oblique'?.15:0;$('direction').textContent={front:'前から',back:'後ろから',right:'右から',left:'左から',oblique:'斜めから',top:'上から'}[v];draw()}
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+function zoom(f){state.zoom=Math.max(.45,Math.min(5,state.zoom*f));draw()}
+$('plus').onclick=()=>zoom(1.2);$('minus').onclick=()=>zoom(1/1.2);function reset(){Object.assign(state,{region:null,side:'both',isolate:false,yaw:0,pitch:0,zoom:1});$('side').value='both';$('isolate').checked=false;$('direction').textContent='前から';update()}$('reset').onclick=reset;
+$('side').onchange=e=>{state.side=e.target.value;state.zoom=1;update()};$('isolate').onchange=e=>{state.isolate=e.target.checked;draw()};
+const pointers=new Map();let pinch=0;const separation=()=>{let a=[...pointers.values()];return Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])};canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===2)pinch=separation()});canvas.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;let old=pointers.get(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===1){state.yaw+=(e.clientX-old[0])*.012;state.pitch=Math.max(-1.3,Math.min(1.3,state.pitch+(e.clientY-old[1])*.009));$('direction').textContent='自由回転';draw()}else if(pointers.size===2){let d=separation();if(pinch>0)zoom(d/pinch);pinch=d}});for(let name of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(name,e=>{pointers.delete(e.pointerId);pinch=0});canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(Math.exp(-e.deltaY*.001))},{passive:false});canvas.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','0'].includes(e.key))return;e.preventDefault();if(e.key==='0')return reset();if(['+','=','-'].includes(e.key))return zoom(e.key==='-'?1/1.2:1.2);if(e.key==='ArrowLeft')state.yaw-=.15;if(e.key==='ArrowRight')state.yaw+=.15;if(e.key==='ArrowUp')state.pitch=Math.min(1.3,state.pitch+.1);if(e.key==='ArrowDown')state.pitch=Math.max(-1.3,state.pitch-.1);$('direction').textContent='自由回転';draw()});window.addEventListener('resize',draw);update();
+</script></html>

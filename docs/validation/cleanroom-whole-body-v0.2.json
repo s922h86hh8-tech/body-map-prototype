@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-23",
+  "html_sha256": "917b023f3bdcbfc4ba1acd579093af975568a6a3a64c361467e84e80f4f87527",
+  "anchors": {
+    "shoulder": 142.24052572641008,
+    "crest": 99.85524842341015,
+    "trochanter": 86.79436553309365,
+    "knee": 46.82931573053575,
+    "radial": 109.32751812341604,
+    "wrist": 83.1640242824306
+  },
+  "source_means_mm": {
+    "height": 1696.7,
+    "acromiale": 1363.5,
+    "iliocristale": 957.2,
+    "trochanterion_laterale": 832,
+    "mid_patella": 448.9,
+    "upper_arm": 315.5,
+    "forearm": 250.8
+  },
+  "shape_checks": "socket/nasal subtraction, atlas without body/spinous process, axis dens, 23 paired arches",
+  "objects": 570,
+  "vertices": 50400,
+  "triangles": 98526,
+  "degenerate_triangles": 0,
+  "regions": 13,
+  "ribs": 24,
+  "vertebral_bodies": 23,
+  "atlas_ring": 1,
+  "bilateral_mirror": true,
+  "vm_controls": "passed: 13 regions, 3 side settings, isolation, 6 views, zoom/reset, pointer rotation/pinch, widths 320/390/1280",
+  "render": "Actual Canvas2D paths rendered using @napi-rs/canvas; front and six region PNGs saved. Not browser DOM/layout or iPhone testing.",
+  "anatomical_approval": false,
+  "iphone_tested": false,
+  "notes": "Independent schematic drawing units. Overlapping separate primitive meshes; no whole-body watertight or self-intersection claim. Component count is not bone count."
+}

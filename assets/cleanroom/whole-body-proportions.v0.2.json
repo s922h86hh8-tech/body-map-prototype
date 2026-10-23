@@ -1,0 +1,33 @@
+{
+  "version": "0.2",
+  "morphology_source": "Gray 1918 original descriptions; skull, cervical/thoracic/lumbar spine, scapula, hip bone; source list in handoff",
+  "units": "arbitrary drawing units",
+  "height": 177,
+  "source": "https://www.airc.aist.go.jp/dhrt/fbodydb/2003_Statistics.pdf",
+  "cohort": "young adult male, N=49; ratio of aggregate means, not population mean of individual ratios",
+  "means_mm": {
+    "height": 1696.7,
+    "acromiale": 1363.5,
+    "iliocristale": 957.2,
+    "trochanterion_laterale": 832.0,
+    "mid_patella": 448.9,
+    "upper_arm": 315.5,
+    "forearm": 250.8
+  },
+  "design": {
+    "cranial_center": [
+      0,
+      -1.7,
+      168
+    ],
+    "cranial_radii": [
+      7.5,
+      9.2,
+      9
+    ],
+    "ankle_z": 7,
+    "hip_head_above_trochanter": 3,
+    "foot_y_scale": 1.3
+  },
+  "limitations": "Surface anthropometry guides vertical layout only. Bone centers, widths, head and foot dimensions are original schematic design; no skeletal measurement or individual scan."
+}

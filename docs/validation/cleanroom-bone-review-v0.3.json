@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-23",
+  "html_sha256": "89c36d1e50c649740e649454d32a471abeef44b83649de3c98cb03f93c74fe11",
+  "base_html_sha256": "9c863e23907a2d5d37911cb23a841203e06dfb10bb6dbed8520ebe79a84afc73",
+  "geometry_unchanged": true,
+  "iphone_tested": false,
+  "anatomical_approval": false,
+  "render_timings_ms": {
+    "skull_high": 336,
+    "lumbar_high": 203
+  },
+  "controls": "High/light resolution, deterministic restored output, focus preserved, reset, previous geometry and head visibility passed; per-pixel depth order independent",
+  "display": "Area-weighted vertex normals and vertex-light interpolation; no per-face strokes. High requests max(2,min(3,DPR)) pixels per CSS pixel, capped at 2.4M pixels per canvas; light requests 1. Geometry unchanged.",
+  "inputs": {
+    "tools/cleanroom/bone-review-renderer-v0.3.js": "d18d45101cb0cac800e721a2385af649f74fbb79bc6e7efb92c10f2329cd10cb",
+    "tools/cleanroom/build-bone-review-v0.3.py": "d6c65ec247fe798af99956ebd8e86492c2b25f0424a6536f874546e516127c5d",
+    "tools/cleanroom/check-bone-review-v0.3.cjs": "537951220e07c600da2144fa8f86515f128ef0d88f54031ab805471fafdf352a"
+  }
+}

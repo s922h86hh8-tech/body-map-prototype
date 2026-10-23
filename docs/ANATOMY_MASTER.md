@@ -909,3 +909,5 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - ユーザーのピクセル解像度改善依頼。高精細/軽量切替を追加し、高精細はDPR最大3（通常画面も2倍要求、各Canvas240万画素以内）。頂点照明の画素補間と深度バッファへ変更し、三角形ごとの線/陰影の目立ちを軽減。
 - 骨形状はv0.2と同一。形状コード一致・頂点/面数・高/軽量寸法・描画の再現・前後関係・比較画像を検証。解剖学的精度の向上を主張しない。全身採用/iPhone実機/独立監査は未完了。
 - 詳細: docs/HANDOFF_CLEANROOM_BONE_REVIEW_V0.3_2026-10-23.md。experiments/cleanroom-bone-review-v0.3.html。
+
+- 単体v0.3公開: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.3.html 。公開コミット763e223633e96543bdbfffa3034c93f7d64be2d5 / Pages run39969136154成功。HTTP200・検証HTMLのハッシュ一致。Chromeで高/軽量、頭蓋拡大、腰椎関節面描画を確認。画質切替で実Canvasサイズが変わることを確認。iPhone/独立監査は未完了。docs/validation/cleanroom-bone-review-v0.3-hosted.json。

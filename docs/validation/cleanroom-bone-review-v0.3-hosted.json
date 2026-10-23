@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-23",
+  "public_commit": "763e223633e96543bdbfffa3034c93f7d64be2d5",
+  "work_implementation_commit": "b8d5602161854922ec9ce7182f5519681836541a",
+  "geometry_unchanged_from": "isolated review v0.2",
+  "anatomical_approval": false,
+  "independent_anatomy_audit": false,
+  "iphone_tested": false,
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.3.html",
+  "http": {
+    "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.3.html",
+    "status": 200,
+    "bytes": 46601,
+    "sha256": "89c36d1e50c649740e649454d32a471abeef44b83649de3c98cb03f93c74fe11"
+  },
+  "verified_html_matches": true,
+  "pages_run": {
+    "id": 39969136154,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "browser": "Cloud Chrome; not iPhone",
+  "browser_observed": [
+    "Default high selected; skull rendered",
+    "Orbit focus; light then high retained enlarged view",
+    "Interactive backing store: light 802x500, high1605x1000, CSS802.65625x500",
+    "Lumbar target generated with19817 vertices/39634 triangles; facet focus rendered smoothly"
+  ],
+  "browser_screenshot": "docs/validation/cleanroom-bone-review-v0.3-browser.jpg",
+  "limitations": [
+    "Anatomical geometry unchanged; residual coarse outline remains",
+    "Initial lumbar generation blocked first immediate focus attempt; recovered after ready",
+    "iPhone performance/touch not tested"
+  ]
+}

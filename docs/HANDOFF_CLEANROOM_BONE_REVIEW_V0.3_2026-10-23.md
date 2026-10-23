@@ -27,3 +27,12 @@ Python/Node/@napi-rs/canvasを使用。v0.2のHTMLハッシュを固定し、骨
 - 結果: docs/validation/cleanroom-bone-review-v0.3.json。公開・ブラウザ確認は別記録へ保存する。
 
 次はiPhoneでの高精細/軽量切替と拡大操作の確認、必要に応じた描画負荷調整。骨面の改善は表示解像度とは別に、v0.2引継ぎの監査項目を継続する。
+
+
+## 公開後確認
+公開URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.3.html
+公開コミット: 763e223633e96543bdbfffa3034c93f7d64be2d5 / Pages run39969136154成功。
+HTTP200 / 46601 bytes / SHA-256 89c36d1e50c649740e649454d32a471abeef44b83649de3c98cb03f93c74fe11、検証済みHTMLと一致。
+クラウドChromeで高精細初期選択、新頭蓋の表示と眼窩拡大、軽量/高精細切替、拡大範囲維持を確認。CSS802.65625×500の回転Canvasで、軽量802×500/高精細1605×1000の実描画寸法をDOMから確認。腰椎の初回生成直後の拡大クリックはタイムアウトしたが、生成完了後のクリックと描画確認は成功。腰椎の関節面の高精細描画を画像で確認した。
+証跡: docs/validation/cleanroom-bone-review-v0.3-browser.jpg。記録: docs/validation/cleanroom-bone-review-v0.3-hosted.json。
+iPhone実機と解剖学的監査は未完了。表示の滑らかさの改善と骨形状の精度を区別する。

@@ -49,3 +49,12 @@ Python/Node/@napi-rs/canvasを使用。入力v0.4HTMLのSHA-256を固定し、�
 
 ## 追加調整後の最終検査
 新頭蓋一式82,293頂点/164,478三角形。頭蓋主要部と下顎は各1連結、各新メッシュで不正/境界辺0、辺方向整合、正の符号付き体積、ゼロ面積0を確認。歯冠は意図した別メッシュ。新しい解剖学的精度の承認ではない。
+
+
+## 公開確認
+公開URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.5.html
+最終公開コミット: f35f12a40d89ced97311015cc5dced1fd9fa7b40 / Pages run40041987912成功。
+HTTP200 / 48927 bytes / SHA-256 1754ab3b90bcc232b311e37849e6c7d0d4e959eaa4cae8f0ee3948a896d79949、最終検証HTMLと一致。
+クラウドChromeで最終頭蓋82,293頂点/164,478三角形の表示、比較用v0.4の90,036頂点/179,968三角形への切替完了、新版復帰と顎拡大を確認。上顎歯槽部の厚みと下顎切痕の最終描画を目視。最後に斜め全体へ戻して拡大ボタン1回で表示し、証跡を保存した。
+画像: docs/validation/cleanroom-bone-review-v0.5-browser.jpg。公開確認正本: docs/validation/cleanroom-bone-review-v0.5-hosted.json。
+頭蓋/顎の技術検証と資料照合を行ったが、人体骨面の定量的一致、専門家/独立監査、iPhone実機、自己交差厳密検査は未完了。全身採用は保留。

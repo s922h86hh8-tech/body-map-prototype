@@ -928,3 +928,5 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 旧比較はv0.4。新頭蓋一式82,293頂点/164,478三角形。新各メッシュ1連結、境界/不正辺0、方向整合、正の体積、面積0なしを確認。腰椎は旧/新の頂点/面配列が完全一致。2対象×2版/方向/部分拡大等をVM検証、3方向と4倍比較を実描画し目視。
 - 三角形数追加の変更ではなく骨面の修正。人体寸法/骨面精度の数値一致、独立監査、専門家承認、iPhone実機は未完了。全身採用は保留。
 - 詳細: docs/HANDOFF_CLEANROOM_SKULL_V0.5_2026-10-24.md。experiments/cleanroom-bone-review-v0.5.html。
+
+- 単体v0.5最終公開: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.5.html 。公開コミットf35f12a40d89ced97311015cc5dced1fd9fa7b40、Pages run40041987912成功。HTTP200・最終検証HTMLのハッシュ一致。Chromeで新頭蓋/前版切替/顎拡大/全体復帰を確認。歯槽部の前方張り出しと下顎切痕も追加修正後に再検査。骨面の承認・独立監査・iPhone・全身採用は未完了。docs/validation/cleanroom-bone-review-v0.5-hosted.json。

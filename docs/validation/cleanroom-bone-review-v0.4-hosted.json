@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-23",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.4.html",
+  "public_commit": "13185f4fcb2572f6cb609f49fce7c402e10fcc2c",
+  "work_implementation_commit": "ec2f25e37dd0483d8d628b0687137297fc9cd254",
+  "pages_run": {
+    "id": 39975310373,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "http": {
+    "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.4.html",
+    "status": 200,
+    "bytes": 48267,
+    "sha256": "a903ec9c11527ab4ea1204ab546386ca06ac800a02f5dd0f0cad61c5e7c0f9f6"
+  },
+  "verified_html_matches": true,
+  "browser": "Cloud Chrome; not iPhone",
+  "browser_observed": [
+    "Head ready with90036 vertices/179968 triangles",
+    "Orbit focus plus two1.2x steps (~4.032x total) rendered",
+    "Previous shape0.3 selected with33425 vertices/66738 triangles; same enlarged view retained",
+    "New lumbar ready39986 vertices/79972 triangles; facet focus rendered",
+    "Final corrected page reload completed; head enlarged proof captured"
+  ],
+  "browser_screenshot": "docs/validation/cleanroom-bone-review-v0.4-browser.jpg",
+  "technical_test": "docs/validation/cleanroom-bone-review-v0.4.json",
+  "enlarged_comparison": "docs/validation/cleanroom-bone-review-v0.4-enlarged.jpg",
+  "field_definitions": "Same as v0.2; finer sampling and endpoint snap/unused-vertex correction",
+  "iphone_tested": false,
+  "anatomical_approval": false,
+  "independent_anatomy_audit": false,
+  "whole_body_adoption": "on hold",
+  "limitations": [
+    "Initial head generation blocks browser temporarily; first snapshot timed out, next observation succeeded",
+    "New detailed geometry costs more initial generation time",
+    "6x upper bound tested in VM; browser proof approximately4x",
+    "Residual corners in authored field and simplified teeth remain",
+    "No rigorous self-intersection or anatomical accuracy validation"
+  ]
+}

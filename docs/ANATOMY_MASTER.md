@@ -918,3 +918,5 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 新頭蓋一式90,036頂点/179,968三角形、新腰椎39,986頂点/79,972三角形。新各メッシュ1連結、辺数/辺方向整合・体積正・ゼロ面積0を確認。格子点付近の交点統合と未参照頂点の整理を修正して再検査。
 - 拡大上限6倍。旧比較を前版v0.3と同じ骨面へ変更。同じ視点の4倍眼窩比較を実描画し目視。初回生成負荷が増える。ローカル生成+描画参考値は頭蓋約62秒/腰椎約19秒、iPhoneの速度ではない。
 - 全身採用/解剖学的承認/iPhone実機は未完了。詳細: docs/HANDOFF_CLEANROOM_BONE_REVIEW_V0.4_2026-10-23.md。experiments/cleanroom-bone-review-v0.4.html。
+
+- 単体v0.4公開: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.4.html 。公開コミット13185f4fcb2572f6cb609f49fce7c402e10fcc2c / Pages run39975310373成功、HTTP200・検証HTMLのハッシュ一致。Chromeで眼窩約4倍/前版比較/腰椎関節面を確認。初回生成中の状態取得タイムアウト後に完了を確認。iPhoneの待ち時間/タッチと骨面監査は未完了。docs/validation/cleanroom-bone-review-v0.4-hosted.json。

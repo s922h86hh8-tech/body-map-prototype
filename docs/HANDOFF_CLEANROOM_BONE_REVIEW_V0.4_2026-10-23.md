@@ -41,3 +41,14 @@ Python/Node/@napi-rs/canvasを使用。v0.3HTMLのハッシュを固定し、v0.
 
 ## 再検査で確認したメッシュ
 新頭蓋一式90,036頂点/179,968三角形、新腰椎39,986頂点/79,972三角形。新頭蓋主要部・下顎・腰椎は各1連結。歯冠は意図した別メッシュ。各新メッシュは不正/境界辺0、辺の方向整合、正の符号付き体積、面積ゼロ0を確認した。人体骨面の承認とは区別する。
+
+
+## 公開後確認
+公開URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.4.html
+公開コミット: 13185f4fcb2572f6cb609f49fce7c402e10fcc2c / Pages run39975310373成功。
+HTTP200 / 48267 bytes / SHA-256 a903ec9c11527ab4ea1204ab546386ca06ac800a02f5dd0f0cad61c5e7c0f9f6、検証HTMLと一致。
+最終公開前に旧ページリンクのラベル誤りを修正。実行スクリプトが検証時と完全一致することを確認し、技術結果JSONに検証時ハッシュ/最終HTMLハッシュを両方保存した。
+クラウドChromeで新頭蓋の生成完了、眼窩の約4.032倍拡大、前版切替時の頂点/面数と拡大維持、新腰椎の頂点/面数と関節面拡大を確認。最終ページ再読み込み後も新頭蓋の拡大を確認し証跡を保存。6倍上限はVM検査で、実ブラウザの証跡は約4倍。
+初回頭蓋生成中にブラウザの状態取得が一度タイムアウト。次の取得で生成完了を確認。生成中の負荷・待ち時間は改善の余地があり、iPhone実機での時間/タッチ確認は未実施。
+証跡: docs/validation/cleanroom-bone-review-v0.4-browser.jpg。公開確認: docs/validation/cleanroom-bone-review-v0.4-hosted.json。
+全身採用/独立監査/解剖学的承認は未完了。

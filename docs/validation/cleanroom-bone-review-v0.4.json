@@ -1,6 +1,6 @@
 {
   "date": "2026-10-23",
-  "html_sha256": "9d3fdb3d355725379ffbc0174734f982430a0df76b1d600ae29ac2887af06fba",
+  "html_sha256": "a903ec9c11527ab4ea1204ab546386ca06ac800a02f5dd0f0cad61c5e7c0f9f6",
   "models": {
     "skull:old": {
       "generation_and_render_ms": 14634,
@@ -1787,7 +1787,7 @@
     "experiments/cleanroom-bone-review-v0.3.html": "89c36d1e50c649740e649454d32a471abeef44b83649de3c98cb03f93c74fe11",
     "tools/cleanroom/bone-review-shapes-v0.2.js": "c52f2bb5a1430bbbe257136a3709686f63c3bd1b98b3efcf117a49c285b775ec",
     "tools/cleanroom/bone-review-shapes-v0.4.js": "21eeffed55b7948d38165dc6541b5e21db8aa225d04f343703e013168590660d",
-    "tools/cleanroom/build-bone-review-v0.4.py": "0ee066674e8e8ddbad31711ebcdcc96a7cc4f234752bf02e6710a2f0e81b083d"
+    "tools/cleanroom/build-bone-review-v0.4.py": "b064df7cce4acd8a24f4b22a3824dc3cd14c5283efcde9ebdf35433a6b99a141"
   },
   "design": {
     "review": {
@@ -1865,5 +1865,7 @@
   "render": "Actual HTML Canvas2D draw calls rendered using @napi-rs/canvas; not browser DOM/iPhone verification",
   "self_intersection_checked": false,
   "surface_resolution": "Same authored fields as v0.2/v0.3; sampling steps head0.3/jaw0.25/lumbar0.18 vs0.5/0.4/0.25. Field definitions unchanged.",
-  "notes": "Closed edge incidence is a technical check, not anatomical approval. No independent surface coordinates or clinically validated dimensions."
+  "notes": "Closed edge incidence is a technical check, not anatomical approval. No independent surface coordinates or clinically validated dimensions.",
+  "tested_html_sha256": "9d3fdb3d355725379ffbc0174734f982430a0df76b1d600ae29ac2887af06fba",
+  "post_test_edit": "Corrected footer link label for v0.1. Executable script byte-identical to tested HTML; no geometry or renderer change."
 }

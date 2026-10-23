@@ -15,6 +15,7 @@ s=s.replace('単体レビュー 0.3','単体レビュー 0.4').replace('前回�
 s=s.replace('表示の滑らかさを改善した版です。骨の形状は0.2と同じで、','拡大時の輪郭を細かくした版です。造形の基準は0.2と共通で、')
 s=s.replace('初回は生成に時間がかかります。','初回は細かな形状を生成するため時間がかかります。')
 s=s.replace('Math.min(4,viewState.zoom*v)','Math.min(6,viewState.zoom*v)')
+s=s.replace('>前回の形0.3へ</a>','>単体0.1へ</a>')
 s=s.replace('<footer>','<footer><a href="cleanroom-bone-review-v0.3.html">前回の表示0.3へ</a> · ',1)
 (r/'tools/cleanroom/bone-review-shapes-v0.4.js').write_text(fine)
 (r/'experiments/cleanroom-bone-review-v0.4.html').write_text(s)

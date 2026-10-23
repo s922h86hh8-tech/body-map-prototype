@@ -1,0 +1,2590 @@
+{
+  "schema": "body-map-surface-diagnostics-v0.3",
+  "auditDate": "2026-10-23",
+  "status": "calculation completed; anatomical approval withheld",
+  "page": {
+    "path": "experiments/cleanroom-femur-study-v0.4.html",
+    "sha256": "1c173159512f87a1a974834c298d5fe3fc18d05b31766ea9f2943a71888b18bd"
+  },
+  "parameters": {
+    "path": "assets/cleanroom/femur-shape-parameters.v0.3.json",
+    "sha256": "779896b72fa5e4f44faad34ddd947dd614dee535ec627e2a9cc815dc3183bef8"
+  },
+  "scriptSha256": "3f043aa444b66663219622d766c25d0728c4067c3f7e13b37e07211744fbf5ef",
+  "units": "arbitrary drawing units, not mm",
+  "mesh": {
+    "vertices": 21448,
+    "triangles": 42892
+  },
+  "numericSelfChecks": [
+    "known sphere center/radius",
+    "ray triangle hit/miss",
+    "octahedron closed section, centroid/perimeter and containing contour",
+    "two disjoint contours and correct enclosing-contour selection",
+    "no enclosing contour rejected",
+    "polygon rectangle area, centroid, moments and reversed/rotated invariance",
+    "octahedron section polygon area",
+    "sphere field entry"
+  ],
+  "headFits": [
+    {
+      "selection": "nearest-primitive label 1; entire authored region",
+      "vertices": 5265,
+      "center": [
+        0.1712529278597632,
+        -0.0045301988670166,
+        -0.14519860866097933
+      ],
+      "radius": 22.068632386276818,
+      "rmsRadialResidual": 0.20424436330310736,
+      "maxAbsoluteRadialResidual": 1.236105210870278
+    },
+    {
+      "selection": "label 1 and distance to authored sphere within tolerance",
+      "toleranceDrawingUnits": 0.5,
+      "vertices": 4978,
+      "center": [
+        0.04709300499251978,
+        -0.00028611832529317795,
+        -0.04093734907415847
+      ],
+      "radius": 22.00856628646152,
+      "rmsRadialResidual": 0.06591543734815324,
+      "maxAbsoluteRadialResidual": 0.4456925537429406
+    },
+    {
+      "selection": "label 1 and distance to authored sphere within tolerance",
+      "toleranceDrawingUnits": 1,
+      "vertices": 5147,
+      "center": [
+        0.10501773955344462,
+        -0.0004775849614055139,
+        -0.09160989294740207
+      ],
+      "radius": 22.037690593043177,
+      "rmsRadialResidual": 0.1333049871642156,
+      "maxAbsoluteRadialResidual": 0.8475974143299112
+    },
+    {
+      "selection": "label 1 and distance to authored sphere within tolerance",
+      "toleranceDrawingUnits": 2,
+      "vertices": 5265,
+      "center": [
+        0.1712529278597632,
+        -0.0045301988670166,
+        -0.14519860866097933
+      ],
+      "radius": 22.068632386276818,
+      "rmsRadialResidual": 0.20424436330310736,
+      "maxAbsoluteRadialResidual": 1.236105210870278
+    }
+  ],
+  "neckScan": {
+    "method": "91 planes at authored neck fractions .05-.95 step .01; fixed orientation; procedural label fractions from segment midpoints",
+    "classificationThresholds": [
+      {
+        "proceduralNeckLabelFractionThreshold": 0.9,
+        "eligibleSamples": 46,
+        "sampledRuns": [
+          {
+            "from": 0.19,
+            "to": 0.64
+          }
+        ],
+        "minimumAreaSample": {
+          "fraction": 0.28,
+          "components": 1,
+          "coplanarTriangles": 0,
+          "nonDegreeTwoNodes": 0,
+          "candidate": {
+            "area": 494.86304167352796,
+            "momentEquivalentAxisRatio": 1.2514362258588672,
+            "centroid": [
+              20.774796551426867,
+              -1.1389365653105123,
+              -14.128309026310452
+            ],
+            "centroidToAxisDistance": 0.039772468533883935,
+            "proceduralLabelLengthFractions": {
+              "2": 1.0000000000000002
+            }
+          }
+        }
+      },
+      {
+        "proceduralNeckLabelFractionThreshold": 0.95,
+        "eligibleSamples": 45,
+        "sampledRuns": [
+          {
+            "from": 0.19,
+            "to": 0.63
+          }
+        ],
+        "minimumAreaSample": {
+          "fraction": 0.28,
+          "components": 1,
+          "coplanarTriangles": 0,
+          "nonDegreeTwoNodes": 0,
+          "candidate": {
+            "area": 494.86304167352796,
+            "momentEquivalentAxisRatio": 1.2514362258588672,
+            "centroid": [
+              20.774796551426867,
+              -1.1389365653105123,
+              -14.128309026310452
+            ],
+            "centroidToAxisDistance": 0.039772468533883935,
+            "proceduralLabelLengthFractions": {
+              "2": 1.0000000000000002
+            }
+          }
+        }
+      },
+      {
+        "proceduralNeckLabelFractionThreshold": 1,
+        "eligibleSamples": 44,
+        "sampledRuns": [
+          {
+            "from": 0.2,
+            "to": 0.63
+          }
+        ],
+        "minimumAreaSample": {
+          "fraction": 0.28,
+          "components": 1,
+          "coplanarTriangles": 0,
+          "nonDegreeTwoNodes": 0,
+          "candidate": {
+            "area": 494.86304167352796,
+            "momentEquivalentAxisRatio": 1.2514362258588672,
+            "centroid": [
+              20.774796551426867,
+              -1.1389365653105123,
+              -14.128309026310452
+            ],
+            "centroidToAxisDistance": 0.039772468533883935,
+            "proceduralLabelLengthFractions": {
+              "2": 1.0000000000000002
+            }
+          }
+        }
+      }
+    ],
+    "allSamples": [
+      {
+        "fraction": 0.05,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 934.5235123229635,
+          "momentEquivalentAxisRatio": 1.0521116713576908,
+          "centroid": [
+            12.116162121591147,
+            -1.06211616698374,
+            -7.0033057375107655
+          ],
+          "centroidToAxisDistance": 2.484342281789414,
+          "proceduralLabelLengthFractions": {
+            "1": 1.0000000000000002
+          }
+        }
+      },
+      {
+        "fraction": 0.06,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 899.0921610774345,
+          "momentEquivalentAxisRatio": 1.0606033520245464,
+          "centroid": [
+            12.49833281017034,
+            -1.0727157207167577,
+            -7.30087086772631
+          ],
+          "centroidToAxisDistance": 2.3932055932955127,
+          "proceduralLabelLengthFractions": {
+            "1": 1.0000000000000004
+          }
+        }
+      },
+      {
+        "fraction": 0.07,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 863.9908625234674,
+          "momentEquivalentAxisRatio": 1.070186032610227,
+          "centroid": [
+            12.875568708921463,
+            -1.0762256135171444,
+            -7.609145989601334
+          ],
+          "centroidToAxisDistance": 2.288550031396808,
+          "proceduralLabelLengthFractions": {
+            "1": 0.9232096161568797,
+            "2": 0.0767903838431197
+          }
+        }
+      },
+      {
+        "fraction": 0.08,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 829.1349461065145,
+          "momentEquivalentAxisRatio": 1.0802333403149342,
+          "centroid": [
+            13.247754879734,
+            -1.0740615311021908,
+            -7.928093133034694
+          ],
+          "centroidToAxisDistance": 2.1708524335878643,
+          "proceduralLabelLengthFractions": {
+            "1": 0.8811238755635313,
+            "2": 0.11887612443646825
+          }
+        }
+      },
+      {
+        "fraction": 0.09,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 795.3520413946012,
+          "momentEquivalentAxisRatio": 1.0913936634836157,
+          "centroid": [
+            13.619581608114675,
+            -1.067766810358395,
+            -8.248477509897729
+          ],
+          "centroidToAxisDistance": 2.0503661302946097,
+          "proceduralLabelLengthFractions": {
+            "1": 0.8560777026203957,
+            "2": 0.14392229737960352
+          }
+        }
+      },
+      {
+        "fraction": 0.1,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 762.4652710958943,
+          "momentEquivalentAxisRatio": 1.1029989577004444,
+          "centroid": [
+            13.989598045958541,
+            -1.0564653022692467,
+            -8.573228220939262
+          ],
+          "centroidToAxisDistance": 1.923745874177106,
+          "proceduralLabelLengthFractions": {
+            "1": 0.8076449571551109,
+            "2": 0.19235504284488908
+          }
+        }
+      },
+      {
+        "fraction": 0.11,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 731.119245365684,
+          "momentEquivalentAxisRatio": 1.11515937271436,
+          "centroid": [
+            14.355787069634031,
+            -1.0458815525500758,
+            -8.905155312053182
+          ],
+          "centroidToAxisDistance": 1.7897568259855345,
+          "proceduralLabelLengthFractions": {
+            "1": 0.7793038713185432,
+            "2": 0.22069612868145697
+          }
+        }
+      },
+      {
+        "fraction": 0.12,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 701.6185347632083,
+          "momentEquivalentAxisRatio": 1.1274388605014918,
+          "centroid": [
+            14.721580526037775,
+            -1.033142471236389,
+            -9.238229455521282
+          ],
+          "centroidToAxisDistance": 1.6539284344637146,
+          "proceduralLabelLengthFractions": {
+            "1": 0.7457244906743096,
+            "2": 0.2542755093256906
+          }
+        }
+      },
+      {
+        "fraction": 0.13,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 673.6247139668804,
+          "momentEquivalentAxisRatio": 1.1389811852221403,
+          "centroid": [
+            15.086159371557772,
+            -1.0225681092059684,
+            -9.573228816261322
+          ],
+          "centroidToAxisDistance": 1.5167169618227132,
+          "proceduralLabelLengthFractions": {
+            "1": 0.7130338242854128,
+            "2": 0.2869661757145869
+          }
+        }
+      },
+      {
+        "fraction": 0.14,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 647.5393552921147,
+          "momentEquivalentAxisRatio": 1.1507708230894167,
+          "centroid": [
+            15.452190570313235,
+            -1.0134878347123755,
+            -9.90518385036341
+          ],
+          "centroidToAxisDistance": 1.383201449693588,
+          "proceduralLabelLengthFractions": {
+            "1": 0.668015347229774,
+            "2": 0.33198465277022626
+          }
+        }
+      },
+      {
+        "fraction": 0.15,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 623.9290218612839,
+          "momentEquivalentAxisRatio": 1.1633553122129914,
+          "centroid": [
+            15.816613557967932,
+            -1.005634859916329,
+            -10.239985960258212
+          ],
+          "centroidToAxisDistance": 1.2470200368499826,
+          "proceduralLabelLengthFractions": {
+            "1": 0.6300319515646431,
+            "2": 0.3699680484353563
+          }
+        }
+      },
+      {
+        "fraction": 0.16,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 602.0695586660045,
+          "momentEquivalentAxisRatio": 1.1739668145100914,
+          "centroid": [
+            16.178652332787195,
+            -0.9958861525490884,
+            -10.579684427851875
+          ],
+          "centroidToAxisDistance": 1.1050838389785564,
+          "proceduralLabelLengthFractions": {
+            "1": 0.5685116252443084,
+            "2": 0.43148837475569085
+          }
+        }
+      },
+      {
+        "fraction": 0.17,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 582.3971073784018,
+          "momentEquivalentAxisRatio": 1.1845094630846937,
+          "centroid": [
+            16.546562244077624,
+            -0.9933519036188234,
+            -10.90686264246657
+          ],
+          "centroidToAxisDistance": 0.9785704524094121,
+          "proceduralLabelLengthFractions": {
+            "1": 0.3634190562629903,
+            "2": 0.6365809437370102
+          }
+        }
+      },
+      {
+        "fraction": 0.18,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 565.0312563518042,
+          "momentEquivalentAxisRatio": 1.1948396161912678,
+          "centroid": [
+            16.916971522230654,
+            -0.9946495794758925,
+            -11.228572624927732
+          ],
+          "centroidToAxisDistance": 0.8589802466850238,
+          "proceduralLabelLengthFractions": {
+            "1": 0.17768408314648448,
+            "2": 0.8223159168535165
+          }
+        }
+      },
+      {
+        "fraction": 0.19,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 549.8345126509842,
+          "momentEquivalentAxisRatio": 1.2036645703631268,
+          "centroid": [
+            17.285203592701162,
+            -0.9946557518487436,
+            -11.554673913598007
+          ],
+          "centroidToAxisDistance": 0.7343332140167894,
+          "proceduralLabelLengthFractions": {
+            "1": 0.005834443188736691,
+            "2": 0.9941655568112633
+          }
+        }
+      },
+      {
+        "fraction": 0.2,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 536.9592186753936,
+          "momentEquivalentAxisRatio": 1.2131110259507025,
+          "centroid": [
+            17.65760569795697,
+            -0.9986114631076597,
+            -11.872096128789826
+          ],
+          "centroidToAxisDistance": 0.6200723394381921,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999988
+          }
+        }
+      },
+      {
+        "fraction": 0.21,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 525.764835906445,
+          "momentEquivalentAxisRatio": 1.221274820315502,
+          "centroid": [
+            18.032677884744686,
+            -1.0063293682560528,
+            -12.183736880349956
+          ],
+          "centroidToAxisDistance": 0.5130524836415089,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000004
+          }
+        }
+      },
+      {
+        "fraction": 0.22,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 516.4457791977508,
+          "momentEquivalentAxisRatio": 1.2281892618805568,
+          "centroid": [
+            18.408432180454184,
+            -1.0174505649484946,
+            -12.493456643687724
+          ],
+          "centroidToAxisDistance": 0.40908966623637394,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999994
+          }
+        }
+      },
+      {
+        "fraction": 0.23,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 509.36397872937465,
+          "momentEquivalentAxisRatio": 1.2350991748559468,
+          "centroid": [
+            18.79136785256107,
+            -1.0318679941268984,
+            -12.788867191633065
+          ],
+          "centroidToAxisDistance": 0.32137977622965674,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000007
+          }
+        }
+      },
+      {
+        "fraction": 0.24,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 503.8916666011774,
+          "momentEquivalentAxisRatio": 1.2407334947269164,
+          "centroid": [
+            19.178994499919092,
+            -1.046290847963063,
+            -13.075321255070286
+          ],
+          "centroidToAxisDistance": 0.24318595782326496,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999994
+          }
+        }
+      },
+      {
+        "fraction": 0.25,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 499.6692693270008,
+          "momentEquivalentAxisRatio": 1.2446291465394992,
+          "centroid": [
+            19.56846322421633,
+            -1.0648090383708069,
+            -13.357514019519554
+          ],
+          "centroidToAxisDistance": 0.17084987315803968,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999994
+          }
+        }
+      },
+      {
+        "fraction": 0.26,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 496.9309253381083,
+          "momentEquivalentAxisRatio": 1.247825278717417,
+          "centroid": [
+            19.964933239011277,
+            -1.087598160188077,
+            -13.625564150944292
+          ],
+          "centroidToAxisDistance": 0.11490304786299939,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000002
+          }
+        }
+      },
+      {
+        "fraction": 0.27,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 495.45328521249326,
+          "momentEquivalentAxisRatio": 1.2505700811933658,
+          "centroid": [
+            20.36866062606958,
+            -1.1123881907796709,
+            -13.879395497361758
+          ],
+          "centroidToAxisDistance": 0.07445355685734259,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999993
+          }
+        }
+      },
+      {
+        "fraction": 0.28,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 494.86304167352796,
+          "momentEquivalentAxisRatio": 1.2514362258588672,
+          "centroid": [
+            20.774796551426867,
+            -1.1389365653105123,
+            -14.128309026310452
+          ],
+          "centroidToAxisDistance": 0.039772468533883935,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000002
+          }
+        }
+      },
+      {
+        "fraction": 0.29,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 495.13316904379053,
+          "momentEquivalentAxisRatio": 1.2517831655314189,
+          "centroid": [
+            21.18506520504794,
+            -1.1705292478432567,
+            -14.368415654391471
+          ],
+          "centroidToAxisDistance": 0.016453523194143928,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999997
+          }
+        }
+      },
+      {
+        "fraction": 0.3,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 496.19702395334076,
+          "momentEquivalentAxisRatio": 1.2527959189131657,
+          "centroid": [
+            21.602621757010507,
+            -1.20530157817238,
+            -14.594030904221373
+          ],
+          "centroidToAxisDistance": 0.008403002163179754,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000004
+          }
+        }
+      },
+      {
+        "fraction": 0.31,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 497.45061511993214,
+          "momentEquivalentAxisRatio": 1.2532296151835158,
+          "centroid": [
+            22.021174803137363,
+            -1.2431843119463477,
+            -14.817178228202057
+          ],
+          "centroidToAxisDistance": 0.0044138872961237445,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000002
+          }
+        }
+      },
+      {
+        "fraction": 0.32,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 498.8511338691697,
+          "momentEquivalentAxisRatio": 1.2534545188773984,
+          "centroid": [
+            22.440378100443297,
+            -1.2815861645186497,
+            -15.038989778332153
+          ],
+          "centroidToAxisDistance": 0.001918182901506418,
+          "proceduralLabelLengthFractions": {
+            "2": 1
+          }
+        }
+      },
+      {
+        "fraction": 0.33,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 500.4327814215709,
+          "momentEquivalentAxisRatio": 1.2534725042750738,
+          "centroid": [
+            22.860164022350098,
+            -1.3214037223059854,
+            -15.259431644185115
+          ],
+          "centroidToAxisDistance": 0.0015232754104125789,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000013
+          }
+        }
+      },
+      {
+        "fraction": 0.34,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 502.0411483289547,
+          "momentEquivalentAxisRatio": 1.2534605194886126,
+          "centroid": [
+            23.280217634625604,
+            -1.3608341566932418,
+            -15.479432850861413
+          ],
+          "centroidToAxisDistance": 0.0010319110254969964,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000004
+          }
+        }
+      },
+      {
+        "fraction": 0.35,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 503.6204702799063,
+          "momentEquivalentAxisRatio": 1.2534664498153862,
+          "centroid": [
+            23.700109953623514,
+            -1.400608876850735,
+            -15.699679383655026
+          ],
+          "centroidToAxisDistance": 0.0006968612913265193,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000004
+          }
+        }
+      },
+      {
+        "fraction": 0.36,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 505.15386238375436,
+          "momentEquivalentAxisRatio": 1.253580965430862,
+          "centroid": [
+            24.12002430580773,
+            -1.4403202799225807,
+            -15.919895365290184
+          ],
+          "centroidToAxisDistance": 0.0003378141850130214,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999994
+          }
+        }
+      },
+      {
+        "fraction": 0.37,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 506.7603038115889,
+          "momentEquivalentAxisRatio": 1.2536297313338376,
+          "centroid": [
+            24.54014292712905,
+            -1.480381704336033,
+            -16.13965773832888
+          ],
+          "centroidToAxisDistance": 0.00053223060404716,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999997
+          }
+        }
+      },
+      {
+        "fraction": 0.38,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 508.40610090632975,
+          "momentEquivalentAxisRatio": 1.253476185974124,
+          "centroid": [
+            24.959884528164125,
+            -1.5201037782846867,
+            -16.360201577453076
+          ],
+          "centroidToAxisDistance": 0.0002544349560139048,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000004
+          }
+        }
+      },
+      {
+        "fraction": 0.39,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 510.03670166587335,
+          "momentEquivalentAxisRatio": 1.253421529377456,
+          "centroid": [
+            25.379773003419157,
+            -1.5596444408398222,
+            -16.580498004228932
+          ],
+          "centroidToAxisDistance": 0.0006526545611091702,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999998
+          }
+        }
+      },
+      {
+        "fraction": 0.4,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 511.6248904934385,
+          "momentEquivalentAxisRatio": 1.2535021326244908,
+          "centroid": [
+            25.79989644379085,
+            -1.59978544720171,
+            -16.80023670781716
+          ],
+          "centroidToAxisDistance": 0.0003358383277887429,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000004
+          }
+        }
+      },
+      {
+        "fraction": 0.41,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 513.1571066041096,
+          "momentEquivalentAxisRatio": 1.2535380050355815,
+          "centroid": [
+            26.22001314966972,
+            -1.6394858882079233,
+            -17.0200683709564
+          ],
+          "centroidToAxisDistance": 0.0005188048151712868,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999998
+          }
+        }
+      },
+      {
+        "fraction": 0.42,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 514.7553106547,
+          "momentEquivalentAxisRatio": 1.2535226676129483,
+          "centroid": [
+            26.640066237462563,
+            -1.6803379576924458,
+            -17.239812099809228
+          ],
+          "centroidToAxisDistance": 0.00039231273879751207,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000004
+          }
+        }
+      },
+      {
+        "fraction": 0.43,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 516.41731333406,
+          "momentEquivalentAxisRatio": 1.2535127507797297,
+          "centroid": [
+            27.059953811716717,
+            -1.7200825129904256,
+            -17.460073175269766
+          ],
+          "centroidToAxisDistance": 0.00011956743372136506,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999998
+          }
+        }
+      },
+      {
+        "fraction": 0.44,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 518.0667466212346,
+          "momentEquivalentAxisRatio": 1.2535301679350097,
+          "centroid": [
+            27.480138201867778,
+            -1.760654302679194,
+            -17.679617195947177
+          ],
+          "centroidToAxisDistance": 0.0007705522014212621,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999997
+          }
+        }
+      },
+      {
+        "fraction": 0.45,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 519.6558875753266,
+          "momentEquivalentAxisRatio": 1.2536220525964898,
+          "centroid": [
+            27.899998266920154,
+            -1.80008694037606,
+            -17.89998750126583
+          ],
+          "centroidToAxisDistance": 0.00008785129999619173,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000002
+          }
+        }
+      },
+      {
+        "fraction": 0.46,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 521.269440021499,
+          "momentEquivalentAxisRatio": 1.2536874217578708,
+          "centroid": [
+            28.32003015781942,
+            -1.8403489104166781,
+            -18.119878987723514
+          ],
+          "centroidToAxisDistance": 0.0003705292754956336,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999994
+          }
+        }
+      },
+      {
+        "fraction": 0.47,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 522.9198656779982,
+          "momentEquivalentAxisRatio": 1.253673966835667,
+          "centroid": [
+            28.740255823680243,
+            -1.8807952609838876,
+            -18.33936701643155
+          ],
+          "centroidToAxisDistance": 0.0010481192612471352,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000004
+          }
+        }
+      },
+      {
+        "fraction": 0.48,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 524.6007504952275,
+          "momentEquivalentAxisRatio": 1.253554382370237,
+          "centroid": [
+            29.160207389097366,
+            -1.9208160167224102,
+            -18.5594557086828
+          ],
+          "centroidToAxisDistance": 0.001002569981066637,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000002
+          }
+        }
+      },
+      {
+        "fraction": 0.49,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 526.2364254512769,
+          "momentEquivalentAxisRatio": 1.2535244507467653,
+          "centroid": [
+            29.5799399765067,
+            -1.959850055667908,
+            -18.780141852911207
+          ],
+          "centroidToAxisDistance": 0.00021496132417653143,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999998
+          }
+        }
+      },
+      {
+        "fraction": 0.5,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 527.8295849723665,
+          "momentEquivalentAxisRatio": 1.253618675103705,
+          "centroid": [
+            29.999822538213444,
+            -1.999304561670247,
+            -19.00046523401616
+          ],
+          "centroidToAxisDistance": 0.0008553185640280817,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999998
+          }
+        }
+      },
+      {
+        "fraction": 0.51,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 529.4973162846144,
+          "momentEquivalentAxisRatio": 1.2538526724340928,
+          "centroid": [
+            30.42062153551904,
+            -2.0398075674255898,
+            -19.21884841993171
+          ],
+          "centroidToAxisDistance": 0.0013226765858664646,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999997
+          }
+        }
+      },
+      {
+        "fraction": 0.52,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 531.2822107728274,
+          "momentEquivalentAxisRatio": 1.254513449032505,
+          "centroid": [
+            30.84329066869746,
+            -2.080262308500984,
+            -19.4336701218501
+          ],
+          "centroidToAxisDistance": 0.007138953958300857,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999997
+          }
+        }
+      },
+      {
+        "fraction": 0.53,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 533.1455559515088,
+          "momentEquivalentAxisRatio": 1.2553693927444234,
+          "centroid": [
+            31.266247446239564,
+            -2.1202812184035764,
+            -19.648021926560187
+          ],
+          "centroidToAxisDistance": 0.013512361438190573,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999998
+          }
+        }
+      },
+      {
+        "fraction": 0.54,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 534.8848783167457,
+          "momentEquivalentAxisRatio": 1.2558635807616392,
+          "centroid": [
+            31.68809554593509,
+            -2.1611365349633256,
+            -19.864338224130584
+          ],
+          "centroidToAxisDistance": 0.017666940852732026,
+          "proceduralLabelLengthFractions": {
+            "2": 1
+          }
+        }
+      },
+      {
+        "fraction": 0.55,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 536.515094358122,
+          "momentEquivalentAxisRatio": 1.2559851186089694,
+          "centroid": [
+            32.10850990270554,
+            -2.202107118658159,
+            -20.083370709624266
+          ],
+          "centroidToAxisDistance": 0.018798715155506567,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999997
+          }
+        }
+      },
+      {
+        "fraction": 0.56,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 538.5438783769348,
+          "momentEquivalentAxisRatio": 1.2573706756933603,
+          "centroid": [
+            32.53367572302119,
+            -2.244270344855189,
+            -20.293115375167634
+          ],
+          "centroidToAxisDistance": 0.030463819486590056,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999997
+          }
+        }
+      },
+      {
+        "fraction": 0.57,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 541.5202315497909,
+          "momentEquivalentAxisRatio": 1.262602896382195,
+          "centroid": [
+            32.97253927370139,
+            -2.2856537101994694,
+            -20.476851621079277
+          ],
+          "centroidToAxisDistance": 0.07126350070231643,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000007
+          }
+        }
+      },
+      {
+        "fraction": 0.58,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 544.6818654508603,
+          "momentEquivalentAxisRatio": 1.26770571905228,
+          "centroid": [
+            33.411731171515,
+            -2.324851824670656,
+            -20.660358340803896
+          ],
+          "centroidToAxisDistance": 0.1123748840101803,
+          "proceduralLabelLengthFractions": {
+            "2": 1
+          }
+        }
+      },
+      {
+        "fraction": 0.59,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 548.0920721324374,
+          "momentEquivalentAxisRatio": 1.273565923732645,
+          "centroid": [
+            33.85374698901576,
+            -2.367851254377735,
+            -20.837782792901223
+          ],
+          "centroidToAxisDistance": 0.16039324979303252,
+          "proceduralLabelLengthFractions": {
+            "2": 1
+          }
+        }
+      },
+      {
+        "fraction": 0.6,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 551.8390408055274,
+          "momentEquivalentAxisRatio": 1.2797798123876385,
+          "centroid": [
+            34.29652841264395,
+            -2.4153075868702407,
+            -21.012935287339637
+          ],
+          "centroidToAxisDistance": 0.21105748834394442,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999998
+          }
+        }
+      },
+      {
+        "fraction": 0.61,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 557.1203526316834,
+          "momentEquivalentAxisRatio": 1.2920942733127347,
+          "centroid": [
+            34.765052732284595,
+            -2.4659971399453364,
+            -21.138354394739316
+          ],
+          "centroidToAxisDistance": 0.3178685158854524,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999997
+          }
+        }
+      },
+      {
+        "fraction": 0.62,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 563.91533251537,
+          "momentEquivalentAxisRatio": 1.3097052008733934,
+          "centroid": [
+            35.25399182228433,
+            -2.513830641475401,
+            -21.225319131734363
+          ],
+          "centroidToAxisDistance": 0.4678645475057366,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9999999999999996
+          }
+        }
+      },
+      {
+        "fraction": 0.63,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 571.8115500635082,
+          "momentEquivalentAxisRatio": 1.330285146214717,
+          "centroid": [
+            35.754832163899856,
+            -2.5667156391762966,
+            -21.288644843613675
+          ],
+          "centroidToAxisDistance": 0.6446356106691303,
+          "proceduralLabelLengthFractions": {
+            "2": 1.0000000000000002
+          }
+        }
+      },
+      {
+        "fraction": 0.64,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 581.6280553545745,
+          "momentEquivalentAxisRatio": 1.3560503364399865,
+          "centroid": [
+            36.27885275895181,
+            -2.6261175435155644,
+            -21.306532452271014
+          ],
+          "centroidToAxisDistance": 0.8727583286763252,
+          "proceduralLabelLengthFractions": {
+            "2": 0.9118293982807711,
+            "3": 0.08817060171922925
+          }
+        }
+      },
+      {
+        "fraction": 0.65,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 598.7661972688019,
+          "momentEquivalentAxisRatio": 1.4105058324034492,
+          "centroid": [
+            36.924314019709314,
+            -2.703667677827676,
+            -21.089279111859025
+          ],
+          "centroidToAxisDistance": 1.3661478878996456,
+          "proceduralLabelLengthFractions": {
+            "2": 0.8522744903665342,
+            "3": 0.14772550963346656
+          }
+        }
+      },
+      {
+        "fraction": 0.66,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 623.1140901467868,
+          "momentEquivalentAxisRatio": 1.4917714157353783,
+          "centroid": [
+            37.67679325655386,
+            -2.8030181124645495,
+            -20.66375503522174
+          ],
+          "centroidToAxisDistance": 2.0946774477334444,
+          "proceduralLabelLengthFractions": {
+            "2": 0.79909468556116,
+            "3": 0.2009053144388397
+          }
+        }
+      },
+      {
+        "fraction": 0.67,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 661.5355889950864,
+          "momentEquivalentAxisRatio": 1.6268241195826085,
+          "centroid": [
+            38.63810665642425,
+            -2.939115644839249,
+            -19.83286626594662
+          ],
+          "centroidToAxisDistance": 3.2806845351380947,
+          "proceduralLabelLengthFractions": {
+            "2": 0.7470378740647028,
+            "3": 0.2529621259352981
+          }
+        }
+      },
+      {
+        "fraction": 0.68,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 704.6212281729458,
+          "momentEquivalentAxisRatio": 1.7471279649605271,
+          "centroid": [
+            39.53076006730837,
+            -3.0707127004456205,
+            -19.1338739259666
+          ],
+          "centroidToAxisDistance": 4.318117109985484,
+          "proceduralLabelLengthFractions": {
+            "2": 0.6961732017721112,
+            "3": 0.3038267982278888
+          }
+        }
+      },
+      {
+        "fraction": 0.69,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 750.2994618999418,
+          "momentEquivalentAxisRatio": 1.8348268565013208,
+          "centroid": [
+            40.37980853048605,
+            -3.176756070189551,
+            -18.522773519946686
+          ],
+          "centroidToAxisDistance": 5.2557135663526475,
+          "proceduralLabelLengthFractions": {
+            "2": 0.6572086048558418,
+            "3": 0.3427913951441579
+          }
+        }
+      },
+      {
+        "fraction": 0.7,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 793.5783703024332,
+          "momentEquivalentAxisRatio": 1.8780444337712403,
+          "centroid": [
+            41.1422719803572,
+            -3.2515933988975214,
+            -18.082645601336697
+          ],
+          "centroidToAxisDistance": 5.999854165991369,
+          "proceduralLabelLengthFractions": {
+            "2": 0.6155664390748302,
+            "3": 0.38443356092516934
+          }
+        }
+      },
+      {
+        "fraction": 0.71,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 837.6996593005495,
+          "momentEquivalentAxisRatio": 1.889338636486547,
+          "centroid": [
+            41.877758306398675,
+            -3.2982699383133713,
+            -17.699139608090977
+          ],
+          "centroidToAxisDistance": 6.679557244098509,
+          "proceduralLabelLengthFractions": {
+            "2": 0.5860108969670363,
+            "3": 0.41398910303296377
+          }
+        }
+      },
+      {
+        "fraction": 0.72,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 880.0032119523202,
+          "momentEquivalentAxisRatio": 1.8805309051658785,
+          "centroid": [
+            42.57143766335112,
+            -3.36025987785596,
+            -17.392662664901337
+          ],
+          "centroidToAxisDistance": 7.273051984389341,
+          "proceduralLabelLengthFractions": {
+            "2": 0.557898437605824,
+            "3": 0.44210156239417636
+          }
+        }
+      },
+      {
+        "fraction": 0.73,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 917.4221156670151,
+          "momentEquivalentAxisRatio": 1.8628289785627743,
+          "centroid": [
+            43.20462020014781,
+            -3.467031609773309,
+            -17.193537507031678
+          ],
+          "centroidToAxisDistance": 7.746733706067856,
+          "proceduralLabelLengthFractions": {
+            "2": 0.5250283543267624,
+            "3": 0.4749716456732374
+          }
+        }
+      },
+      {
+        "fraction": 0.74,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 952.8264519435054,
+          "momentEquivalentAxisRatio": 1.841828688299677,
+          "centroid": [
+            43.812859567490165,
+            -3.607918086927384,
+            -17.035828446259206
+          ],
+          "centroidToAxisDistance": 8.175087760874366,
+          "proceduralLabelLengthFractions": {
+            "2": 0.5114357634520421,
+            "3": 0.4885642365479579
+          }
+        }
+      },
+      {
+        "fraction": 0.75,
+        "components": 2,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 986.0418540894088,
+          "momentEquivalentAxisRatio": 1.8177185035541785,
+          "centroid": [
+            44.397077083407574,
+            -3.7745635191335936,
+            -16.919295837288583
+          ],
+          "centroidToAxisDistance": 8.55886873609727,
+          "proceduralLabelLengthFractions": {
+            "2": 0.47586212965259683,
+            "3": 0.503938842768128,
+            "5": 0.02019902757927564
+          }
+        }
+      },
+      {
+        "fraction": 0.76,
+        "components": 2,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1016.5677991203949,
+          "momentEquivalentAxisRatio": 1.7922868200324018,
+          "centroid": [
+            44.95357771627676,
+            -3.994274392986056,
+            -16.846029015655912
+          ],
+          "centroidToAxisDistance": 8.898303651407158,
+          "proceduralLabelLengthFractions": {
+            "2": 0.4471272840239591,
+            "3": 0.49316415849732254,
+            "5": 0.05970855747871739
+          }
+        }
+      },
+      {
+        "fraction": 0.77,
+        "components": 2,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1045.262232604906,
+          "momentEquivalentAxisRatio": 1.7684685831681006,
+          "centroid": [
+            45.48946928228721,
+            -4.219456729685868,
+            -16.811111964781535
+          ],
+          "centroidToAxisDistance": 9.19756911648885,
+          "proceduralLabelLengthFractions": {
+            "2": 0.4242526882746246,
+            "3": 0.49126930744824254,
+            "5": 0.08447800427713349
+          }
+        }
+      },
+      {
+        "fraction": 0.78,
+        "components": 2,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1071.473294104616,
+          "momentEquivalentAxisRatio": 1.7496486626395469,
+          "centroid": [
+            46.00722696981527,
+            -4.43026343222178,
+            -16.813427888130438
+          ],
+          "centroidToAxisDistance": 9.45626740387467,
+          "proceduralLabelLengthFractions": {
+            "2": 0.40665549804099205,
+            "3": 0.4871555112330784,
+            "5": 0.10618899072592902
+          }
+        }
+      },
+      {
+        "fraction": 0.79,
+        "components": 2,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1095.0335007289566,
+          "momentEquivalentAxisRatio": 1.7350605222682232,
+          "centroid": [
+            46.48938988539482,
+            -4.609718127955741,
+            -16.88939783189074
+          ],
+          "centroidToAxisDistance": 9.631347206490295,
+          "proceduralLabelLengthFractions": {
+            "2": 0.39569051477917955,
+            "3": 0.48785046086706674,
+            "5": 0.11645902435375438
+          }
+        }
+      },
+      {
+        "fraction": 0.8,
+        "components": 2,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1116.6426038917646,
+          "momentEquivalentAxisRatio": 1.7274698625093097,
+          "centroid": [
+            46.92465967818361,
+            -4.746945909963217,
+            -17.06256863074704
+          ],
+          "centroidToAxisDistance": 9.694506556043146,
+          "proceduralLabelLengthFractions": {
+            "2": 0.3811776763289213,
+            "3": 0.4817389323586437,
+            "5": 0.13708339131243444
+          }
+        }
+      },
+      {
+        "fraction": 0.81,
+        "components": 2,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1137.1712359876942,
+          "momentEquivalentAxisRatio": 1.7251874376440652,
+          "centroid": [
+            47.33362350878395,
+            -4.867262207553355,
+            -17.289034718220922
+          ],
+          "centroidToAxisDistance": 9.69704587524391,
+          "proceduralLabelLengthFractions": {
+            "2": 0.38250807613513543,
+            "3": 0.4737383752045553,
+            "5": 0.1437535486603087
+          }
+        }
+      },
+      {
+        "fraction": 0.82,
+        "components": 2,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1158.058598226006,
+          "momentEquivalentAxisRatio": 1.7287942979045792,
+          "centroid": [
+            47.68280056388188,
+            -4.977320487593323,
+            -17.631504289390275
+          ],
+          "centroidToAxisDistance": 9.57000802391631,
+          "proceduralLabelLengthFractions": {
+            "2": 0.3787489976439297,
+            "3": 0.48041785080891286,
+            "5": 0.140833151547157
+          }
+        }
+      },
+      {
+        "fraction": 0.83,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1407.0425133390634,
+          "momentEquivalentAxisRatio": 2.184473381500497,
+          "centroid": [
+            43.608810452043485,
+            -8.140002023921973,
+            -25.863179678112907
+          ],
+          "centroidToAxisDistance": 4.842827899840866,
+          "proceduralLabelLengthFractions": {
+            "2": 0.2544658470272342,
+            "3": 0.34646281097171194,
+            "4": 0.29166488638719384,
+            "5": 0.10740645561385911
+          }
+        }
+      },
+      {
+        "fraction": 0.84,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1450.3521184616882,
+          "momentEquivalentAxisRatio": 2.208686534542063,
+          "centroid": [
+            44.16252735820064,
+            -8.16692333925529,
+            -25.8302798908432
+          ],
+          "centroidToAxisDistance": 4.852056062257656,
+          "proceduralLabelLengthFractions": {
+            "2": 0.24282403320717236,
+            "3": 0.3589148405915082,
+            "4": 0.2843281158497176,
+            "5": 0.1139330103516011
+          }
+        }
+      },
+      {
+        "fraction": 0.85,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1489.2256328080923,
+          "momentEquivalentAxisRatio": 2.2244769092099865,
+          "centroid": [
+            44.6071992918285,
+            -8.201831083317687,
+            -26.004104791360476
+          ],
+          "centroidToAxisDistance": 4.852882016447596,
+          "proceduralLabelLengthFractions": {
+            "2": 0.2246957085754107,
+            "3": 0.3671276143212226,
+            "4": 0.29229657047762525,
+            "5": 0.1158801066257406
+          }
+        }
+      },
+      {
+        "fraction": 0.86,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1525.8888246144688,
+          "momentEquivalentAxisRatio": 2.234995141418412,
+          "centroid": [
+            44.97852902522942,
+            -8.248634543127894,
+            -26.315783762175293
+          ],
+          "centroidToAxisDistance": 4.848510850572204,
+          "proceduralLabelLengthFractions": {
+            "2": 0.2227107167362621,
+            "3": 0.3654339819488851,
+            "4": 0.29322438829603203,
+            "5": 0.11863091301882182
+          }
+        }
+      },
+      {
+        "fraction": 0.87,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1560.4978664248601,
+          "momentEquivalentAxisRatio": 2.240840138987883,
+          "centroid": [
+            45.35879730285352,
+            -8.278260316219093,
+            -26.613521455239717
+          ],
+          "centroidToAxisDistance": 4.830457135484075,
+          "proceduralLabelLengthFractions": {
+            "0": 0.07514711122395157,
+            "2": 0.1362225426819372,
+            "3": 0.3727248881060408,
+            "4": 0.29292002331956346,
+            "5": 0.12298543466850681
+          }
+        }
+      },
+      {
+        "fraction": 0.88,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1596.754324452187,
+          "momentEquivalentAxisRatio": 2.2432277386146984,
+          "centroid": [
+            45.72913532106716,
+            -8.291119413454844,
+            -26.933265402789075
+          ],
+          "centroidToAxisDistance": 4.7957253230227055,
+          "proceduralLabelLengthFractions": {
+            "0": 0.08931173795075856,
+            "2": 0.11913646035084072,
+            "3": 0.3763792967981188,
+            "4": 0.2940423188811306,
+            "5": 0.1211301860191514
+          }
+        }
+      },
+      {
+        "fraction": 0.89,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1631.854292899489,
+          "momentEquivalentAxisRatio": 2.2403684103262123,
+          "centroid": [
+            46.091415984683785,
+            -8.287991319438234,
+            -27.271298334796708
+          ],
+          "centroidToAxisDistance": 4.746838881685222,
+          "proceduralLabelLengthFractions": {
+            "0": 0.10457428177443091,
+            "2": 0.09574544288304272,
+            "3": 0.3818896103483413,
+            "4": 0.2947198684303926,
+            "5": 0.12307079656379176
+          }
+        }
+      },
+      {
+        "fraction": 0.9,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1665.5176850115517,
+          "momentEquivalentAxisRatio": 2.2340369285354664,
+          "centroid": [
+            46.45687945926453,
+            -8.274451438451274,
+            -27.60514804350388
+          ],
+          "centroidToAxisDistance": 4.691076128231577,
+          "proceduralLabelLengthFractions": {
+            "0": 0.11453755558380838,
+            "2": 0.08203678973187783,
+            "3": 0.3840404042148026,
+            "4": 0.297486324751294,
+            "5": 0.12189892571821721
+          }
+        }
+      },
+      {
+        "fraction": 0.91,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1699.390774802117,
+          "momentEquivalentAxisRatio": 2.224352181366571,
+          "centroid": [
+            46.814316102044984,
+            -8.254990087869903,
+            -27.955398334665016
+          ],
+          "centroidToAxisDistance": 4.633237130922772,
+          "proceduralLabelLengthFractions": {
+            "0": 0.12488697753042302,
+            "2": 0.07881202016281386,
+            "3": 0.387578134891444,
+            "4": 0.2930640764683843,
+            "5": 0.11565879094693474
+          }
+        }
+      },
+      {
+        "fraction": 0.92,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1733.4282504567882,
+          "momentEquivalentAxisRatio": 2.2107845661940777,
+          "centroid": [
+            47.18349349488956,
+            -8.226702009476472,
+            -28.28483932621505
+          ],
+          "centroidToAxisDistance": 4.569782042653781,
+          "proceduralLabelLengthFractions": {
+            "0": 0.13458219066540253,
+            "2": 0.058518296248256434,
+            "3": 0.3979860244108875,
+            "4": 0.29317747824351514,
+            "5": 0.1157360104319375
+          }
+        }
+      },
+      {
+        "fraction": 0.93,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1768.2760853982302,
+          "momentEquivalentAxisRatio": 2.1927425549102924,
+          "centroid": [
+            47.54955951247622,
+            -8.190977704514202,
+            -28.621572257179256
+          ],
+          "centroidToAxisDistance": 4.502920909793619,
+          "proceduralLabelLengthFractions": {
+            "0": 0.14680393558399504,
+            "2": 0.04261825680729761,
+            "3": 0.40758912157759675,
+            "4": 0.289693721385799,
+            "5": 0.11329496464531187
+          }
+        }
+      },
+      {
+        "fraction": 0.94,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1804.6928260376337,
+          "momentEquivalentAxisRatio": 2.171266921882568,
+          "centroid": [
+            47.91626647833399,
+            -8.154783372386722,
+            -28.957167019110287
+          ],
+          "centroidToAxisDistance": 4.4394524358460306,
+          "proceduralLabelLengthFractions": {
+            "0": 0.17521946739054817,
+            "2": 0.027044576918819372,
+            "3": 0.4107223600380102,
+            "4": 0.27094062749694864,
+            "5": 0.11607296815567379
+          }
+        }
+      },
+      {
+        "fraction": 0.95,
+        "components": 1,
+        "coplanarTriangles": 0,
+        "nonDegreeTwoNodes": 0,
+        "candidate": {
+          "area": 1841.5664822794836,
+          "momentEquivalentAxisRatio": 2.1460502664282095,
+          "centroid": [
+            48.27918503898767,
+            -8.12457020363686,
+            -29.298906706725912
+          ],
+          "centroidToAxisDistance": 4.387077070518754,
+          "proceduralLabelLengthFractions": {
+            "0": 0.20028207777016535,
+            "2": 0.003611167103628832,
+            "3": 0.4214127538340612,
+            "4": 0.25829491475184596,
+            "5": 0.11639908654029822
+          }
+        }
+      }
+    ],
+    "anatomicalROIApproved": false
+  },
+  "sections": {
+    "method": "whole-mesh plane intersections; segment-length-weighted contour centroid; planes from authored axes",
+    "values": {
+      "neck": [
+        {
+          "fraction": 0.25,
+          "origin": [
+            19.5,
+            -1,
+            -13.5
+          ],
+          "normal": [
+            0.8826958385893169,
+            -0.08406627034183971,
+            -0.4623644868801184
+          ],
+          "segments": 175,
+          "components": 1,
+          "coplanarTriangles": 0,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 80.08623317355611,
+          "perimeterWeightedCentroid": [
+            19.56846322421633,
+            -1.0648090383708069,
+            -13.357514019519554
+          ],
+          "centroidToConstructionAxisDistance": 0.17084987315803968,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 175,
+              "perimeter": 80.08623317355611,
+              "perimeterWeightedCentroid": [
+                19.56846322421633,
+                -1.0648090383708069,
+                -13.357514019519554
+              ],
+              "containsAxisOrigin": true,
+              "polygonMetrics": {
+                "area": 499.6692693270008,
+                "areaCentroidInPlane": [
+                  0.09021074230476228,
+                  -0.15107318379712223
+                ],
+                "areaCovariance": [
+                  32.67311273371966,
+                  -3.4912194742655704,
+                  48.76656884893992
+                ],
+                "momentEquivalentAxisRatio": 1.2446291465394992,
+                "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+              },
+              "proceduralLabelLengthFractions": {},
+              "centroidToConstructionAxisDistance": 0.17084987315803968
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 175,
+            "perimeter": 80.08623317355611,
+            "perimeterWeightedCentroid": [
+              19.56846322421633,
+              -1.0648090383708069,
+              -13.357514019519554
+            ],
+            "containsAxisOrigin": true,
+            "polygonMetrics": {
+              "area": 499.6692693270008,
+              "areaCentroidInPlane": [
+                0.09021074230476228,
+                -0.15107318379712223
+              ],
+              "areaCovariance": [
+                32.67311273371966,
+                -3.4912194742655704,
+                48.76656884893992
+              ],
+              "momentEquivalentAxisRatio": 1.2446291465394992,
+              "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+            },
+            "proceduralLabelLengthFractions": {},
+            "centroidToConstructionAxisDistance": 0.17084987315803968
+          },
+          "anatomicalAxisApproved": false
+        },
+        {
+          "fraction": 0.5,
+          "origin": [
+            30,
+            -2,
+            -19
+          ],
+          "normal": [
+            0.8826958385893169,
+            -0.08406627034183971,
+            -0.4623644868801184
+          ],
+          "segments": 168,
+          "components": 1,
+          "coplanarTriangles": 0,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 82.3202415957843,
+          "perimeterWeightedCentroid": [
+            29.999822538213444,
+            -1.999304561670247,
+            -19.00046523401616
+          ],
+          "centroidToConstructionAxisDistance": 0.0008553185640280817,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 168,
+              "perimeter": 82.3202415957843,
+              "perimeterWeightedCentroid": [
+                29.999822538213444,
+                -1.999304561670247,
+                -19.00046523401616
+              ],
+              "containsAxisOrigin": true,
+              "polygonMetrics": {
+                "area": 527.8295849723665,
+                "areaCentroidInPlane": [
+                  -0.0010655427090368098,
+                  0.0011656238960950816
+                ],
+                "areaCovariance": [
+                  34.231068968503955,
+                  -3.65532865524225,
+                  51.93137697220832
+                ],
+                "momentEquivalentAxisRatio": 1.253618675103705,
+                "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+              },
+              "proceduralLabelLengthFractions": {},
+              "centroidToConstructionAxisDistance": 0.0008553185640280817
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 168,
+            "perimeter": 82.3202415957843,
+            "perimeterWeightedCentroid": [
+              29.999822538213444,
+              -1.999304561670247,
+              -19.00046523401616
+            ],
+            "containsAxisOrigin": true,
+            "polygonMetrics": {
+              "area": 527.8295849723665,
+              "areaCentroidInPlane": [
+                -0.0010655427090368098,
+                0.0011656238960950816
+              ],
+              "areaCovariance": [
+                34.231068968503955,
+                -3.65532865524225,
+                51.93137697220832
+              ],
+              "momentEquivalentAxisRatio": 1.253618675103705,
+              "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+            },
+            "proceduralLabelLengthFractions": {},
+            "centroidToConstructionAxisDistance": 0.0008553185640280817
+          },
+          "anatomicalAxisApproved": false
+        },
+        {
+          "fraction": 0.75,
+          "origin": [
+            40.5,
+            -3,
+            -24.5
+          ],
+          "normal": [
+            0.8826958385893169,
+            -0.08406627034183971,
+            -0.4623644868801184
+          ],
+          "segments": 272,
+          "components": 2,
+          "coplanarTriangles": 0,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 129.3419604547618,
+          "perimeterWeightedCentroid": [
+            43.63241414585222,
+            -4.379572652282402,
+            -18.269105239321718
+          ],
+          "centroidToConstructionAxisDistance": 7.109099000767163,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 18,
+              "perimeter": 6.235462284433878,
+              "perimeterWeightedCentroid": [
+                28.535702430014968,
+                -16.324245291702923,
+                -44.91834167148003
+              ],
+              "containsAxisOrigin": false,
+              "polygonMetrics": {
+                "area": 1.9311063903406165,
+                "areaCentroidInPlane": [
+                  9.435522420087207,
+                  25.598222758602073
+                ],
+                "areaCovariance": [
+                  0.1119897892016013,
+                  -0.047676600063084607,
+                  0.2866073192806198
+                ],
+                "momentEquivalentAxisRatio": 1.7300687379756958,
+                "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+              },
+              "proceduralLabelLengthFractions": {},
+              "centroidToConstructionAxisDistance": 27.158582539409437
+            },
+            {
+              "index": 1,
+              "closed": true,
+              "vertices": 254,
+              "perimeter": 123.10649817032788,
+              "perimeterWeightedCentroid": [
+                44.397077083407574,
+                -3.7745635191335936,
+                -16.919295837288583
+              ],
+              "containsAxisOrigin": true,
+              "polygonMetrics": {
+                "area": 986.0418540894088,
+                "areaCentroidInPlane": [
+                  2.0034450699098887,
+                  -8.273682612844656
+                ],
+                "areaCovariance": [
+                  50.12067237570206,
+                  -23.99065057143936,
+                  139.6882138760327
+                ],
+                "momentEquivalentAxisRatio": 1.8177185035541785,
+                "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+              },
+              "proceduralLabelLengthFractions": {},
+              "centroidToConstructionAxisDistance": 8.55886873609727
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 1,
+            "closed": true,
+            "vertices": 254,
+            "perimeter": 123.10649817032788,
+            "perimeterWeightedCentroid": [
+              44.397077083407574,
+              -3.7745635191335936,
+              -16.919295837288583
+            ],
+            "containsAxisOrigin": true,
+            "polygonMetrics": {
+              "area": 986.0418540894088,
+              "areaCentroidInPlane": [
+                2.0034450699098887,
+                -8.273682612844656
+              ],
+              "areaCovariance": [
+                50.12067237570206,
+                -23.99065057143936,
+                139.6882138760327
+              ],
+              "momentEquivalentAxisRatio": 1.8177185035541785,
+              "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+            },
+            "proceduralLabelLengthFractions": {},
+            "centroidToConstructionAxisDistance": 8.55886873609727
+          },
+          "anatomicalAxisApproved": false
+        }
+      ],
+      "proximalShaft": [
+        {
+          "fraction": 0.25,
+          "origin": [
+            52.25,
+            -0.75,
+            -74
+          ],
+          "normal": [
+            -0.08541258277910502,
+            0.06988302227381318,
+            -0.9938918723386765
+          ],
+          "segments": 196,
+          "components": 1,
+          "coplanarTriangles": 0,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 93.36584161017183,
+          "perimeterWeightedCentroid": [
+            52.249619825815344,
+            -0.7496451880601411,
+            -73.99994238106642
+          ],
+          "centroidToConstructionAxisDistance": 0.0005232053754045825,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 196,
+              "perimeter": 93.36584161017183,
+              "perimeterWeightedCentroid": [
+                52.249619825815344,
+                -0.7496451880601411,
+                -73.99994238106642
+              ],
+              "containsAxisOrigin": true,
+              "polygonMetrics": {
+                "area": 692.6078859813643,
+                "areaCentroidInPlane": [
+                  -0.0007080681904369184,
+                  0.0007132293514248201
+                ],
+                "areaCovariance": [
+                  55.136970934223214,
+                  0.0952092127060345,
+                  55.09549436774192
+                ],
+                "momentEquivalentAxisRatio": 1.0017694952878853,
+                "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+              },
+              "proceduralLabelLengthFractions": {},
+              "centroidToConstructionAxisDistance": 0.0005232053754045825
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 196,
+            "perimeter": 93.36584161017183,
+            "perimeterWeightedCentroid": [
+              52.249619825815344,
+              -0.7496451880601411,
+              -73.99994238106642
+            ],
+            "containsAxisOrigin": true,
+            "polygonMetrics": {
+              "area": 692.6078859813643,
+              "areaCentroidInPlane": [
+                -0.0007080681904369184,
+                0.0007132293514248201
+              ],
+              "areaCovariance": [
+                55.136970934223214,
+                0.0952092127060345,
+                55.09549436774192
+              ],
+              "momentEquivalentAxisRatio": 1.0017694952878853,
+              "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+            },
+            "proceduralLabelLengthFractions": {},
+            "centroidToConstructionAxisDistance": 0.0005232053754045825
+          },
+          "anatomicalAxisApproved": false
+        },
+        {
+          "fraction": 0.5,
+          "origin": [
+            49.5,
+            1.5,
+            -106
+          ],
+          "normal": [
+            -0.08541258277910502,
+            0.06988302227381318,
+            -0.9938918723386765
+          ],
+          "segments": 198,
+          "components": 1,
+          "coplanarTriangles": 0,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 86.28924839738096,
+          "perimeterWeightedCentroid": [
+            49.5000502725728,
+            1.5000453471346722,
+            -106.00000113182878
+          ],
+          "centroidToConstructionAxisDistance": 0.00006771244520232114,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 198,
+              "perimeter": 86.28924839738096,
+              "perimeterWeightedCentroid": [
+                49.5000502725728,
+                1.5000453471346722,
+                -106.00000113182878
+              ],
+              "containsAxisOrigin": true,
+              "polygonMetrics": {
+                "area": 591.3878497731986,
+                "areaCentroidInPlane": [
+                  -0.00004492929400127157,
+                  -0.00006824026628758954
+                ],
+                "areaCovariance": [
+                  47.07129733719548,
+                  0.10604936341358356,
+                  47.051673809392284
+                ],
+                "momentEquivalentAxisRatio": 1.002265612179761,
+                "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+              },
+              "proceduralLabelLengthFractions": {},
+              "centroidToConstructionAxisDistance": 0.00006771244520232114
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 198,
+            "perimeter": 86.28924839738096,
+            "perimeterWeightedCentroid": [
+              49.5000502725728,
+              1.5000453471346722,
+              -106.00000113182878
+            ],
+            "containsAxisOrigin": true,
+            "polygonMetrics": {
+              "area": 591.3878497731986,
+              "areaCentroidInPlane": [
+                -0.00004492929400127157,
+                -0.00006824026628758954
+              ],
+              "areaCovariance": [
+                47.07129733719548,
+                0.10604936341358356,
+                47.051673809392284
+              ],
+              "momentEquivalentAxisRatio": 1.002265612179761,
+              "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+            },
+            "proceduralLabelLengthFractions": {},
+            "centroidToConstructionAxisDistance": 0.00006771244520232114
+          },
+          "anatomicalAxisApproved": false
+        },
+        {
+          "fraction": 0.75,
+          "origin": [
+            46.75,
+            3.75,
+            -138
+          ],
+          "normal": [
+            -0.08541258277910502,
+            0.06988302227381318,
+            -0.9938918723386765
+          ],
+          "segments": 178,
+          "components": 1,
+          "coplanarTriangles": 0,
+          "nonDegreeTwoNodes": 0,
+          "perimeter": 79.2113269631072,
+          "perimeterWeightedCentroid": [
+            46.749438677107534,
+            3.7502026730617737,
+            -137.9999375108643
+          ],
+          "centroidToConstructionAxisDistance": 0.0006000538739610175,
+          "contours": [
+            {
+              "index": 0,
+              "closed": true,
+              "vertices": 178,
+              "perimeter": 79.2113269631072,
+              "perimeterWeightedCentroid": [
+                46.749438677107534,
+                3.7502026730617737,
+                -137.9999375108643
+              ],
+              "containsAxisOrigin": true,
+              "polygonMetrics": {
+                "area": 498.2284787794777,
+                "areaCentroidInPlane": [
+                  -0.0005349898621366593,
+                  0.0009908939317504804
+                ],
+                "areaCovariance": [
+                  39.666094614892906,
+                  0.09396139262751302,
+                  39.63011640428151
+                ],
+                "momentEquivalentAxisRatio": 1.0024158435593802,
+                "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+              },
+              "proceduralLabelLengthFractions": {},
+              "centroidToConstructionAxisDistance": 0.0006000538739610175
+            }
+          ],
+          "axisContainingContourCandidate": {
+            "index": 0,
+            "closed": true,
+            "vertices": 178,
+            "perimeter": 79.2113269631072,
+            "perimeterWeightedCentroid": [
+              46.749438677107534,
+              3.7502026730617737,
+              -137.9999375108643
+            ],
+            "containsAxisOrigin": true,
+            "polygonMetrics": {
+              "area": 498.2284787794777,
+              "areaCentroidInPlane": [
+                -0.0005349898621366593,
+                0.0009908939317504804
+              ],
+              "areaCovariance": [
+                39.666094614892906,
+                0.09396139262751302,
+                39.63011640428151
+              ],
+              "momentEquivalentAxisRatio": 1.0024158435593802,
+              "meaning": "area moments of the contour interior; not clinical ellipse fitting or independently segmented neck"
+            },
+            "proceduralLabelLengthFractions": {},
+            "centroidToConstructionAxisDistance": 0.0006000538739610175
+          },
+          "anatomicalAxisApproved": false
+        }
+      ]
+    }
+  },
+  "fossaLabelRegion": {
+    "vertices": 334,
+    "min": [
+      42.97057342529297,
+      -23,
+      -32.20000076293945
+    ],
+    "max": [
+      54.297401428222656,
+      -13.110050201416016,
+      -11.454978942871094
+    ],
+    "meaning": "procedural label 5, not audited anatomical fossa boundary"
+  },
+  "fossaDirectionalProfile": {
+    "method": "ray through cavity center, directed from outside toward greater-trochanter construction center",
+    "rayOrigin": [
+      -0.30909309020140086,
+      -85.51239966845645,
+      -22
+    ],
+    "rayDirection": [
+      0.5913636636275175,
+      0.8064049958557056,
+      0
+    ],
+    "carvedFieldEntry": {
+      "distanceFromRayOrigin": 87.6033592212653,
+      "position": [
+        51.49635036496351,
+        -14.868613138686129,
+        -22
+      ]
+    },
+    "uncarvedFieldEntry": {
+      "distanceFromRayOrigin": 81.29079314183784,
+      "position": [
+        47.76332816134249,
+        -19.959097961805696,
+        -22
+      ]
+    },
+    "directionalRecession": 6.312566079427455,
+    "meshIntersectionDistances": [
+      87.53415488793337,
+      115.79386347846838
+    ],
+    "firstMeshVsFieldDifference": -0.06920433333192477
+  },
+  "limitations": [
+    "author-derived labels and planes; no independent anatomical segmentation",
+    "neck label thresholds .9/.95/1 are diagnostic sensitivity settings, not anatomical inclusion criteria",
+    "fixed-orientation sampled minimum is not optimized anatomical isthmus",
+    "vertex-weighted algebraic sphere fit; no area weighting or clinical validation",
+    "section centroid is a contour statistic, not a validated neck or shaft axis",
+    "one directional ray is not maximum fossa depth or tendon footprint",
+    "no anatomical tolerance, clinical angle or physical scale approval; iPhone not tested"
+  ],
+  "anatomicalApproval": false,
+  "physicalScaleValidated": false,
+  "iPhoneNewVersion": "not tested"
+}

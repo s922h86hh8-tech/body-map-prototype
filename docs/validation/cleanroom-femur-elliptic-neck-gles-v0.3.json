@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "scope": "Offscreen GLES2 rendering of actual page shaders, not a browser test",
+  "egl": "1.5",
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "glVersion": "OpenGL ES 3.2 Mesa 25.2.8-0ubuntu0.24.04.2",
+  "shadersCompiledAndLinked": true,
+  "views": [
+    {
+      "view": "Posterior / whole",
+      "highlightPixels": 0
+    },
+    {
+      "view": "Posteromedial / surface",
+      "highlightPixels": 14699
+    },
+    {
+      "view": "Medial / surface",
+      "highlightPixels": 5753
+    }
+  ],
+  "anatomyAccuracy": "not approved",
+  "iPhoneNewVersion": "not tested"
+}

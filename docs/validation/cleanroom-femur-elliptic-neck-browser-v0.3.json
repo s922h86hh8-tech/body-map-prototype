@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-22",
+  "status": "blocked before browser launch",
+  "reason": "Playwright package present but Chromium executable missing",
+  "browserChecksPerformed": false,
+  "iPhone": "not tested",
+  "anatomicalApproval": false
+}

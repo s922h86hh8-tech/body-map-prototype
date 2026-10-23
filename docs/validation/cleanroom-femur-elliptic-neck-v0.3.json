@@ -1,0 +1,52 @@
+{
+  "status": "passed",
+  "scope": "Elliptic-neck geometry, basis and control callbacks; no browser rendering",
+  "ellipticBasisChecks": "unit, perpendicular, area-product and isolated boundary points passed",
+  "geometry": {
+    "vertices": 21448,
+    "triangles": 42892,
+    "components": 1,
+    "badEdges": 0,
+    "zeroAreaTriangles": 0,
+    "nearZeroAreaTriangles": 0,
+    "minDoubleArea": 4.93699730671238e-7,
+    "eulerCharacteristic": 2,
+    "signedVolumeDrawingUnits": 169155.06845641352
+  },
+  "fossa": {
+    "vertices": 334,
+    "normalsTowardVoid": 334,
+    "removedVolumeDrawingUnits": 932.7721426124044,
+    "openSurfaceEvidence": "One connected closed genus-zero mesh, no separate enclosed cavity component"
+  },
+  "controls": [
+    "six view callbacks",
+    "schematic fossa selection and close view",
+    "reset to whole posterior"
+  ],
+  "exportGeometry": {
+    "vertices": 21448,
+    "triangles": 42892,
+    "components": 1,
+    "badEdges": 0,
+    "zeroAreaTriangles": 0,
+    "nearZeroAreaTriangles": 0,
+    "minDoubleArea": 1.2312517231886407e-11,
+    "eulerCharacteristic": 2,
+    "signedVolumeDrawingUnits": 0.02114861244954376
+  },
+  "files": {
+    "page": {
+      "path": "experiments/cleanroom-femur-study-v0.4.html",
+      "sha256": "1c173159512f87a1a974834c298d5fe3fc18d05b31766ea9f2943a71888b18bd"
+    },
+    "gltf": {
+      "path": "assets/cleanroom/right-proximal-femur-study.v0.3.gltf",
+      "sha256": "4b6fddc840cd41515ea3352e556cbf1463fcbd9e9b4e173e3ad80ed92727410a"
+    }
+  },
+  "anatomyAccuracy": "not approved",
+  "physicalScaleValidated": false,
+  "browserRendering": "not tested by this script",
+  "iPhoneNewVersion": "not tested"
+}

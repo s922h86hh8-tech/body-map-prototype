@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-23",
+  "work": "Gray H. Anatomy of the Human Body, 20th ed., W.H. Lewis, 1918",
+  "method": "Images actually inspected qualitatively. No tracing, mesh copying or coordinate extraction. Fig.93 is oblique, not calibrated orthographic.",
+  "figures": [
+    {
+      "figure": 188,
+      "view": "skull lateral",
+      "url": "https://anatomie.cosminpopa.ro/figs/188.png",
+      "sha256": "900b53c26f8ed3b8e2a7734f8214a448263e0e162455f727ed7ae5a847f75bff",
+      "bytes": 63581
+    },
+    {
+      "figure": 190,
+      "view": "skull front",
+      "url": "https://anatomie.cosminpopa.ro/figs/190.png",
+      "sha256": "80dda9e8bd85252d218f49e2052c1997cb1f2207ccdcd0306732763eb4deef43",
+      "bytes": 67672
+    },
+    {
+      "figure": 92,
+      "view": "lumbar lateral",
+      "url": "https://anatomie.cosminpopa.ro/figs/92.png",
+      "sha256": "4b9d96cae76179b4fd287ac1450f909c9a6396ee397c649f46405cbe0e208c8a",
+      "bytes": 28054
+    },
+    {
+      "figure": 93,
+      "view": "lumbar above/posterior oblique",
+      "url": "https://anatomie.cosminpopa.ro/figs/93.png",
+      "sha256": "d15fe7dcf689014d5a40ec0e047efc782ef0ac5fe019cb82900c9d5322c3008d",
+      "bytes": 30320
+    }
+  ],
+  "anatomical_approval": false
+}

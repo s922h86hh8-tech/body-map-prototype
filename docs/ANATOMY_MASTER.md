@@ -856,3 +856,11 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 91断面の中央50%で軸比1.25362（旧版1.00318）。実HTMLシェーダーのオフスクリーン描画とPNG証跡を保存。
 - Chromium本体がなくブラウザ自動試験は起動前停止。iPhone実機、楕円比率/向き、骨面・筋停止面は未承認。
 - 設計・再現・結果：docs/CLEANROOM_FEMUR_ELLIPTIC_NECK_V0.3.md。独立検証ページの公開確認は別記録で管理。本体・旧版を置換しない。
+
+
+### 2026-10-23：v0.4の公開反映確認
+- 独立ページv0.4のみを公開ブランチへ追加。公開コミット ef4f986aca27bbc51357baa0107356ee125d0909、Pages run 39885191079 は成功。
+- HTTP 200、26,438 bytes、SHA-256 1c173159512f87a1a974834c298d5fe3fc18d05b31766ea9f2943a71888b18bd。検証済みHTMLと一致。
+- クラウドブラウザではページ/操作項目を確認したがWebGL起動不可でエラー案内。iPhone表示の結果にはしない。
+- 公開URL：https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.4.html
+- 公開確認記録：docs/validation/cleanroom-femur-elliptic-neck-hosted-v0.3.json。次はiPhone実機と解剖学監査。

@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-10-23",
+  "page": "experiments/cleanroom-femur-study-v0.4.html",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.4.html",
+  "workingBranch": "cleanroom-pelvis-v0.1",
+  "savedSourceCommit": "dc82408e9fe15b1add1855ef05a91b19a735f985",
+  "publicBranch": "prototype-0.3",
+  "publicCommit": "ef4f986aca27bbc51357baa0107356ee125d0909",
+  "pagesWorkflow": {
+    "id": 39885191079,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "ef4f986aca27bbc51357baa0107356ee125d0909"
+  },
+  "http": {
+    "status": 200,
+    "bytes": 26438,
+    "sha256": "1c173159512f87a1a974834c298d5fe3fc18d05b31766ea9f2943a71888b18bd",
+    "matchesValidatedHtml": true
+  },
+  "browser": {
+    "cloudPageAndControlsLoaded": true,
+    "webgl": "unavailable; error fallback shown",
+    "iPhone": "not tested",
+    "localChromium": "launch blocked by missing executable"
+  },
+  "offscreenRendering": "passed; real HTML shaders; not a browser test",
+  "geometry": {
+    "vertices": 21448,
+    "triangles": 42892,
+    "components": 1,
+    "badEdges": 0,
+    "zeroAreaTriangles": 0,
+    "nearZeroAreaTriangles": 0
+  },
+  "physicalScaleValidated": false,
+  "anatomicalApproval": false,
+  "publicChangeScope": "added only independent v0.4 HTML; existing application, model references and prior pages preserved",
+  "next": [
+    "iPhone v0.4 launch, views, neck/fossa close-up, gestures, export and toolbar overlap",
+    "independent anatomical audit of ellipse orientation/ratio, bone surfaces and muscle footprints"
+  ]
+}

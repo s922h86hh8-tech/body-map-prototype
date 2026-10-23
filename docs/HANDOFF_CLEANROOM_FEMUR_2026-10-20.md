@@ -130,3 +130,8 @@ v0.2には2026-10-15のユーザー提供録画の記録があり、3D/方向変
 - メッシュ・glTF・基底・VMコールバック・91断面計算・オフスクリーン描画を再実行し、PNG証跡も保存。
 - ブラウザ自動試験はChromium本体がなく起動前停止。iPhone・解剖学的精度は未承認。比率/向きは独自の模式値。
 - 独立ページの公開状態は公開確認記録を参照。旧版・既存アプリは保全。
+
+## v0.4公開確認（2026-10-23）
+- 公開URL：https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.4.html
+- Pages run 39885191079 成功、HTTP 200、26,438 bytes、配信HTMLと検証ハッシュ一致。独立HTMLだけを公開ブランチへ追加。
+- 詳細は docs/validation/cleanroom-femur-elliptic-neck-hosted-v0.3.json。クラウドWebGLは起動不可、iPhoneと解剖学的承認は未完了。

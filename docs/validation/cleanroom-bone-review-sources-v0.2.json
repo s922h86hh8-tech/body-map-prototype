@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-23",
+  "work": "Gray H. Anatomy of the Human Body, 20th ed., W.H. Lewis, 1918",
+  "method": "Qualitative review of original descriptions and figures. No tracing or extracted coordinates; arbitrary authored shapes. Neither calibrated multi-view data nor independent anatomy approval.",
+  "figures": [
+    {
+      "figure": 188,
+      "view": "skull lateral",
+      "url": "https://anatomie.cosminpopa.ro/figs/188.png",
+      "sha256": "900b53c26f8ed3b8e2a7734f8214a448263e0e162455f727ed7ae5a847f75bff",
+      "bytes": 63581
+    },
+    {
+      "figure": 190,
+      "view": "skull front",
+      "url": "https://anatomie.cosminpopa.ro/figs/190.png",
+      "sha256": "80dda9e8bd85252d218f49e2052c1997cb1f2207ccdcd0306732763eb4deef43",
+      "bytes": 67672
+    },
+    {
+      "figure": 92,
+      "view": "lumbar lateral",
+      "url": "https://anatomie.cosminpopa.ro/figs/92.png",
+      "sha256": "4b9d96cae76179b4fd287ac1450f909c9a6396ee397c649f46405cbe0e208c8a",
+      "bytes": 28054
+    },
+    {
+      "figure": 93,
+      "view": "lumbar above/posterior oblique",
+      "url": "https://anatomie.cosminpopa.ro/figs/93.png",
+      "sha256": "d15fe7dcf689014d5a40ec0e047efc782ef0ac5fe019cb82900c9d5322c3008d",
+      "bytes": 30320
+    },
+    {
+      "figure": 157,
+      "view": "maxilla outer surface",
+      "url": "https://anatomie.cosminpopa.ro/figs/157.png",
+      "sha256": "3ae15ba3c7d380acd586ed3a49d28ea49185a45fabefd5ef7c8739136261aef4",
+      "bytes": 38958
+    },
+    {
+      "figure": 176,
+      "view": "mandible outer surface",
+      "url": "https://anatomie.cosminpopa.ro/figs/176.png",
+      "sha256": "ca9005e472ac16e306947256161357b84f7273d9d6499d67d15b2f34c4c59dae",
+      "bytes": 23149
+    },
+    {
+      "figure": 177,
+      "view": "mandible inner surface",
+      "url": "https://anatomie.cosminpopa.ro/figs/177.png",
+      "sha256": "40dd897cf8bc841ff0cebd861db9ccb6ff9bbc1479d483df2e71279bc903db1d",
+      "bytes": 25570
+    }
+  ],
+  "anatomical_approval": false,
+  "descriptions": [
+    {
+      "url": "https://anatomie.cosminpopa.ro/en/5b-2-the-maxill-upper-jaw/",
+      "used": "Canine fossa, infraorbital foramen and orbital surface; qualitative relations only."
+    },
+    {
+      "url": "https://anatomie.cosminpopa.ro/en/5b-8-the-mandible-lower-jaw/",
+      "used": "Anterior triangular coronoid vs posterior condylar process, notch and oblique line."
+    },
+    {
+      "url": "https://anatomie.cosminpopa.ro/en/3a-3-the-lumbar-vertebr/",
+      "used": "Superior facets concave and face backward/inward; inferior convex and face forward/outward; broad quadrilateral spinous process."
+    }
+  ]
+}

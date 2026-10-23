@@ -894,3 +894,10 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 制作・資料図版・確認範囲・再現・採用条件: docs/HANDOFF_CLEANROOM_BONE_REVIEW_2026-10-23.md。
 
 - 単体比較版公開確認: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.1.html 。公開コミットaa0bb9521b9d0b329944b3783d94511ed02484e3、Pages run39894844037成功。HTTP200、検証済みHTMLとSHA-256一致。クラウドChromeで頭蓋/腰椎と旧/新版・下顎/歯冠チェック・方向/リセットを確認。iPhoneと形状精度の承認は未完了。記録: docs/validation/cleanroom-bone-review-v0.1-hosted.json。
+
+
+### 2026-10-23：単体レビューv0.2、骨面と部分比較の改訂
+- 眼窩の奥行き/上顎の凹み、頬骨弓、下顎頭と筋突起、腰椎の凹凸関節面と幅広い棘突起を独自造形で改訂。Gray1918図157/176/177と原著記述を追加照合。形状/角度は任意設計値で人体測定値ではない。
+- experiments/cleanroom-bone-review-v0.2.html。直前の単体v0.1との比較、5箇所の部分拡大を追加。拡大したまま旧/新切替でき、固定3図は不変。右側面のカメラ方向誤りを新ページで修正、座標の符号を検査。
+- 新頭蓋一式33,425頂点/66,738三角形、新腰椎19,817頂点/39,634三角形。各メッシュ1連結、辺数/方向整合、符号付き体積正、ゼロ面積なし等の技術検査通過。初期の腰椎孤立片を切れ込み調整で修正。
+- 全身採用は保留。iPhone・独立した骨面監査・咬合/顎関節・実寸・自己交差厳密検査が残る。詳細: docs/HANDOFF_CLEANROOM_BONE_REVIEW_V0.2_2026-10-23.md。

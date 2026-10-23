@@ -1,0 +1,1869 @@
+{
+  "date": "2026-10-23",
+  "html_sha256": "9c863e23907a2d5d37911cb23a841203e06dfb10bb6dbed8520ebe79a84afc73",
+  "models": {
+    "skull:old": {
+      "generation_and_render_ms": 12192,
+      "vertices": 32982,
+      "triangles": 65852,
+      "parts": [
+        {
+          "name": "頭蓋・顔面連続面",
+          "signed_volume": 2776.666534051102,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 24700,
+              "min": [
+                -7.378655103095766,
+                -11.596655754220368,
+                -7.544065946995692
+              ],
+              "max": [
+                7.378655103095766,
+                8.694799173718941,
+                12.19830042382537
+              ]
+            }
+          ],
+          "vertices": 24700,
+          "triangles": 49420,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下顎連続面",
+          "signed_volume": 109.8990962163447,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 6682,
+              "min": [
+                -6.2519381021458145,
+                -2.0309108146220245,
+                -11.62810119419475
+              ],
+              "max": [
+                6.2519381021458145,
+                8.819721731423778,
+                -2.2991517643729704
+              ]
+            }
+          ],
+          "vertices": 6682,
+          "triangles": 13360,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠1",
+          "signed_volume": 0.8722696565679696,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.9794943233903464,
+                1.8696111174684227,
+                -7.872407636663902
+              ],
+              "max": [
+                5.275723634661676,
+                2.906594566485225,
+                -7.032407636663902
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠2",
+          "signed_volume": 0.8722696565679638,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.8003621275939747,
+                2.988521963903834,
+                -7.891529832133895
+              ],
+              "max": [
+                5.099182994715567,
+                4.094894163149714,
+                -7.0515298321338955
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠3",
+          "signed_volume": 0.8722696565679774,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.4305132060214367,
+                4.0357586367806615,
+                -7.929039367825823
+              ],
+              "max": [
+                4.7713545524182654,
+                5.22100220513131,
+                -7.089039367825823
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠4",
+          "signed_volume": 0.8722696565679473,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                2.921027783329628,
+                4.988654282623743,
+                -7.983494773318632
+              ],
+              "max": [
+                4.267969432943827,
+                6.224065127340001,
+                -7.143494773318632
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠5",
+          "signed_volume": 0.8722696565680006,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                2.2963727189678576,
+                5.795168136142359,
+                -8.052803357918178
+              ],
+              "max": [
+                3.603484823754046,
+                7.080957304210483,
+                -7.212803357918178
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠6",
+          "signed_volume": 0.4880182133020785,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                1.722071768191188,
+                6.650773363393201,
+                -8.214301631587002
+              ],
+              "max": [
+                2.6619178842905926,
+                7.532281808787058,
+                -7.214301631587001
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠7",
+          "signed_volume": 0.48801821330211337,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                0.886985191278264,
+                7.1275117774000085,
+                -8.304857661372768
+              ],
+              "max": [
+                1.8126623071882357,
+                7.955772251386498,
+                -7.304857661372769
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠8",
+          "signed_volume": 0.4880182133020846,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                0.027611287237134408,
+                7.409662628462826,
+                -8.40099142983522
+              ],
+              "max": [
+                0.8839481178277809,
+                8.132554091603536,
+                -7.40099142983522
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠9",
+          "signed_volume": 0.48801821330209194,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -0.8839481178277802,
+                7.409662628462826,
+                -8.40099142983522
+              ],
+              "max": [
+                -0.02761128723713384,
+                8.132554091603536,
+                -7.40099142983522
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠10",
+          "signed_volume": 0.48801821330210904,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -1.812662307188235,
+                7.127511777400008,
+                -8.304857661372768
+              ],
+              "max": [
+                -0.8869851912782631,
+                7.955772251386499,
+                -7.304857661372769
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠11",
+          "signed_volume": 0.48801821330211076,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -2.6619178842905913,
+                6.650773363393202,
+                -8.214301631587002
+              ],
+              "max": [
+                -1.7220717681911868,
+                7.532281808787059,
+                -7.214301631587001
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠12",
+          "signed_volume": 0.8722696565679896,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -3.6034848237540458,
+                5.795168136142361,
+                -8.052803357918178
+              ],
+              "max": [
+                -2.296372718967857,
+                7.080957304210485,
+                -7.212803357918178
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠13",
+          "signed_volume": 0.8722696565679781,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.267969432943827,
+                4.988654282623743,
+                -7.983494773318632
+              ],
+              "max": [
+                -2.921027783329628,
+                6.224065127340001,
+                -7.143494773318632
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠14",
+          "signed_volume": 0.8722696565679979,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.7713545524182654,
+                4.0357586367806615,
+                -7.929039367825823
+              ],
+              "max": [
+                -3.4305132060214367,
+                5.221002205131311,
+                -7.089039367825823
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠15",
+          "signed_volume": 0.8722696565680127,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -5.099182994715567,
+                2.988521963903834,
+                -7.891529832133895
+              ],
+              "max": [
+                -3.8003621275939747,
+                4.094894163149714,
+                -7.0515298321338955
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠16",
+          "signed_volume": 0.8722696565679963,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -5.275723634659477,
+                1.8696111174695038,
+                -7.872407636663902
+              ],
+              "max": [
+                -3.9794943233913997,
+                2.906594566484147,
+                -7.032407636663902
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠1",
+          "signed_volume": 0.8722696565679915,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.840666054019575,
+                1.7696111174684226,
+                -8.772407636663901
+              ],
+              "max": [
+                5.136895365290905,
+                2.806594566485225,
+                -7.932407636663902
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠2",
+          "signed_volume": 0.872269656567986,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.6668689507593313,
+                2.888521963903834,
+                -8.791529832133895
+              ],
+              "max": [
+                4.965689817880923,
+                3.9948941631497146,
+                -7.951529832133895
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠3",
+          "signed_volume": 0.872269656567994,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.307485189644841,
+                3.9357586367806614,
+                -8.829039367825821
+              ],
+              "max": [
+                4.64832653604167,
+                5.12100220513131,
+                -7.989039367825821
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠4",
+          "signed_volume": 0.8722696565679559,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                2.813192825085526,
+                4.888654282623744,
+                -8.883494773318631
+              ],
+              "max": [
+                4.160134474699725,
+                6.1240651273400015,
+                -8.043494773318631
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠5",
+          "signed_volume": 0.8722696565679743,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                2.207874855827029,
+                5.695168136142359,
+                -8.952803357918176
+              ],
+              "max": [
+                3.514986960613218,
+                6.9809573042104835,
+                -8.112803357918176
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠6",
+          "signed_volume": 0.48801821330205025,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                1.6563119234039612,
+                6.550773363393201,
+                -9.114301631587
+              ],
+              "max": [
+                2.596158039503366,
+                7.432281808787058,
+                -8.114301631587
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠7",
+          "signed_volume": 0.4880182133020749,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                0.8464904788012666,
+                7.027511777400009,
+                -9.204857661372769
+              ],
+              "max": [
+                1.7721675947112383,
+                7.855772251386498,
+                -8.204857661372769
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠8",
+          "signed_volume": 0.48801821330209033,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                0.013937896161160646,
+                7.309662628462826,
+                -9.30099142983522
+              ],
+              "max": [
+                0.8702747267518071,
+                8.032554091603537,
+                -8.30099142983522
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠9",
+          "signed_volume": 0.48801821330207495,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -0.8702747267518064,
+                7.309662628462826,
+                -9.30099142983522
+              ],
+              "max": [
+                -0.013937896161160132,
+                8.032554091603537,
+                -8.30099142983522
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠10",
+          "signed_volume": 0.48801821330206513,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -1.7721675947112376,
+                7.027511777400008,
+                -9.204857661372769
+              ],
+              "max": [
+                -0.8464904788012657,
+                7.855772251386499,
+                -8.204857661372769
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠11",
+          "signed_volume": 0.48801821330206935,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -2.5961580395033645,
+                6.550773363393202,
+                -9.114301631587
+              ],
+              "max": [
+                -1.65631192340396,
+                7.432281808787059,
+                -8.114301631587
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠12",
+          "signed_volume": 0.8722696565680118,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -3.5149869606132174,
+                5.695168136142361,
+                -8.952803357918176
+              ],
+              "max": [
+                -2.2078748558270287,
+                6.980957304210485,
+                -8.112803357918176
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠13",
+          "signed_volume": 0.8722696565680077,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.160134474699725,
+                4.888654282623744,
+                -8.883494773318631
+              ],
+              "max": [
+                -2.813192825085526,
+                6.1240651273400015,
+                -8.043494773318631
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠14",
+          "signed_volume": 0.8722696565679829,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.64832653604167,
+                3.9357586367806623,
+                -8.829039367825823
+              ],
+              "max": [
+                -3.307485189644841,
+                5.121002205131312,
+                -7.989039367825823
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠15",
+          "signed_volume": 0.8722696565679781,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.965689817880923,
+                2.888521963903834,
+                -8.791529832133895
+              ],
+              "max": [
+                -3.6668689507593313,
+                3.9948941631497146,
+                -7.951529832133895
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠16",
+          "signed_volume": 0.8722696565679855,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -5.136895365288706,
+                1.7696111174695037,
+                -8.772407636663901
+              ],
+              "max": [
+                -3.8406660540206286,
+                2.8065945664841467,
+                -7.932407636663902
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        }
+      ]
+    },
+    "skull:new": {
+      "generation_and_render_ms": 14967,
+      "vertices": 33425,
+      "triangles": 66738,
+      "parts": [
+        {
+          "name": "頭蓋・顔面連続面",
+          "signed_volume": 2774.286215607444,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 24897,
+              "min": [
+                -7.372388721987988,
+                -11.596655754220368,
+                -7.544065946995692
+              ],
+              "max": [
+                7.372388721987988,
+                8.694799173718941,
+                12.19830042382537
+              ]
+            }
+          ],
+          "vertices": 24897,
+          "triangles": 49814,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下顎連続面",
+          "signed_volume": 114.27895112922573,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 6928,
+              "min": [
+                -6.416792508349914,
+                -2.0067946872203786,
+                -11.62810119419475
+              ],
+              "max": [
+                6.416792508349914,
+                8.819721731423778,
+                -2.3112789135669995
+              ]
+            }
+          ],
+          "vertices": 6928,
+          "triangles": 13852,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠1",
+          "signed_volume": 0.8722696565679696,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.9794943233903464,
+                1.8696111174684227,
+                -7.872407636663902
+              ],
+              "max": [
+                5.275723634661676,
+                2.906594566485225,
+                -7.032407636663902
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠2",
+          "signed_volume": 0.8722696565679638,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.8003621275939747,
+                2.988521963903834,
+                -7.891529832133895
+              ],
+              "max": [
+                5.099182994715567,
+                4.094894163149714,
+                -7.0515298321338955
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠3",
+          "signed_volume": 0.8722696565679774,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.4305132060214367,
+                4.0357586367806615,
+                -7.929039367825823
+              ],
+              "max": [
+                4.7713545524182654,
+                5.22100220513131,
+                -7.089039367825823
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠4",
+          "signed_volume": 0.8722696565679473,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                2.921027783329628,
+                4.988654282623743,
+                -7.983494773318632
+              ],
+              "max": [
+                4.267969432943827,
+                6.224065127340001,
+                -7.143494773318632
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠5",
+          "signed_volume": 0.8722696565680006,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                2.2963727189678576,
+                5.795168136142359,
+                -8.052803357918178
+              ],
+              "max": [
+                3.603484823754046,
+                7.080957304210483,
+                -7.212803357918178
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠6",
+          "signed_volume": 0.4880182133020785,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                1.722071768191188,
+                6.650773363393201,
+                -8.214301631587002
+              ],
+              "max": [
+                2.6619178842905926,
+                7.532281808787058,
+                -7.214301631587001
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠7",
+          "signed_volume": 0.48801821330211337,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                0.886985191278264,
+                7.1275117774000085,
+                -8.304857661372768
+              ],
+              "max": [
+                1.8126623071882357,
+                7.955772251386498,
+                -7.304857661372769
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠8",
+          "signed_volume": 0.4880182133020846,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                0.027611287237134408,
+                7.409662628462826,
+                -8.40099142983522
+              ],
+              "max": [
+                0.8839481178277809,
+                8.132554091603536,
+                -7.40099142983522
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠9",
+          "signed_volume": 0.48801821330209194,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -0.8839481178277802,
+                7.409662628462826,
+                -8.40099142983522
+              ],
+              "max": [
+                -0.02761128723713384,
+                8.132554091603536,
+                -7.40099142983522
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠10",
+          "signed_volume": 0.48801821330210904,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -1.812662307188235,
+                7.127511777400008,
+                -8.304857661372768
+              ],
+              "max": [
+                -0.8869851912782631,
+                7.955772251386499,
+                -7.304857661372769
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠11",
+          "signed_volume": 0.48801821330211076,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -2.6619178842905913,
+                6.650773363393202,
+                -8.214301631587002
+              ],
+              "max": [
+                -1.7220717681911868,
+                7.532281808787059,
+                -7.214301631587001
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠12",
+          "signed_volume": 0.8722696565679896,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -3.6034848237540458,
+                5.795168136142361,
+                -8.052803357918178
+              ],
+              "max": [
+                -2.296372718967857,
+                7.080957304210485,
+                -7.212803357918178
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠13",
+          "signed_volume": 0.8722696565679781,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.267969432943827,
+                4.988654282623743,
+                -7.983494773318632
+              ],
+              "max": [
+                -2.921027783329628,
+                6.224065127340001,
+                -7.143494773318632
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠14",
+          "signed_volume": 0.8722696565679979,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.7713545524182654,
+                4.0357586367806615,
+                -7.929039367825823
+              ],
+              "max": [
+                -3.4305132060214367,
+                5.221002205131311,
+                -7.089039367825823
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠15",
+          "signed_volume": 0.8722696565680127,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -5.099182994715567,
+                2.988521963903834,
+                -7.891529832133895
+              ],
+              "max": [
+                -3.8003621275939747,
+                4.094894163149714,
+                -7.0515298321338955
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "上歯冠16",
+          "signed_volume": 0.8722696565679963,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -5.275723634659477,
+                1.8696111174695038,
+                -7.872407636663902
+              ],
+              "max": [
+                -3.9794943233913997,
+                2.906594566484147,
+                -7.032407636663902
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠1",
+          "signed_volume": 0.8722696565679915,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.840666054019575,
+                1.7696111174684226,
+                -8.772407636663901
+              ],
+              "max": [
+                5.136895365290905,
+                2.806594566485225,
+                -7.932407636663902
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠2",
+          "signed_volume": 0.872269656567986,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.6668689507593313,
+                2.888521963903834,
+                -8.791529832133895
+              ],
+              "max": [
+                4.965689817880923,
+                3.9948941631497146,
+                -7.951529832133895
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠3",
+          "signed_volume": 0.872269656567994,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                3.307485189644841,
+                3.9357586367806614,
+                -8.829039367825821
+              ],
+              "max": [
+                4.64832653604167,
+                5.12100220513131,
+                -7.989039367825821
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠4",
+          "signed_volume": 0.8722696565679559,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                2.813192825085526,
+                4.888654282623744,
+                -8.883494773318631
+              ],
+              "max": [
+                4.160134474699725,
+                6.1240651273400015,
+                -8.043494773318631
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠5",
+          "signed_volume": 0.8722696565679743,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                2.207874855827029,
+                5.695168136142359,
+                -8.952803357918176
+              ],
+              "max": [
+                3.514986960613218,
+                6.9809573042104835,
+                -8.112803357918176
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠6",
+          "signed_volume": 0.48801821330205025,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                1.6563119234039612,
+                6.550773363393201,
+                -9.114301631587
+              ],
+              "max": [
+                2.596158039503366,
+                7.432281808787058,
+                -8.114301631587
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠7",
+          "signed_volume": 0.4880182133020749,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                0.8464904788012666,
+                7.027511777400009,
+                -9.204857661372769
+              ],
+              "max": [
+                1.7721675947112383,
+                7.855772251386498,
+                -8.204857661372769
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠8",
+          "signed_volume": 0.48801821330209033,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                0.013937896161160646,
+                7.309662628462826,
+                -9.30099142983522
+              ],
+              "max": [
+                0.8702747267518071,
+                8.032554091603537,
+                -8.30099142983522
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠9",
+          "signed_volume": 0.48801821330207495,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -0.8702747267518064,
+                7.309662628462826,
+                -9.30099142983522
+              ],
+              "max": [
+                -0.013937896161160132,
+                8.032554091603537,
+                -8.30099142983522
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠10",
+          "signed_volume": 0.48801821330206513,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -1.7721675947112376,
+                7.027511777400008,
+                -9.204857661372769
+              ],
+              "max": [
+                -0.8464904788012657,
+                7.855772251386499,
+                -8.204857661372769
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠11",
+          "signed_volume": 0.48801821330206935,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -2.5961580395033645,
+                6.550773363393202,
+                -9.114301631587
+              ],
+              "max": [
+                -1.65631192340396,
+                7.432281808787059,
+                -8.114301631587
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠12",
+          "signed_volume": 0.8722696565680118,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -3.5149869606132174,
+                5.695168136142361,
+                -8.952803357918176
+              ],
+              "max": [
+                -2.2078748558270287,
+                6.980957304210485,
+                -8.112803357918176
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠13",
+          "signed_volume": 0.8722696565680077,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.160134474699725,
+                4.888654282623744,
+                -8.883494773318631
+              ],
+              "max": [
+                -2.813192825085526,
+                6.1240651273400015,
+                -8.043494773318631
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠14",
+          "signed_volume": 0.8722696565679829,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.64832653604167,
+                3.9357586367806623,
+                -8.829039367825823
+              ],
+              "max": [
+                -3.307485189644841,
+                5.121002205131312,
+                -7.989039367825823
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠15",
+          "signed_volume": 0.8722696565679781,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -4.965689817880923,
+                2.888521963903834,
+                -8.791529832133895
+              ],
+              "max": [
+                -3.6668689507593313,
+                3.9948941631497146,
+                -7.951529832133895
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        },
+        {
+          "name": "下歯冠16",
+          "signed_volume": 0.8722696565679855,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 50,
+              "min": [
+                -5.136895365288706,
+                1.7696111174695037,
+                -8.772407636663901
+              ],
+              "max": [
+                -3.8406660540206286,
+                2.8065945664841467,
+                -7.932407636663902
+              ]
+            }
+          ],
+          "vertices": 50,
+          "triangles": 96,
+          "zero_area": 0,
+          "bad_edges": 0
+        }
+      ]
+    },
+    "lumbar:old": {
+      "generation_and_render_ms": 6067,
+      "vertices": 19253,
+      "triangles": 38506,
+      "parts": [
+        {
+          "name": "腰椎連続面",
+          "signed_volume": 176.81830538158403,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 19253,
+              "min": [
+                -7.985052046382658,
+                -8.022003905729697,
+                -2.547881801357879
+              ],
+              "max": [
+                7.985052046382658,
+                4.5,
+                2.9467738333342837
+              ]
+            }
+          ],
+          "vertices": 19253,
+          "triangles": 38506,
+          "zero_area": 0,
+          "bad_edges": 0
+        }
+      ]
+    },
+    "lumbar:new": {
+      "generation_and_render_ms": 7822,
+      "vertices": 19817,
+      "triangles": 39634,
+      "parts": [
+        {
+          "name": "腰椎連続面",
+          "signed_volume": 175.7096030598267,
+          "unbalanced_edge_directions": 0,
+          "components": 1,
+          "component_bounds": [
+            {
+              "vertices": 19817,
+              "min": [
+                -7.985052046382658,
+                -7.942767576072563,
+                -2.567815082596363
+              ],
+              "max": [
+                7.985052046382658,
+                4.5,
+                2.9984379379630117
+              ]
+            }
+          ],
+          "vertices": 19817,
+          "triangles": 39634,
+          "zero_area": 0,
+          "bad_edges": 0
+        }
+      ]
+    }
+  },
+  "anatomical_approval": false,
+  "iphone_tested": false,
+  "input_hashes": {
+    "experiments/cleanroom-bone-review-v0.1.html": "6fd6844c958f74cbefff24fd4333bfb1b22b544e2fc0fb19c7eee1024b004745",
+    "tools/cleanroom/bone-review-shapes-v0.1.js": "77786c30b5951e6629250906419ba1c27f6cc10032f055f28917db34c6135303",
+    "experiments/cleanroom-whole-body-v0.2.html": "917b023f3bdcbfc4ba1acd579093af975568a6a3a64c361467e84e80f4f87527",
+    "tools/cleanroom/whole-body-morphology-v0.2.js": "ec246df44793a23cfd8ef3d5b70e617987f2b220b2c9e5583ccc817786fcfc7d",
+    "tools/cleanroom/bone-review-shapes-v0.2.js": "c52f2bb5a1430bbbe257136a3709686f63c3bd1b98b3efcf117a49c285b775ec",
+    "tools/cleanroom/build-bone-review-v0.2.py": "dba3db09a4d35421638b233399415d0477d0779b0eeb552de547164f4f660993"
+  },
+  "design": {
+    "review": {
+      "version": "0.2",
+      "units": "arbitrary drawing units",
+      "anatomicalApproval": false,
+      "sources": {
+        "skull": [
+          "Gray 1918 Fig.188 lateral",
+          "Gray 1918 Fig.190 frontal",
+          "Gray 1918 Fig.157 maxilla",
+          "Gray 1918 Fig.176/177 mandible"
+        ],
+        "lumbar": [
+          "Gray 1918 Fig.92 lateral",
+          "Gray 1918 Fig.93 above/posterior"
+        ]
+      },
+      "design": {
+        "cranialCenter": [
+          0,
+          -2.2,
+          4.7
+        ],
+        "cranialRadii": [
+          7.2,
+          9.4,
+          7.5
+        ],
+        "skullGridStep": 0.5,
+        "lumbarGridStep": 0.25
+      },
+      "scope": "Original qualitative surface study; not an individual specimen or validated anatomy."
+    },
+    "lumbar_sections": [
+      [
+        -1.75,
+        4.1,
+        3.05
+      ],
+      [
+        -1.5,
+        4,
+        2.95
+      ],
+      [
+        -0.8,
+        3.7,
+        2.7
+      ],
+      [
+        0,
+        3.6,
+        2.6
+      ],
+      [
+        0.8,
+        3.75,
+        2.75
+      ],
+      [
+        1.5,
+        4.1,
+        3
+      ],
+      [
+        1.7,
+        4.15,
+        3.05
+      ]
+    ]
+  },
+  "controls": "VM callbacks passed: 2 targets, 2 revisions, 5 poses, 5 detail focuses with fixed views unchanged, focus retained across revision change, camera signs, jaw/teeth, rotation/pinch/reset, latest activation wins",
+  "render": "Actual HTML Canvas2D draw calls rendered using @napi-rs/canvas; not browser DOM/iPhone verification",
+  "self_intersection_checked": false,
+  "notes": "Closed edge incidence is a technical check, not anatomical approval. No independent surface coordinates or clinically validated dimensions."
+}

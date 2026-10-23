@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-24",
+  "work": "Gray H. Anatomy of the Human Body, 20th edition, 1918",
+  "method": "Qualitative visual review; original authored surfaces. No tracing, image coordinate extraction, third-party mesh or scan. Figures not calibrated multi-view data of one specimen.",
+  "figures": [
+    {
+      "figure": 188,
+      "view": "skull lateral",
+      "url": "https://anatomie.cosminpopa.ro/figs/188.png",
+      "sha256": "900b53c26f8ed3b8e2a7734f8214a448263e0e162455f727ed7ae5a847f75bff",
+      "bytes": 63581
+    },
+    {
+      "figure": 190,
+      "view": "skull frontal",
+      "url": "https://anatomie.cosminpopa.ro/figs/190.png",
+      "sha256": "80dda9e8bd85252d218f49e2052c1997cb1f2207ccdcd0306732763eb4deef43",
+      "bytes": 67672
+    },
+    {
+      "figure": 157,
+      "view": "maxilla outer surface",
+      "url": "https://anatomie.cosminpopa.ro/figs/157.png",
+      "sha256": "3ae15ba3c7d380acd586ed3a49d28ea49185a45fabefd5ef7c8739136261aef4",
+      "bytes": 38958
+    },
+    {
+      "figure": 176,
+      "view": "mandible outer surface",
+      "url": "https://anatomie.cosminpopa.ro/figs/176.png",
+      "sha256": "ca9005e472ac16e306947256161357b84f7273d9d6499d67d15b2f34c4c59dae",
+      "bytes": 23149
+    }
+  ],
+  "descriptions": [
+    "https://anatomie.cosminpopa.ro/en/5c-the-exterior-of-the-skull/",
+    "https://anatomie.cosminpopa.ro/en/5b-2-the-maxill-upper-jaw/",
+    "https://anatomie.cosminpopa.ro/en/5b-8-the-mandible-lower-jaw/"
+  ],
+  "independent_anatomical_audit": false,
+  "anatomical_approval": false
+}

@@ -920,3 +920,11 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 全身採用/解剖学的承認/iPhone実機は未完了。詳細: docs/HANDOFF_CLEANROOM_BONE_REVIEW_V0.4_2026-10-23.md。experiments/cleanroom-bone-review-v0.4.html。
 
 - 単体v0.4公開: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.4.html 。公開コミット13185f4fcb2572f6cb609f49fce7c402e10fcc2c / Pages run39975310373成功、HTTP200・検証HTMLのハッシュ一致。Chromeで眼窩約4倍/前版比較/腰椎関節面を確認。初回生成中の状態取得タイムアウト後に完了を確認。iPhoneの待ち時間/タッチと骨面監査は未完了。docs/validation/cleanroom-bone-review-v0.4-hosted.json。
+
+
+### 2026-10-24：単体v0.5、頭蓋・顔面そのものの設計変更
+- ユーザーがv0.4頭蓋をもっと正しい形にすることを依頼。Gray1918図188/190/157/176を目視、頭蓋外面/上顎/下顎の原著記述を再確認。無単位の独自設計で、図の輪郭/点群を抽出したものではない。
+- 頭蓋冠/後頭部比率、薄い眉と眼窩床、傾斜する鼻骨部と上顎前頭突起、浅い犬歯窩、歯槽弓、側頭/乳様突起と孔の概形、馬蹄形の下顎体と角/枝を改訂。歯冠の種類別概形も調整。鼻腔・頭蓋底/内部、顎関節/咬合/歯根等は未監査。
+- 旧比較はv0.4。新頭蓋一式82,211頂点/164,314三角形。新各メッシュ1連結、境界/不正辺0、方向整合、正の体積、面積0なしを確認。腰椎は旧/新の頂点/面配列が完全一致。2対象×2版/方向/部分拡大等をVM検証、3方向と4倍比較を実描画し目視。
+- 三角形数追加の変更ではなく骨面の修正。人体寸法/骨面精度の数値一致、独立監査、専門家承認、iPhone実機は未完了。全身採用は保留。
+- 詳細: docs/HANDOFF_CLEANROOM_SKULL_V0.5_2026-10-24.md。experiments/cleanroom-bone-review-v0.5.html。

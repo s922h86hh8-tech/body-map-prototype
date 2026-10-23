@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-23",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-whole-body-v0.2.html",
+  "http_status": 200,
+  "bytes": 26980,
+  "sha256": "917b023f3bdcbfc4ba1acd579093af975568a6a3a64c361467e84e80f4f87527",
+  "matches_tested_html": true,
+  "public_commit": "05bfdcb6eb29e2497d806a1715a8bfae51b9ebe9",
+  "work_commit": "de4c1a3a7bcbd38b0c6b4809169b1da57ded1ae4",
+  "pages": {
+    "id": 39888939454,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "browser": {
+    "environment": "Cloud Chrome desktop",
+    "whole_body_page_loaded": true,
+    "visual_confirmations": [
+      "skull oblique isolated",
+      "cervical top isolated",
+      "lumbar oblique isolated"
+    ],
+    "reset_to_whole_body": true,
+    "screenshot": "docs/validation/cleanroom-whole-body-v0.2-browser-skull.jpg",
+    "iphone": false
+  },
+  "anatomical_approval": false
+}

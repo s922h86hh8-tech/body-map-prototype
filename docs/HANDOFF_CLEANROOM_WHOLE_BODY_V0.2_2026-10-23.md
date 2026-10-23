@@ -67,3 +67,11 @@ buildは旧HTMLを保持したまま、造形ヘルパー whole-body-morphology-
 2. iPhoneで描画時間・回転の追従・部位/左右/方向/下端操作を確認。v0.1の結果を転用しない。
 3. 頭蓋・椎骨・骨盤の形を独立資料/専門家で監査し、関節面・骨の厚み・縫合等を順次精密化。手/足根の個別化、胸郭と関節位置の再監査も残る。
 4. 筋追加は起始停止と骨面の根拠が揃った部位から。全身の長さや外観が改善しても、筋配置の承認済み土台とは扱わない。
+
+
+## 公開確認
+公開URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-whole-body-v0.2.html
+公開コミット: 05bfdcb6eb29e2497d806a1715a8bfae51b9ebe9
+Pages run 39888939454: success。
+HTTP200 / 26980 bytes / SHA-256 917b023f3bdcbfc4ba1acd579093af975568a6a3a64c361467e84e80f4f87527、ローカル検証HTMLと一致。
+クラウドChromeで頭蓋斜め/頸椎上面/腰椎斜めの単独描画と全身リセットを確認。ブラウザ証跡: docs/validation/cleanroom-whole-body-v0.2-browser-skull.jpg。iPhone実機ではない。公開確認記録: docs/validation/cleanroom-whole-body-v0.2-hosted.json。

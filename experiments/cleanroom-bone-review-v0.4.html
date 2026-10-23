@@ -1,0 +1,419 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>身体の地図｜頭蓋・腰椎の単体レビュー 0.4</title><style>
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:#14232b;color:#eff0e9;font:15px/1.65 system-ui,sans-serif}header,main,footer{max-width:1250px;margin:auto;padding:16px}h1{font-size:21px;margin:0}p{margin:8px 0}.muted{color:#bac8cb}.status{color:#e4c895}button{font:inherit;color:inherit;background:#29414a;border:1px solid #58747b;border-radius:9px;padding:9px 12px;min-height:44px;cursor:pointer}button[aria-pressed=true]{background:#3e6d5c;border-color:#b2d5b0}nav{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.panel{border:1px solid #40545b;border-radius:12px;background:#192d36;padding:12px}.views{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.views figure{margin:0;min-width:0}figcaption{text-align:center;color:#c2cbd0}canvas{width:100%;display:block;touch-action:none;background:radial-gradient(ellipse at center,#2d414b,#16262f);border-radius:9px}.views canvas{height:290px}#interactive{height:500px}a{color:#a5d6c2}h2{font-size:18px;margin:12px 0 6px}.row{display:grid;grid-template-columns:minmax(0,2fr) minmax(240px,1fr);gap:14px}.controls label{display:inline-block;margin-right:12px}.controls input{width:18px;height:18px;vertical-align:middle}.loading{padding:12px;border:1px solid #bda868;color:#f2e5bd}ul{padding-left:22px}footer{padding-bottom:110px}.small{font-size:13px}@media(max-width:700px){.row{display:block}.views{gap:5px}.views{grid-template-columns:repeat(3,minmax(180px,1fr));overflow-x:auto}.views canvas{height:230px;touch-action:pan-x}#interactive{height:430px}header,main,footer{padding:12px}.panel{padding:8px}button{padding:8px 10px}h1{font-size:19px}}
+</style><header><h1>身体の地図｜頭蓋・腰椎の単体レビュー 0.4</h1><p class="status">形状を作り直すための比較版 · 全身版への採用前</p><nav aria-label="対象"><button data-target="skull" aria-pressed="true">頭蓋・顔面</button><button data-target="lumbar" aria-pressed="false">腰椎1個</button></nav><nav aria-label="版"><button data-revision="new" aria-pressed="true">作り直した形</button><button data-revision="old" aria-pressed="false">前回の形0.3</button></nav><nav aria-label="表示画質"><button data-quality="high" aria-pressed="true">高精細</button><button data-quality="light" aria-pressed="false">軽量</button></nav><p class="small muted">高精細で滑らかに表示します。操作が重い場合は「軽量」に切り替えてください。</p><p id="message" class="loading" role="status">形状を準備しています。初回は細かな形状を生成するため時間がかかります。</p></header><main><section class="panel"><h2 id="modelTitle">頭蓋・顔面</h2><p class="muted">正面・右側面・上面を同じ縮尺で並べます。旧版と新版も同じ中心・縮尺です。計測用の実寸表示ではありません。狭い画面では3図を横へスクロールできます。</p><div class="views"><figure><canvas id="front" aria-label="正面の固定図"></canvas><figcaption>正面（身体の右は画面左）</figcaption></figure><figure><canvas id="side" aria-label="右側面の固定図"></canvas><figcaption>右側面</figcaption></figure><figure><canvas id="top" aria-label="上面の固定図"></canvas><figcaption>上面（前方は下）</figcaption></figure></div></section><div class="row" style="margin-top:14px"><section><h2>回して確認</h2><nav id="focusSkull" aria-label="頭蓋の確認範囲"><button data-focus="orbit">眼窩へ寄る</button><button data-focus="arch">頬骨弓へ寄る</button><button data-focus="jaw">顎の突起へ寄る</button></nav><nav id="focusLumbar" aria-label="腰椎の確認範囲" hidden><button data-focus="facets">関節面へ寄る</button><button data-focus="spinous">棘突起へ寄る</button></nav><canvas id="interactive" tabindex="0" aria-label="回転できる骨の立体表示。ドラッグで回転、2本指またはボタンで拡大縮小"></canvas><nav aria-label="向き"><button data-pose="front">正面</button><button data-pose="side">右側面</button><button data-pose="back">後面</button><button data-pose="top">上面</button><button data-pose="oblique">斜め</button><button id="plus" aria-label="拡大">＋</button><button id="minus" aria-label="縮小">−</button><button id="reset">表示を戻す</button></nav><p class="small muted">ドラッグで回転、2本指で拡縮。キーボードは矢印・＋・−・0。固定3図は回転操作の影響を受けません。寄った状態でも前回と切り替えて比較でき、「表示を戻す」で全体へ戻れます。</p></section><aside class="panel"><h2>見るところ</h2><div id="checklist"></div><div class="controls" id="headControls"><h2>重ねる構造</h2><label><input id="jaw" type="checkbox" checked>下顎</label><label><input id="teeth" type="checkbox" checked>歯冠</label></div><h2>今回の限界</h2><p id="limits"></p><p class="status">拡大時の輪郭を細かくした版です。造形の基準は0.2と共通で、骨面の精度・人体寸法・専門家による承認は未確認です。細かな形が増えたことを正確性の証明にはしません。</p><p id="stats" class="small muted"></p><details><summary>資料と制作方法</summary><p>Gray 1918原著の頭蓋正面/側面・腰椎側面/斜め上面の図版と記述を確認し、独自の断面・連続面として造形しました。図版の輪郭トレース、画像テクスチャ、既存メッシュ・個人スキャンは使っていません。</p><p><a href="https://anatomie.cosminpopa.ro/en/5c-the-exterior-of-the-skull/">頭蓋原著</a> · <a href="https://anatomie.cosminpopa.ro/en/3a-3-the-lumbar-vertebr/">腰椎原著</a></p><p><a href="https://anatomie.cosminpopa.ro/figs/190.png" target="_blank" rel="noopener">頭蓋の正面原図</a> · <a href="https://anatomie.cosminpopa.ro/figs/188.png" target="_blank" rel="noopener">頭蓋の側面原図</a> · <a href="https://anatomie.cosminpopa.ro/figs/92.png" target="_blank" rel="noopener">腰椎の側面原図</a> · <a href="https://anatomie.cosminpopa.ro/figs/93.png" target="_blank" rel="noopener">腰椎の斜め上面原図</a></p><p>図版の一致度を数値化したモデルや実測標本ではありません。上面図だけから奥行きを確定することもできません。今回は上顎（図157）・下顎（図176/177）の原図と腰椎の関節面の記述も照合しました。関節面の角度・寸法は実測値ではありません。</p></details></aside></div></main><footer><a href="cleanroom-bone-review-v0.3.html">前回の表示0.3へ</a> · <a href="cleanroom-bone-review-v0.2.html">前回の表示0.2へ</a> · <a href="cleanroom-bone-review-v0.1.html">前回の形0.3へ</a> · <a href="cleanroom-whole-body-v0.2.html">全身0.2へ</a><p>頭蓋と代表的な腰椎の形状レビュー。正確な椎体レベルや個人差は未確立。iPhone実機の描画・操作確認は未実施。</p></footer><noscript>JavaScriptを有効にして表示してください。</noscript><script>
+const objects=[];
+const add=(name,region,side,verts,faces)=>objects.push({name,region,side,verts,faces});
+const V={sub:(a,b)=>a.map((v,i)=>v-b[i]),add:(a,b)=>a.map((v,i)=>v+b[i]),mul:(a,s)=>a.map(v=>v*s),cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],unit:a=>{let n=Math.hypot(...a);return a.map(v=>v/n)}};
+function ell(name,reg,side,c,r){let vs=[],fs=[],n=12,m=8;vs.push([c[0],c[1],c[2]+r[2]]);for(let j=1;j<m;j++)for(let i=0;i<n;i++){let t=j*Math.PI/m,p=i*2*Math.PI/n;vs.push([c[0]+r[0]*Math.sin(t)*Math.cos(p),c[1]+r[1]*Math.sin(t)*Math.sin(p),c[2]+r[2]*Math.cos(t)])}let bot=vs.length;vs.push([c[0],c[1],c[2]-r[2]]);for(let i=0;i<n;i++){fs.push([0,1+i,1+(i+1)%n]);fs.push([bot,1+(m-2)*n+(i+1)%n,1+(m-2)*n+i])}for(let j=0;j<m-2;j++)for(let i=0;i<n;i++){let a=1+j*n+i,b=1+j*n+(i+1)%n;fs.push([a,a+n,b],[b,a+n,b+n])}add(name,reg,side,vs,fs)}
+function tube(name,reg,side,pts,r){let vs=[],fs=[],n=8;pts.forEach((p,j)=>{let d=V.unit(V.sub(pts[Math.min(j+1,pts.length-1)],pts[Math.max(0,j-1)]));let u=V.unit(V.cross(d,Math.abs(d[2])<.9?[0,0,1]:[0,1,0])),v=V.cross(d,u);for(let i=0;i<n;i++){let a=i*2*Math.PI/n;vs.push(V.add(p,V.add(V.mul(u,r*Math.cos(a)),V.mul(v,r*Math.sin(a)))))}});for(let j=0;j<pts.length-1;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n;fs.push([a,b,a+n],[b,b+n,a+n])}let a=vs.length;vs.push(pts[0],pts.at(-1));for(let i=0;i<n;i++)fs.push([a,(i+1)%n,i],[a+1,(pts.length-1)*n+i,(pts.length-1)*n+(i+1)%n]);add(name,reg,side,vs,fs)}
+function bone(name,reg,s,a,b,r){tube(name,reg,s,[a,b],r);ell(name+'近位',reg,s,a,[r*1.4,r*1.35,r*1.4]);ell(name+'遠位',reg,s,b,[r*1.4,r*1.35,r*1.4])}
+// Original qualitative construction from anatomical descriptions, not traced vertices.
+// No dimensions here are measured bone dimensions.
+function implicitMesh(name,reg,side,field,lo,hi,step){
+ const n=lo.map((v,i)=>Math.ceil((hi[i]-v)/step)+1),idx=(x,y,z)=>x+n[0]*(y+n[1]*z),values=new Float64Array(n[0]*n[1]*n[2]),coords=[];
+ for(let z=0;z<n[2];z++)for(let y=0;y<n[1];y++)for(let x=0;x<n[0];x++){let p=[lo[0]+x*step,lo[1]+y*step,lo[2]+z*step],k=idx(x,y,z);coords[k]=p;values[k]=field(p)}
+ let guide=[0,0,1];const vs=[],fs=[],cache=new Map(),corners=[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]],tets=[[0,1,2,6],[0,2,3,6],[0,3,7,6],[0,7,4,6],[0,4,5,6],[0,5,1,6]];
+ function vertex(a,b){let t=values[a]/(values[a]-values[b]);const end=t<1e-4?a:t>1-1e-4?b:null,key=end!==null?'p'+end:a<b?a+':'+b:b+':'+a;if(cache.has(key))return cache.get(key);let p=end!==null?coords[end]:coords[a].map((v,i)=>v+t*(coords[b][i]-v)),k=vs.length;vs.push(p);cache.set(key,k);return k}
+ function tri(a,b,c){if(a===b||b===c||a===c)return;let norm=V.cross(V.sub(vs[b],vs[a]),V.sub(vs[c],vs[a]));if(Math.hypot(...norm)<1e-10)return;let g=guide;if(norm.reduce((s,v,i)=>s+v*g[i],0)<0)[b,c]=[c,b];fs.push([a,b,c])}
+ for(let z=0;z<n[2]-1;z++)for(let y=0;y<n[1]-1;y++)for(let x=0;x<n[0]-1;x++){let c=corners.map(a=>idx(x+a[0],y+a[1],z+a[2]));if(c.every(k=>values[k]<0)||c.every(k=>values[k]>=0))continue;for(let t of tets){let a=t.map(k=>c[k]).filter(k=>values[k]<0),b=t.map(k=>c[k]).filter(k=>values[k]>=0);if(a.length&&b.length){const mean=ids=>ids.reduce((sum,k)=>sum.map((v,i)=>v+coords[k][i]/ids.length),[0,0,0]);guide=V.sub(mean(b),mean(a))}if(a.length===1)tri(...b.map(k=>vertex(a[0],k)));else if(a.length===3)tri(...a.map(k=>vertex(k,b[0])));else if(a.length===2){let q=[vertex(a[0],b[0]),vertex(a[0],b[1]),vertex(a[1],b[0]),vertex(a[1],b[1])];tri(q[0],q[1],q[2]);tri(q[1],q[3],q[2])}}}
+ const used=[...new Set(fs.flat())].sort((a,b)=>a-b), remap=new Map(used.map((v,i)=>[v,i]));
+ add(name,reg,side,used.map(i=>vs[i]),fs.map(f=>f.map(i=>remap.get(i))));
+}
+function ed(p,c,r){return (Math.hypot(...p.map((v,i)=>(v-c[i])/r[i]))-1)*Math.min(...r)}
+function smoothMin(a,b,k){let h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25}
+function skullField(p){
+ let d=ed(p,[0,-1.7,168],[7.5,9.2,9]);
+ d=smoothMin(d,ed(p,[0,4.6,160.1],[5.6,4.6,4.5]),1.1);
+ for(let s of [-1,1]){d=smoothMin(d,ed(p,[s*5.9,5.6,161.3],[1.4,1.7,1.6]),.8);d=Math.max(d,-ed(p,[s*3.45,8.9,163.6],[2.3,4.2,2.25]))}
+ // Piriform aperture approximation: narrower upper end, wider lower end.
+ const nw=1.15+.25*Math.max(0,160.8-p[2]);
+ d=Math.max(d,-ed(p,[0,9,159.9],[nw,3.6,2.15]));
+ // Qualitative foramen magnum opening; internal cranial anatomy is not modeled.
+ d=Math.max(d,-ed(p,[0,-1,156.8],[2.6,3.1,3.3]));return d;
+}
+function skull(){
+ implicitMesh('頭蓋・眼窩・梨状口','head','M',skullField,[-9,-12,154],[9,11,178],.7);
+ for(let s of [-1,1]){tube('頬骨弓','head','M',[[s*6.3,6,161],[s*7.6,3,161],[s*7.3,-.8,161]],.62);ell('乳様突起','head','M',[s*5.9,-1.7,157.9],[1,1.1,1.7]);
+ let outline=[[s*5.8,-.2,159],[s*6.1,1.3,153.1],[s*4.9,4.5,153.4],[s*5.1,3.6,158.5],[s*5.9,1.7,157.5]],rv=[...outline.map(p=>[p[0]-.4,p[1],p[2]]),...outline.map(p=>[p[0]+.4,p[1],p[2]])],rf=[];for(let i=1;i<4;i++)rf.push([0,i,i+1],[5,5+i+1,5+i]);for(let i=0;i<5;i++){let k=(i+1)%5;rf.push([i,k,i+5],[k,k+5,i+5])}add('下顎枝','head','M',rv,rf);ell('下顎頭','head','M',[s*5.8,-.2,159],[1.1,.7,.65]);tube('下顎筋突起','head','M',[[s*5.9,2.2,154.8],[s*5.1,3.6,158.5]],.6)}
+ let jaw=[],upper=[];for(let i=0;i<=20;i++){let t=i*Math.PI/20;jaw.push([5.8*Math.cos(t),3.1+5.7*Math.sin(t),152.8-.7*Math.sin(t)]);upper.push([4.8*Math.cos(t),3.4+5.3*Math.sin(t),156])}
+ tube('下顎体','head','M',jaw,1.05);tube('上顎歯槽弓','head','M',upper,.85);
+ for(let i=0;i<16;i++){let t=(i+.5)*Math.PI/16,x=4.7*Math.cos(t),y=3.5+5.4*Math.sin(t),rz=.5;ell('上顎歯冠'+(i+1),'head','M',[x,y,155.1],[.43,.56,rz]);ell('下顎歯冠'+(i+1),'head','M',[x*.96,y-.1,153.95],[.42,.52,rz])}
+}
+// Ringed loft with flat endplates and a shallow kidney indentation posteriorly.
+function vertebralBody(name,reg,c,w,depth,h){let vs=[],fs=[],n=16;
+ for(let j=0;j<4;j++){let z=[-h,-h*.67,h*.67,h][j],q=j===0||j===3?1:.92;for(let i=0;i<n;i++){let t=i*2*Math.PI/n,x=w*Math.cos(t)*q,y=depth*Math.sin(t)*q;if(y<0)y+=.42*Math.exp(-x*x/(w*w*.18));vs.push([c[0]+x,c[1]+y,c[2]+z])}}
+ let a=vs.length;vs.push([c[0],c[1],c[2]-h],[c[0],c[1],c[2]+h]);for(let i=0;i<n;i++){let k=(i+1)%n;fs.push([a,k,i],[a+1,3*n+i,3*n+k]);for(let j=0;j<3;j++){let u=j*n+i,v=j*n+k;fs.push([u,v,u+n],[v,v+n,u+n])}}add(name,reg,'M',vs,fs)
+}
+function spine(){
+ for(let i=0;i<24;i++){
+  const neck=i<7,thor=i>=7&&i<19,reg=neck?'neck':thor?'back':'lumbar',level=neck?'C'+(i+1):thor?'T'+(i-6):'L'+(i-18);
+  let z=neck?157-i*1.2:thor?147.2-(i-7)*2.4:117.7-(i-19)*3.1;
+  let y=neck?1.4+1.1*Math.sin(i*Math.PI/6):thor?-3.3*Math.sin((i-7)*Math.PI/11):2.5*Math.sin((i-19)*Math.PI/5);
+  let w=neck?2.1:thor?2.5+(i-7)*.07:3.7+(i-19)*.12,depth=neck?1.4:thor?2:2.5,h=neck?.43:thor?.8:1.07;
+  if(i===0){let ring=[];for(let k=0;k<=20;k++){let t=k*2*Math.PI/20;ring.push([3.2*Math.cos(t),y-1.5+2.5*Math.sin(t),z])}tube('C1環椎輪','neck','M',ring,.5);for(let s of [-1,1])ell('C1外側塊','neck','M',[s*2.8,y-1.2,z],[.8,1.1,.75]);continue}
+  vertebralBody('椎体'+(i+1),reg,[0,y,z],w,depth,h);
+  if(i===1){tube('C2歯突起','neck','M',[[0,y,z+.3],[0,y,z+1.5]],.55);ell('C2歯突起先端','neck','M',[0,y,z+1.5],[.55,.55,.6])}
+  const archY=y-depth-2.4,span=neck?2.4:thor?2.7:3.2;
+  for(let s of [-1,1]){
+   tube(level+'椎弓根・椎弓板',reg,'M',[[s*w*.75,y-depth*.4,z],[s*span,y-depth-1.4,z],[s*1.4,archY,z],[0,archY-.5,z]],neck?.42:.62);
+   if(neck){let pts=[];for(let k=0;k<=12;k++){let t=k*2*Math.PI/12;pts.push([s*(3.1+.7*Math.cos(t)),y-1+.75*Math.sin(t),z])}tube(level+'横突孔周囲','neck','M',pts,.3)}
+   else tube(level+'横突起',reg,'M',[[s*span,y-depth-1,z],[s*(thor?5.2:6),y-depth-(thor?2:1.2),z+(thor?.3:0)]],thor?.55:.5);
+   ell(level+'関節突起模式',reg,'M',[s*span,y-depth-1.3,z+h*.65],[.65,.75,h*.8]);
+  }
+  if(neck&&i<6){for(let s of [-1,1])tube(level+'二分棘突起',reg,'M',[[0,archY-.3,z],[s*.55,archY-1.8,z-.25]],.35)}
+  else tube(level+'棘突起',reg,'M',[[0,archY-.3,z],[0,archY-(thor?3.6:2.7),z-(thor?(i>9&&i<15?2.1:1):.1)]],thor?.6:neck?.45:.95);
+ }
+}
+// Curved thin plate with a ridge, acromion and coracoid, rather than a tetrahedron.
+function scapula(s){let side=s>0?'R':'L',z=A.shoulder,p=(x,y,h)=>[s*x,y,h];
+ let rows=[[5.5,-6.5,z-1],[10,-8,z-3],[18,-6,z-1],[19.5,-5,z-4],[13,-8,z-17],[8,-8,z-11]],vs=rows.map(v=>p(...v)),fs=[[0,1,5],[1,4,5],[1,3,4],[1,2,3]];add('肩甲骨体','shoulder',side,vs,fs);
+ tube('肩甲棘','shoulder',side,[p(6,-7,z-4),p(12,-9,z-4),p(18,-7,z-2)],.75);tube('肩峰','shoulder',side,[p(18,-7,z-2),p(21,-3,z+.1),p(21.5,1,z)],1);tube('烏口突起','shoulder',side,[p(18,-4,z-3),p(18,1,z-2),p(17.5,3,z-3)],.6);ell('関節窩模式','shoulder',side,p(20,-2,z-3.2),[.8,1.4,2]);
+}
+// Iliac fan surfaces and pubic/ischial rami leave a real opening in projection.
+function pelvisSide(s){let side=s>0?'R':'L',p=(x,y,z)=>[s*x,y,z],top=A.crest-1,hip=A.trochanter+3;
+ let rim=[[4,-4,top-3],[6,-7,top],[11,-7,top+.7],[16,-4,top-.5],[17,0,top-3],[15,4,top-5]],base=[10,-1,hip+1],vs=[p(...base),...rim.map(v=>p(...v))],fs=[];for(let i=1;i<rim.length;i++)fs.push([0,i,i+1]);add('腸骨翼','pelvis',side,vs,fs);tube('腸骨稜','pelvis',side,rim.map(v=>p(...v)),.7);
+ ell('寛骨臼周縁模式','pelvis',side,p(10.8,1,hip),[2.9,2.5,2.5]);
+ tube('恥骨枝','pelvis',side,[p(10,2,hip),p(5,6,hip-4),p(1,6,hip-7)],1.2);
+ tube('坐骨・下恥骨枝','pelvis',side,[p(10,-1,hip),p(10,-3,hip-8),p(7,-1,hip-11),p(1,6,hip-7)],1.25);
+}
+// Tapered, slightly bowed shafts and separate articular-end lobes.
+function shaft(name,reg,side,a,b,r0,r1){let pts=[],vs=[],fs=[],n=12;for(let j=0;j<=8;j++){let t=j/8,p=a.map((v,i)=>v+(b[i]-v)*t);p[1]+=.55*Math.sin(t*Math.PI);let r=(r0+(r1-r0)*t)*(1-.22*Math.sin(t*Math.PI));for(let i=0;i<n;i++){let q=i*2*Math.PI/n;vs.push([p[0]+r*Math.cos(q),p[1]+r*.78*Math.sin(q),p[2]])}}for(let j=0;j<8;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n;fs.push([a,b,a+n],[b,b+n,a+n])}let k=vs.length;vs.push(a,b);for(let i=0;i<n;i++)fs.push([k,(i+1)%n,i],[k+1,8*n+i,8*n+(i+1)%n]);add(name,reg,side,vs,fs)}
+function sacrum(){implicitMesh('仙骨・仙骨孔','pelvis','M',p=>{let width=2.2+(p[2]-86)*.25,d=ed(p,[0,-2,94],[Math.max(2,width),2.6,9]);for(let s of [-1,1])for(let k=0;k<4;k++)d=Math.max(d,-ed(p,[s*(2.5-k*.3),-2,98-k*2.8],[.65,5,.65]));return d},[-7,-6,84],[7,3,104],.7);tube('尾骨','pelvis','M',[[0,-2,86],[0,-.5,83],[0,1,81.5]],.7)}
+// Authored shapes for isolated review. All coordinates are design values.
+// Original Gray 1918 figs 188/190 and 92/93 were inspected qualitatively.
+// No image pixels, extracted outlines, third-party mesh or scan coordinates used.
+const SHAPE_REVIEW={version:'0.4',units:'arbitrary drawing units',anatomicalApproval:false,
+ sources:{skull:['Gray 1918 Fig.188 lateral','Gray 1918 Fig.190 frontal','Gray 1918 Fig.157 maxilla','Gray 1918 Fig.176/177 mandible'],lumbar:['Gray 1918 Fig.92 lateral','Gray 1918 Fig.93 above/posterior']},
+ design:{cranialCenter:[0,-2.2,4.7],cranialRadii:[7.2,9.4,7.5],skullGridStep:.3,jawGridStep:.25,lumbarGridStep:.18},
+ scope:'Original qualitative surface study; not an individual specimen or validated anatomy.'};
+function superD(p,c,r,n=2.4){return (Math.pow(p.reduce((s,v,i)=>s+Math.pow(Math.abs((v-c[i])/r[i]),n),0),1/n)-1)*Math.min(...r)}
+function segmentD(p,a,b,r){const q=p.map((v,i)=>v/r[i]),aa=a.map((v,i)=>v/r[i]),bb=b.map((v,i)=>v/r[i]),d=V.sub(bb,aa),den=d.reduce((s,v)=>s+v*v,0),t=Math.max(0,Math.min(1,V.sub(q,aa).reduce((s,v,i)=>s+v*d[i],0)/den));return (Math.hypot(...V.sub(q,V.add(aa,V.mul(d,t))))-1)*Math.min(...r)}
+const minBlend=(a,b,k=.35)=>smoothMin(a,b,k);
+const maxBlend=(a,b,k=.2)=>-smoothMin(-a,-b,k);
+function vaultD(p){
+ // Cranial vault, lower occiput and flattened frontal squama are blended surfaces.
+ let d=ed(p,[0,-2.2,4.7],[7.2,9.4,7.5]);
+ d=minBlend(d,ed(p,[0,-7,.1],[5.6,4.4,5.8]),.9);
+ d=minBlend(d,superD(p,[0,3.7,3.5],[6.25,3.2,3.8],2.5),.9);
+ return d;
+}
+function orbitD(p,s){
+ // Truncated pyramidal recess, rounded quadrilateral rim, posteriorly narrowing.
+ let t=Math.max(0,Math.min(1,(p[1]-1)/7)),dx=s*p[0]-(2.2+1.05*t),dz=p[2]+.55-.14*dx;
+ let rx=.65+1.8*t,rz=.55+1.35*t;
+ const q=(Math.pow(Math.pow(Math.abs(dx/rx),2.6)+Math.pow(Math.abs(dz/rz),2.6),1/2.6)-1)*Math.min(rx,rz);
+ return Math.max(q,1-p[1],p[1]-14);
+}
+function nasalD(p){let z=p[2]+4.2,rx=1.25-.18*z;return Math.max(ed(p,[0,8,-4.2],[Math.max(.5,rx),4,2.25]),4.2-p[1])}
+function skullNewField(p){
+ let d=vaultD(p);
+ // Maxilla and a thinner bridge between orbit and alveolar arch.
+ d=minBlend(d,superD(p,[0,6.05,-4.8],[4.25,2.75,2.55],2.5),.7);
+ if(p[2]<-5.4){for(let i=0;i<20;i++){let a=i*Math.PI/20,b=(i+1)*Math.PI/20;d=minBlend(d,segmentD(p,[4.65*Math.cos(a),1.7+6*Math.sin(a),-6.8+.4*Math.abs(Math.cos(a))],[4.65*Math.cos(b),1.7+6*Math.sin(b),-6.8+.4*Math.abs(Math.cos(b))],[.65,.75,.65]),.4)}}
+ for(let s of [-1,1]){
+  d=minBlend(d,superD(p,[s*5.2,-2,-1.5],[1.5,3.5,2.3],2.3),.7);
+  d=minBlend(d,segmentD(p,[s*5.7,-2.5,.5],[s*5.3,-3.5,-5],[.8,1,1]),.45);
+  d=minBlend(d,superD(p,[s*5.45,4.4,-2.3],[1.35,2.1,1.45],2.7),.6);
+  d=minBlend(d,segmentD(p,[s*5.7,4.2,-2.4],[s*6.2,4.8,1.4],[.85,1.2,.9]),.5);
+  d=minBlend(d,segmentD(p,[s*5.6,4.6,-2.4],[s*3.8,7,-5.2],[.7,1.1,.85]),.45);
+  // Zygomatic arch continuous with its temporal root; temporal space is left open.
+  const controls=[[6,4.6,-2.3],[7,3.2,-2.35],[7,.1,-2.65],[6.2,-2.2,-2.1]];for(let k=0;k<6;k++)d=minBlend(d,segmentD(p,bezierArch(controls,k/6,s),bezierArch(controls,(k+1)/6,s),[.5,.65,.45]),.38);
+  d=minBlend(d,ed(p,[s*5.3,-3.5,-5],[.85,1.2,1.55]),.4);
+ }
+ // Rounded brow and nasal bones; cavity subtraction follows the union.
+ for(let s of [-1,1]){const brow=[[s*.8,7.1,.5],[s*2.6,7,1.25],[s*4.4,6.6,1.15],[s*6,5.2,.4]];for(let i=0;i<3;i++)d=minBlend(d,segmentD(p,brow[i],brow[i+1],[.6,.85,.6]),.45)}
+ d=minBlend(d,superD(p,[0,7,-1.5],[.9,1.1,1.6],2.3),.4);
+ d=maxBlend(d,-orbitD(p,-1),.15);d=maxBlend(d,-orbitD(p,1),.15);
+ d=maxBlend(d,-nasalD(p),.14);
+ // Foramen magnum opens the lower posterior base, not the orbit.
+ d=Math.max(d,-ed(p,[0,-2.7,-6],[2.2,2.8,3.5]));
+ for(let s of [-1,1]){
+  d=Math.max(d,-segmentD(p,[s*4.8,-1.4,-3.4],[s*8,-1.4,-3.4],[1.5,.58,.7]));
+  d=maxBlend(d,-ed(p,[s*2.85,8.55,-4.95],[1.05,1.0,.85]),.12);d=Math.max(d,-ed(p,[s*2.7,8.1,-3.7],[.32,1.2,.3]));
+ }
+ return d;
+}
+function jawNewField(p){
+ let d=1e3;
+ // U-shaped body: an anterior chin continuous with the horizontal body.
+ for(let i=0;i<24;i++){let a=i*Math.PI/24,b=(i+1)*Math.PI/24;
+  const pa=[5.1*Math.cos(a),1.5+6.4*Math.sin(a),-10.3+1.5*Math.pow(Math.cos(a),2)],pb=[5.1*Math.cos(b),1.5+6.4*Math.sin(b),-10.3+1.5*Math.pow(Math.cos(b),2)];
+  d=minBlend(d,segmentD(p,pa,pb,[.65,.8,1.15-.7*Math.pow(Math.cos((a+b)/2),2)]),.4)
+ }
+ for(let s of [-1,1]){
+  // Broad ramus with a sigmoid notch separating condyle and coronoid.
+  let r=superD(p,[s*5.15,1,-6.1],[.75,2.35,2.8],3);
+  r=minBlend(r,segmentD(p,[s*5.3,-.7,-6],[s*5.3,-1.2,-3.1],[.65,.75,.8]),.45);
+  r=minBlend(r,ed(p,[s*5.3,-1.2,-3.1],[1.2,.64,.55]),.35);
+  r=minBlend(r,polygonExtrusion(p,s*5.0,[[1.7,-5.9],[3.1,-3.05],[3.5,-5.8]],.5)-.12,.35);
+  r=Math.max(r,-ed(p,[s*5.1,.8,-3.5],[1.5,1.1,.95]));
+  d=minBlend(d,r,.55);
+  d=minBlend(d,segmentD(p,[s*4.8,2.8,-7.5],[s*3.4,6.3,-9],[.3,.45,.4]),.25);d=Math.max(d,-ed(p,[s*2.8,7.25,-9.4],[.28,1.3,.28]));
+ }
+ return d;
+}
+function toothArchNew(){
+ for(let upper of [true,false])for(let i=0;i<16;i++){
+  let t=(i+.5)*Math.PI/16,x=4.65*Math.cos(t),y=1.7+6.0*Math.sin(t),z=(upper?-7.95:-8.85)+.5*Math.abs(Math.cos(t));
+  // Incisors have a flatter crown; posterior crowns are broader. No roots modeled.
+  let front=Math.sin(t)>.85,rx=front?.43:.52,ry=front?.35:.65,rz=front?.5:.42;
+  crownMesh((upper?'上':'下')+'歯冠'+(i+1),[x*(upper?1:.97),y+(upper?.1:0),z],[rx,ry,rz],t,upper,front);
+ }
+}
+function buildSkullNew(){
+ implicitMesh('頭蓋・顔面連続面','head','M',skullNewField,[-9,-13,-9],[9,12,13],.3);
+ implicitMesh('下顎連続面','head','M',jawNewField,[-7,-3,-12],[7,10,-1],.25);
+ toothArchNew();
+}
+// Interpolated cross-sections: every row is an authored design section, not a scan.
+const LUMBAR_SECTIONS=[[-1.75,4.1,3.05],[-1.5,4,2.95],[-.8,3.7,2.7],[0,3.6,2.6],[.8,3.75,2.75],[1.5,4.1,3],[1.7,4.15,3.05]];
+function section(z){let a=LUMBAR_SECTIONS[0],b=LUMBAR_SECTIONS.at(-1);for(let i=0;i<LUMBAR_SECTIONS.length-1;i++)if(z>=LUMBAR_SECTIONS[i][0]&&z<=LUMBAR_SECTIONS[i+1][0]){a=LUMBAR_SECTIONS[i];b=LUMBAR_SECTIONS[i+1];break}let t=Math.max(0,Math.min(1,(z-a[0])/(b[0]-a[0])));return [a[1]+t*(b[1]-a[1]),a[2]+t*(b[2]-a[2])]}
+function lumbarBodyD(p){
+ let [w,deep]=section(p[2]),x=p[0],y=p[1]-1.5;
+ // Reniform posterior indentation; edge thickens towards the endplates.
+ let py=y+(y<0?.7*Math.exp(-x*x/3):0),rad=(Math.pow(Math.pow(Math.abs(x/w),2.5)+Math.pow(Math.abs(py/deep),2.5),1/2.5)-1)*2.6;
+ let end=Math.max(-1.75-p[2],p[2]-1.7),d=Math.max(rad,end);
+ // Shallow endplate concavity with a retained peripheral rim.
+ const r=Math.hypot(x/3.5,y/2.6),dip=.15*Math.max(0,1-r*r);
+ return Math.max(d,p[2]-(1.7-dip),(-1.75+dip)-p[2]);
+}
+function lumbarNewField(p){
+ let d=lumbarBodyD(p);
+ for(let s of [-1,1]){
+  // Pedicles are thick roots; laminae broaden toward the spinous base.
+  d=minBlend(d,segmentD(p,[s*2.8,-.3,.65],[s*2.65,-2.5,.55],[.85,.9,.9]),.5);
+  d=minBlend(d,segmentD(p,[s*2.65,-2.5,.55],[s*.65,-4.3,.2],[.85,.7,.95]),.5);
+  // Long, flattened transverse process tapers from root to tip.
+  d=minBlend(d,segmentD(p,[s*2.8,-1.5,.1],[s*4.8,-2,.1],[1.1,.7,.55]),.5);
+  d=minBlend(d,segmentD(p,[s*4.6,-2,.1],[s*7.1,-1.7,.3],[.9,.45,.35]),.45);
+  // Articular pillars with concave upper and convex lower facet approximations.
+  d=minBlend(d,superD(p,[s*2.65,-2.6,1.65],[.95,1.05,1.3],2.6),.45);
+  d=minBlend(d,superD(p,[s*1.95,-3.1,-1.3],[.7,.9,1.25],2.6),.45);const n=V.unit([s*.78,.62,-.08]);d=minBlend(d,orientedEllipsoidD(p,V.add([s*1.95,-3.1,-1.4],V.mul(n,.32)),n,[.65,.9,.5]),.25);d=minBlend(d,ed(p,[s*3.05,-3.05,2.2],[.42,.45,.7]),.3);
+ }
+ // Broad quadrilateral spinous plate rather than a circular rod.
+ d=minBlend(d,polygonExtrusion(p,0,[[-4.1,.9],[-7.45,.35],[-7.8,-1.35],[-6.6,-1.65],[-4.05,-.6]],.9)-.16,.45);
+ // A triangular canal is defined independently of the assembled arch pieces.
+ const canal=Math.max(Math.abs(p[0])-(1.65+.38*(p[1]+2.0)),p[1]+.8,-4.1-p[1]);
+ d=Math.max(d,-canal);
+ // Concave inward/backward superior facet surfaces; still qualitative.
+ for(let s of [-1,1]){const n=V.unit([-s*.78,-.62,.08]),c=V.add([s*2.65,-2.6,1.65],V.mul(n,.88));d=Math.max(d,-orientedEllipsoidD(p,c,n,[.8,1.05,1.0]));d=maxBlend(d,-ed(p,[s*3.1,-1.1,-1.7],[.6,.9,.4]),.1);}
+ return d;
+}
+function buildLumbarNew(){implicitMesh('腰椎連続面','lumbar','M',lumbarNewField,[-9,-9,-4],[9,6,4],.18)}
+
+function crownMesh(name,c,r,t,upper,incisor){let vs=[],fs=[],n=12,levels=[[-1,.86,.8],[-.7,1,1],[.65,.94,1],[1,.75,.75]],tx=-4.65*Math.sin(t),ty=6*Math.cos(t),len=Math.hypot(tx,ty);tx/=len;ty/=len;for(let j=0;j<4;j++)for(let i=0;i<n;i++){let a=i*2*Math.PI/n,power=incisor?.5:.67,x=Math.sign(Math.cos(a))*Math.pow(Math.abs(Math.cos(a)),power)*r[0]*levels[j][1],y=Math.sign(Math.sin(a))*Math.pow(Math.abs(Math.sin(a)),power)*r[1]*levels[j][2];vs.push([c[0]+tx*x-ty*y,c[1]+ty*x+tx*y,c[2]+r[2]*levels[j][0]])}for(let j=0;j<3;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n;fs.push([a,b,a+n],[b,b+n,a+n])}let k=vs.length;vs.push([c[0],c[1],c[2]-r[2]],[c[0],c[1],c[2]+r[2]]);for(let i=0;i<n;i++)fs.push([k,(i+1)%n,i],[k+1,3*n+i,3*n+(i+1)%n]);add(name,'head','M',vs,fs)}
+
+// Cubic design curve for a continuous arch; not traced image coordinates.
+function bezierArch(c,t,s){const u=1-t;return [0,1,2].map(i=>(i===0?s:1)*(u*u*u*c[0][i]+3*u*u*t*c[1][i]+3*u*t*t*c[2][i]+t*t*t*c[3][i]))}
+function polygonExtrusion(p,x0,pts,half){let inside=false,dist=1e6,y=p[1],z=p[2];for(let i=0,j=pts.length-1;i<pts.length;j=i++){const a=pts[j],b=pts[i],dy=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((y-a[0])*dy+(z-a[1])*dz)/(dy*dy+dz*dz)));dist=Math.min(dist,Math.hypot(y-a[0]-t*dy,z-a[1]-t*dz));if((a[1]>z)!==(b[1]>z)&&y<(b[0]-a[0])*(z-a[1])/(b[1]-a[1])+a[0])inside=!inside}return Math.max((inside?-1:1)*dist,Math.abs(p[0]-x0)-half)}
+function orientedEllipsoidD(p,c,n,r){const u=V.unit([-n[1],n[0],0]),v=V.cross(n,u),q=V.sub(p,c),dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0);return ed([dot(q,u),dot(q,v),dot(q,n)],[0,0,0],r)}
+
+const PREVIOUS=(()=>{
+// Authored shapes for isolated review. All coordinates are design values.
+// Original Gray 1918 figs 188/190 and 92/93 were inspected qualitatively.
+// No image pixels, extracted outlines, third-party mesh or scan coordinates used.
+const SHAPE_REVIEW={version:'0.2',units:'arbitrary drawing units',anatomicalApproval:false,
+ sources:{skull:['Gray 1918 Fig.188 lateral','Gray 1918 Fig.190 frontal','Gray 1918 Fig.157 maxilla','Gray 1918 Fig.176/177 mandible'],lumbar:['Gray 1918 Fig.92 lateral','Gray 1918 Fig.93 above/posterior']},
+ design:{cranialCenter:[0,-2.2,4.7],cranialRadii:[7.2,9.4,7.5],skullGridStep:.5,lumbarGridStep:.25},
+ scope:'Original qualitative surface study; not an individual specimen or validated anatomy.'};
+function superD(p,c,r,n=2.4){return (Math.pow(p.reduce((s,v,i)=>s+Math.pow(Math.abs((v-c[i])/r[i]),n),0),1/n)-1)*Math.min(...r)}
+function segmentD(p,a,b,r){const q=p.map((v,i)=>v/r[i]),aa=a.map((v,i)=>v/r[i]),bb=b.map((v,i)=>v/r[i]),d=V.sub(bb,aa),den=d.reduce((s,v)=>s+v*v,0),t=Math.max(0,Math.min(1,V.sub(q,aa).reduce((s,v,i)=>s+v*d[i],0)/den));return (Math.hypot(...V.sub(q,V.add(aa,V.mul(d,t))))-1)*Math.min(...r)}
+const minBlend=(a,b,k=.35)=>smoothMin(a,b,k);
+const maxBlend=(a,b,k=.2)=>-smoothMin(-a,-b,k);
+function vaultD(p){
+ // Cranial vault, lower occiput and flattened frontal squama are blended surfaces.
+ let d=ed(p,[0,-2.2,4.7],[7.2,9.4,7.5]);
+ d=minBlend(d,ed(p,[0,-7,.1],[5.6,4.4,5.8]),.9);
+ d=minBlend(d,superD(p,[0,3.7,3.5],[6.25,3.2,3.8],2.5),.9);
+ return d;
+}
+function orbitD(p,s){
+ // Truncated pyramidal recess, rounded quadrilateral rim, posteriorly narrowing.
+ let t=Math.max(0,Math.min(1,(p[1]-1)/7)),dx=s*p[0]-(2.2+1.05*t),dz=p[2]+.55-.14*dx;
+ let rx=.65+1.8*t,rz=.55+1.35*t;
+ const q=(Math.pow(Math.pow(Math.abs(dx/rx),2.6)+Math.pow(Math.abs(dz/rz),2.6),1/2.6)-1)*Math.min(rx,rz);
+ return Math.max(q,1-p[1],p[1]-14);
+}
+function nasalD(p){let z=p[2]+4.2,rx=1.25-.18*z;return Math.max(ed(p,[0,8,-4.2],[Math.max(.5,rx),4,2.25]),4.2-p[1])}
+function skullNewField(p){
+ let d=vaultD(p);
+ // Maxilla and a thinner bridge between orbit and alveolar arch.
+ d=minBlend(d,superD(p,[0,6.05,-4.8],[4.25,2.75,2.55],2.5),.7);
+ if(p[2]<-5.4){for(let i=0;i<20;i++){let a=i*Math.PI/20,b=(i+1)*Math.PI/20;d=minBlend(d,segmentD(p,[4.65*Math.cos(a),1.7+6*Math.sin(a),-6.8+.4*Math.abs(Math.cos(a))],[4.65*Math.cos(b),1.7+6*Math.sin(b),-6.8+.4*Math.abs(Math.cos(b))],[.65,.75,.65]),.4)}}
+ for(let s of [-1,1]){
+  d=minBlend(d,superD(p,[s*5.2,-2,-1.5],[1.5,3.5,2.3],2.3),.7);
+  d=minBlend(d,segmentD(p,[s*5.7,-2.5,.5],[s*5.3,-3.5,-5],[.8,1,1]),.45);
+  d=minBlend(d,superD(p,[s*5.45,4.4,-2.3],[1.35,2.1,1.45],2.7),.6);
+  d=minBlend(d,segmentD(p,[s*5.7,4.2,-2.4],[s*6.2,4.8,1.4],[.85,1.2,.9]),.5);
+  d=minBlend(d,segmentD(p,[s*5.6,4.6,-2.4],[s*3.8,7,-5.2],[.7,1.1,.85]),.45);
+  // Zygomatic arch continuous with its temporal root; temporal space is left open.
+  const controls=[[6,4.6,-2.3],[7,3.2,-2.35],[7,.1,-2.65],[6.2,-2.2,-2.1]];for(let k=0;k<6;k++)d=minBlend(d,segmentD(p,bezierArch(controls,k/6,s),bezierArch(controls,(k+1)/6,s),[.5,.65,.45]),.38);
+  d=minBlend(d,ed(p,[s*5.3,-3.5,-5],[.85,1.2,1.55]),.4);
+ }
+ // Rounded brow and nasal bones; cavity subtraction follows the union.
+ for(let s of [-1,1]){const brow=[[s*.8,7.1,.5],[s*2.6,7,1.25],[s*4.4,6.6,1.15],[s*6,5.2,.4]];for(let i=0;i<3;i++)d=minBlend(d,segmentD(p,brow[i],brow[i+1],[.6,.85,.6]),.45)}
+ d=minBlend(d,superD(p,[0,7,-1.5],[.9,1.1,1.6],2.3),.4);
+ d=maxBlend(d,-orbitD(p,-1),.15);d=maxBlend(d,-orbitD(p,1),.15);
+ d=maxBlend(d,-nasalD(p),.14);
+ // Foramen magnum opens the lower posterior base, not the orbit.
+ d=Math.max(d,-ed(p,[0,-2.7,-6],[2.2,2.8,3.5]));
+ for(let s of [-1,1]){
+  d=Math.max(d,-segmentD(p,[s*4.8,-1.4,-3.4],[s*8,-1.4,-3.4],[1.5,.58,.7]));
+  d=maxBlend(d,-ed(p,[s*2.85,8.55,-4.95],[1.05,1.0,.85]),.12);d=Math.max(d,-ed(p,[s*2.7,8.1,-3.7],[.32,1.2,.3]));
+ }
+ return d;
+}
+function jawNewField(p){
+ let d=1e3;
+ // U-shaped body: an anterior chin continuous with the horizontal body.
+ for(let i=0;i<24;i++){let a=i*Math.PI/24,b=(i+1)*Math.PI/24;
+  const pa=[5.1*Math.cos(a),1.5+6.4*Math.sin(a),-10.3+1.5*Math.pow(Math.cos(a),2)],pb=[5.1*Math.cos(b),1.5+6.4*Math.sin(b),-10.3+1.5*Math.pow(Math.cos(b),2)];
+  d=minBlend(d,segmentD(p,pa,pb,[.65,.8,1.15-.7*Math.pow(Math.cos((a+b)/2),2)]),.4)
+ }
+ for(let s of [-1,1]){
+  // Broad ramus with a sigmoid notch separating condyle and coronoid.
+  let r=superD(p,[s*5.15,1,-6.1],[.75,2.35,2.8],3);
+  r=minBlend(r,segmentD(p,[s*5.3,-.7,-6],[s*5.3,-1.2,-3.1],[.65,.75,.8]),.45);
+  r=minBlend(r,ed(p,[s*5.3,-1.2,-3.1],[1.2,.64,.55]),.35);
+  r=minBlend(r,polygonExtrusion(p,s*5.0,[[1.7,-5.9],[3.1,-3.05],[3.5,-5.8]],.5)-.12,.35);
+  r=Math.max(r,-ed(p,[s*5.1,.8,-3.5],[1.5,1.1,.95]));
+  d=minBlend(d,r,.55);
+  d=minBlend(d,segmentD(p,[s*4.8,2.8,-7.5],[s*3.4,6.3,-9],[.3,.45,.4]),.25);d=Math.max(d,-ed(p,[s*2.8,7.25,-9.4],[.28,1.3,.28]));
+ }
+ return d;
+}
+function toothArchNew(){
+ for(let upper of [true,false])for(let i=0;i<16;i++){
+  let t=(i+.5)*Math.PI/16,x=4.65*Math.cos(t),y=1.7+6.0*Math.sin(t),z=(upper?-7.95:-8.85)+.5*Math.abs(Math.cos(t));
+  // Incisors have a flatter crown; posterior crowns are broader. No roots modeled.
+  let front=Math.sin(t)>.85,rx=front?.43:.52,ry=front?.35:.65,rz=front?.5:.42;
+  crownMesh((upper?'上':'下')+'歯冠'+(i+1),[x*(upper?1:.97),y+(upper?.1:0),z],[rx,ry,rz],t,upper,front);
+ }
+}
+function buildSkullNew(){
+ implicitMesh('頭蓋・顔面連続面','head','M',skullNewField,[-9,-13,-9],[9,12,13],.5);
+ implicitMesh('下顎連続面','head','M',jawNewField,[-7,-3,-12],[7,10,-1],.4);
+ toothArchNew();
+}
+// Interpolated cross-sections: every row is an authored design section, not a scan.
+const LUMBAR_SECTIONS=[[-1.75,4.1,3.05],[-1.5,4,2.95],[-.8,3.7,2.7],[0,3.6,2.6],[.8,3.75,2.75],[1.5,4.1,3],[1.7,4.15,3.05]];
+function section(z){let a=LUMBAR_SECTIONS[0],b=LUMBAR_SECTIONS.at(-1);for(let i=0;i<LUMBAR_SECTIONS.length-1;i++)if(z>=LUMBAR_SECTIONS[i][0]&&z<=LUMBAR_SECTIONS[i+1][0]){a=LUMBAR_SECTIONS[i];b=LUMBAR_SECTIONS[i+1];break}let t=Math.max(0,Math.min(1,(z-a[0])/(b[0]-a[0])));return [a[1]+t*(b[1]-a[1]),a[2]+t*(b[2]-a[2])]}
+function lumbarBodyD(p){
+ let [w,deep]=section(p[2]),x=p[0],y=p[1]-1.5;
+ // Reniform posterior indentation; edge thickens towards the endplates.
+ let py=y+(y<0?.7*Math.exp(-x*x/3):0),rad=(Math.pow(Math.pow(Math.abs(x/w),2.5)+Math.pow(Math.abs(py/deep),2.5),1/2.5)-1)*2.6;
+ let end=Math.max(-1.75-p[2],p[2]-1.7),d=Math.max(rad,end);
+ // Shallow endplate concavity with a retained peripheral rim.
+ const r=Math.hypot(x/3.5,y/2.6),dip=.15*Math.max(0,1-r*r);
+ return Math.max(d,p[2]-(1.7-dip),(-1.75+dip)-p[2]);
+}
+function lumbarNewField(p){
+ let d=lumbarBodyD(p);
+ for(let s of [-1,1]){
+  // Pedicles are thick roots; laminae broaden toward the spinous base.
+  d=minBlend(d,segmentD(p,[s*2.8,-.3,.65],[s*2.65,-2.5,.55],[.85,.9,.9]),.5);
+  d=minBlend(d,segmentD(p,[s*2.65,-2.5,.55],[s*.65,-4.3,.2],[.85,.7,.95]),.5);
+  // Long, flattened transverse process tapers from root to tip.
+  d=minBlend(d,segmentD(p,[s*2.8,-1.5,.1],[s*4.8,-2,.1],[1.1,.7,.55]),.5);
+  d=minBlend(d,segmentD(p,[s*4.6,-2,.1],[s*7.1,-1.7,.3],[.9,.45,.35]),.45);
+  // Articular pillars with concave upper and convex lower facet approximations.
+  d=minBlend(d,superD(p,[s*2.65,-2.6,1.65],[.95,1.05,1.3],2.6),.45);
+  d=minBlend(d,superD(p,[s*1.95,-3.1,-1.3],[.7,.9,1.25],2.6),.45);const n=V.unit([s*.78,.62,-.08]);d=minBlend(d,orientedEllipsoidD(p,V.add([s*1.95,-3.1,-1.4],V.mul(n,.32)),n,[.65,.9,.5]),.25);d=minBlend(d,ed(p,[s*3.05,-3.05,2.2],[.42,.45,.7]),.3);
+ }
+ // Broad quadrilateral spinous plate rather than a circular rod.
+ d=minBlend(d,polygonExtrusion(p,0,[[-4.1,.9],[-7.45,.35],[-7.8,-1.35],[-6.6,-1.65],[-4.05,-.6]],.9)-.16,.45);
+ // A triangular canal is defined independently of the assembled arch pieces.
+ const canal=Math.max(Math.abs(p[0])-(1.65+.38*(p[1]+2.0)),p[1]+.8,-4.1-p[1]);
+ d=Math.max(d,-canal);
+ // Concave inward/backward superior facet surfaces; still qualitative.
+ for(let s of [-1,1]){const n=V.unit([-s*.78,-.62,.08]),c=V.add([s*2.65,-2.6,1.65],V.mul(n,.88));d=Math.max(d,-orientedEllipsoidD(p,c,n,[.8,1.05,1.0]));d=maxBlend(d,-ed(p,[s*3.1,-1.1,-1.7],[.6,.9,.4]),.1);}
+ return d;
+}
+function buildLumbarNew(){implicitMesh('腰椎連続面','lumbar','M',lumbarNewField,[-9,-9,-4],[9,6,4],.25)}
+
+function crownMesh(name,c,r,t,upper,incisor){let vs=[],fs=[],n=12,levels=[[-1,.86,.8],[-.7,1,1],[.65,.94,1],[1,.75,.75]],tx=-4.65*Math.sin(t),ty=6*Math.cos(t),len=Math.hypot(tx,ty);tx/=len;ty/=len;for(let j=0;j<4;j++)for(let i=0;i<n;i++){let a=i*2*Math.PI/n,power=incisor?.5:.67,x=Math.sign(Math.cos(a))*Math.pow(Math.abs(Math.cos(a)),power)*r[0]*levels[j][1],y=Math.sign(Math.sin(a))*Math.pow(Math.abs(Math.sin(a)),power)*r[1]*levels[j][2];vs.push([c[0]+tx*x-ty*y,c[1]+ty*x+tx*y,c[2]+r[2]*levels[j][0]])}for(let j=0;j<3;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n;fs.push([a,b,a+n],[b,b+n,a+n])}let k=vs.length;vs.push([c[0],c[1],c[2]-r[2]],[c[0],c[1],c[2]+r[2]]);for(let i=0;i<n;i++)fs.push([k,(i+1)%n,i],[k+1,3*n+i,3*n+(i+1)%n]);add(name,'head','M',vs,fs)}
+
+// Cubic design curve for a continuous arch; not traced image coordinates.
+function bezierArch(c,t,s){const u=1-t;return [0,1,2].map(i=>(i===0?s:1)*(u*u*u*c[0][i]+3*u*u*t*c[1][i]+3*u*t*t*c[2][i]+t*t*t*c[3][i]))}
+function polygonExtrusion(p,x0,pts,half){let inside=false,dist=1e6,y=p[1],z=p[2];for(let i=0,j=pts.length-1;i<pts.length;j=i++){const a=pts[j],b=pts[i],dy=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((y-a[0])*dy+(z-a[1])*dz)/(dy*dy+dz*dz)));dist=Math.min(dist,Math.hypot(y-a[0]-t*dy,z-a[1]-t*dz));if((a[1]>z)!==(b[1]>z)&&y<(b[0]-a[0])*(z-a[1])/(b[1]-a[1])+a[0])inside=!inside}return Math.max((inside?-1:1)*dist,Math.abs(p[0]-x0)-half)}
+function orientedEllipsoidD(p,c,n,r){const u=V.unit([-n[1],n[0],0]),v=V.cross(n,u),q=V.sub(p,c),dot=(a,b)=>a.reduce((s,x,i)=>s+x*b[i],0);return ed([dot(q,u),dot(q,v),dot(q,n)],[0,0,0],r)}
+
+return {skull:buildSkullNew,lumbar:buildLumbarNew,orbitD,nasalD};})();
+
+const pool={},viewState={target:'skull',revision:'new',yaw:-.55,pitch:.18,zoom:1,jaw:true,teeth:true,center:null,focus:null};
+function generate(target,revision){const key=target+':'+revision;if(pool[key])return pool[key];objects.length=0;
+ if(revision==='new'){if(target==='skull')buildSkullNew();else buildLumbarNew()}
+ else {if(target==='skull')PREVIOUS.skull();else PREVIOUS.lumbar()}
+ pool[key]=objects.slice();for(const o of pool[key])prepare(o,target,revision);return pool[key];
+}
+function prepare(o,target,revision){
+ o.shades=o.faces.map(f=>{const p=f.map(i=>o.verts[i]),n=V.unit(V.cross(V.sub(p[1],p[0]),V.sub(p[2],p[0]))),c=[0,1,2].map(i=>(p[0][i]+p[1][i]+p[2][i])/3);let ao=1;
+ if(target==='skull'&&revision==='new'&&o.name==='頭蓋・顔面連続面'){const eye=Math.min(orbitD(c,-1),orbitD(c,1));if(Math.abs(eye)<.18&&c[1]<8)ao=.38+.55*Math.max(0,Math.min(1,(c[1]-1)/7));if(Math.abs(nasalD(c))<.18&&c[1]<8)ao=.45}
+ if(target==='skull'&&revision==='old'&&o.name==='頭蓋・顔面連続面'){let eye=Math.min(PREVIOUS.orbitD(c,-1),PREVIOUS.orbitD(c,1));if(Math.abs(eye)<.18&&c[1]<8)ao=.38+.55*Math.max(0,Math.min(1,(c[1]-1)/7));if(Math.abs(PREVIOUS.nasalD(c))<.18&&c[1]<8)ao=.45}
+ return {n,c,ao};});
+}
+function visible(o){return (viewState.jaw||!o.name.includes('下顎')&&!o.name.startsWith('下歯冠'))&&(viewState.teeth||!o.name.includes('歯冠'))}
+function rotate(p,yaw,pitch){let x=p[0]*Math.cos(yaw)+p[1]*Math.sin(yaw),d=-p[0]*Math.sin(yaw)+p[1]*Math.cos(yaw);return [-x,p[2]*Math.cos(pitch)-d*Math.sin(pitch),p[2]*Math.sin(pitch)+d*Math.cos(pitch)]}
+const frame={skull:{c:[0,-.5,.5],diameter:33},lumbar:{c:[0,-1.5,0],diameter:22}};
+// Original Canvas2D software rasterizer. Geometry is unchanged from v0.2.
+// Interpolate vertex lighting and depth; no per-triangle edge strokes.
+const DISPLAY={mode:'high',maxPixels:2400000};
+function prepareSmooth(o){
+ const ns=o.verts.map(()=>[0,0,0]),ao=new Float64Array(ns.length),weights=new Float64Array(ns.length);
+ o.faces.forEach((f,i)=>{const a=o.verts[f[0]],b=o.verts[f[1]],c=o.verts[f[2]],n=V.cross(V.sub(b,a),V.sub(c,a)),area=Math.hypot(...n);for(const j of f){for(let k=0;k<3;k++)ns[j][k]+=n[k];ao[j]+=o.shades[i].ao*area;weights[j]+=area}});
+ o.smooth=ns.map((n,i)=>({n:V.unit(n),ao:weights[i]?ao[i]/weights[i]:1}));
+}
+function rasterSize(w,h){
+ const native=Math.min(3,Math.max(1,devicePixelRatio||1));
+ const requested=DISPLAY.mode==='high'?Math.max(2,native):1;
+ const ratio=Math.min(requested,Math.sqrt(DISPLAY.maxPixels/(w*h)));
+ return [Math.max(1,Math.floor(w*ratio)),Math.max(1,Math.floor(h*ratio))];
+}
+function drawScene(canvas,yaw,pitch,zoom){
+ const ctx=canvas.getContext('2d');if(!ctx)return;
+ const rect=canvas.getBoundingClientRect(),[w,h]=rasterSize(Math.max(1,rect.width),Math.max(1,rect.height));
+ canvas.width=w;canvas.height=h;
+ const image=ctx.createImageData(w,h),pixels=image.data,depth=new Float32Array(w*h);depth.fill(-Infinity);
+ const box=frame[viewState.target],center=canvas===$('interactive')&&viewState.center?viewState.center:box.c;
+ const scale=Math.min(w,h)*.9/box.diameter*zoom,model=pool[viewState.target+':'+viewState.revision]||[];
+ for(const o of model){
+  if(!visible(o))continue;if(!o.smooth)prepareSmooth(o);
+  const vv=o.verts.map(p=>{const q=rotate(V.sub(p,center),yaw,pitch);return [w/2+q[0]*scale,h/2-q[1]*scale,q[2]]});
+  const light=o.smooth.map(s=>{const n=rotate(s.n,yaw,pitch);return (.42+.55*Math.max(0,n[0]*-.32+n[1]*.55+n[2]*.77))*s.ao});
+  const base=o.name.includes('歯冠')?[233,229,213]:[214,204,178];
+  for(let fi=0;fi<o.faces.length;fi++){
+   if(rotate(o.shades[fi].n,yaw,pitch)[2]<-.08)continue;
+   const ids=o.faces[fi],a=vv[ids[0]],b=vv[ids[1]],c=vv[ids[2]],den=(b[1]-c[1])*(a[0]-c[0])+(c[0]-b[0])*(a[1]-c[1]);
+   if(Math.abs(den)<1e-10)continue;
+   const x0=Math.max(0,Math.ceil(Math.min(a[0],b[0],c[0])-.5)),x1=Math.min(w-1,Math.floor(Math.max(a[0],b[0],c[0])-.5));
+   const y0=Math.max(0,Math.ceil(Math.min(a[1],b[1],c[1])-.5)),y1=Math.min(h-1,Math.floor(Math.max(a[1],b[1],c[1])-.5));
+   const dax=(b[1]-c[1])/den,day=(c[0]-b[0])/den,dbx=(c[1]-a[1])/den,dby=(a[0]-c[0])/den;
+   const sa=light[ids[0]],sb=light[ids[1]],sc=light[ids[2]];
+   for(let y=y0;y<=y1;y++){
+    let wa=dax*(x0+.5-c[0])+day*(y+.5-c[1]),wb=dbx*(x0+.5-c[0])+dby*(y+.5-c[1]);
+    for(let x=x0;x<=x1;x++,wa+=dax,wb+=dbx){
+     const wc=1-wa-wb;if(wa< -1e-7||wb< -1e-7||wc< -1e-7)continue;
+     const z=wa*a[2]+wb*b[2]+wc*c[2],index=y*w+x;if(z<=depth[index])continue;depth[index]=z;
+     const shade=wa*sa+wb*sb+wc*sc,k=index*4;
+     pixels[k]=base[0]*shade;pixels[k+1]=base[1]*shade;pixels[k+2]=base[2]*shade;pixels[k+3]=255;
+    }
+   }
+  }
+ }
+ ctx.putImageData(image,0,0);
+}
+function setDisplay(mode){DISPLAY.mode=mode;document.querySelectorAll('[data-quality]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.quality===mode)));drawAll()}
+document.querySelectorAll('[data-quality]').forEach(b=>b.addEventListener('click',()=>setDisplay(b.dataset.quality)));
+const $=id=>document.getElementById(id);
+function drawAll(){drawScene($('front'),0,0,1);drawScene($('side'),-Math.PI/2,0,1);drawScene($('top'),0,Math.PI/2,1);drawScene($('interactive'),viewState.yaw,viewState.pitch,viewState.zoom)}
+function describe(){const skull=viewState.target==='skull';$('modelTitle').textContent=skull?'頭蓋・顔面':'代表的な腰椎1個';$('headControls').hidden=!skull;$('focusSkull').hidden=!skull;$('focusLumbar').hidden=skull;$('checklist').textContent=skull?'眼窩の内外側と奥行き／眼窩下の凹み／頬骨弓の曲がり／下顎頭と三角形の筋突起／下顎枝前縁のつながり':'上関節面の内側・後方を向く凹み／下関節面の外側・前方を向くふくらみ／椎弓根下の切れ込み／板状の棘突起／乳頭突起の概形';$('limits').textContent=skull?'骨の縫合・鼻腔内部・頭蓋底の細部・歯根などは未制作です。眼窩と顔面の輪郭、歯の噛み合わせも監査前です。':'終板・関節面の曲率と向き、椎孔の寸法、個々の椎骨レベルの特徴は未承認です。';const list=pool[viewState.target+':'+viewState.revision]||[];$('stats').textContent=list.reduce((a,o)=>a+o.verts.length,0).toLocaleString()+' 頂点 · '+list.reduce((a,o)=>a+o.faces.length,0).toLocaleString()+' 三角形 · 無単位';document.querySelectorAll('[data-target]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.target===viewState.target)));document.querySelectorAll('[data-revision]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.revision===viewState.revision)))}
+let loadToken=0;function activate(target,revision){if(target!==viewState.target){viewState.center=null;viewState.focus=null;viewState.zoom=1}viewState.target=target;viewState.revision=revision;let token=++loadToken;$('message').hidden=false;$('message').textContent='形状を準備しています…';setTimeout(()=>{if(token!==loadToken)return;try{generate(target,revision);describe();drawAll();$('message').hidden=true}catch(e){$('message').textContent='形状の表示で問題が発生しました。再読み込みしてください。';console.error(e)}},30)}
+document.querySelectorAll('[data-target]').forEach(b=>b.addEventListener('click',()=>activate(b.dataset.target,viewState.revision)));document.querySelectorAll('[data-revision]').forEach(b=>b.addEventListener('click',()=>activate(viewState.target,b.dataset.revision)));
+function pose(name){viewState.center=null;viewState.focus=null;const p={front:[0,0],side:[-Math.PI/2,0],back:[Math.PI,0],top:[0,Math.PI/2],oblique:[-.55,.18]}[name];viewState.yaw=p[0];viewState.pitch=p[1];drawScene($('interactive'),p[0],p[1],viewState.zoom)}
+document.querySelectorAll('[data-pose]').forEach(b=>b.addEventListener('click',()=>pose(b.dataset.pose)));function zoomBy(v){viewState.zoom=Math.max(.5,Math.min(6,viewState.zoom*v));drawScene($('interactive'),viewState.yaw,viewState.pitch,viewState.zoom)}$('plus').onclick=()=>zoomBy(1.2);$('minus').onclick=()=>zoomBy(1/1.2);$('reset').onclick=()=>{viewState.zoom=1;pose('oblique')};for(let id of ['jaw','teeth'])$(id).onchange=e=>{viewState[id]=e.target.checked;drawAll()};
+const pointers=new Map(),interactive=$('interactive');let pinch=0;const sep=()=>{const a=[...pointers.values()];return Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])};interactive.addEventListener('pointerdown',e=>{interactive.setPointerCapture(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===2)pinch=sep()});interactive.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;const old=pointers.get(e.pointerId);pointers.set(e.pointerId,[e.clientX,e.clientY]);if(pointers.size===1){viewState.yaw+=(e.clientX-old[0])*.012;viewState.pitch=Math.max(-Math.PI/2,Math.min(Math.PI/2,viewState.pitch+(e.clientY-old[1])*.009));drawScene(interactive,viewState.yaw,viewState.pitch,viewState.zoom)}else if(pointers.size===2){let d=sep();if(pinch>0)zoomBy(d/pinch);pinch=d}});for(const name of ['pointerup','pointercancel','lostpointercapture'])interactive.addEventListener(name,e=>{pointers.delete(e.pointerId);pinch=0});interactive.addEventListener('wheel',e=>{e.preventDefault();zoomBy(Math.exp(-e.deltaY*.001))},{passive:false});interactive.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','=','-','0'].includes(e.key))return;e.preventDefault();if(e.key==='0')return $('reset').onclick();if(['+','=','-'].includes(e.key))return zoomBy(e.key==='-'?1/1.2:1.2);if(e.key==='ArrowLeft')viewState.yaw-=.15;if(e.key==='ArrowRight')viewState.yaw+=.15;if(e.key==='ArrowUp')viewState.pitch=Math.min(Math.PI/2,viewState.pitch+.1);if(e.key==='ArrowDown')viewState.pitch=Math.max(-Math.PI/2,viewState.pitch-.1);drawScene(interactive,viewState.yaw,viewState.pitch,viewState.zoom)});
+const FOCUS={skull:{orbit:{center:[3.1,4,-.5],yaw:-.15,pitch:.07,zoom:2.8},arch:{center:[5.8,1.2,-2.4],yaw:-Math.PI/2,pitch:.1,zoom:2.6},jaw:{center:[5,1,-5.5],yaw:-Math.PI/2,pitch:.04,zoom:2.5}},lumbar:{facets:{center:[0,-2.7,1],yaw:Math.PI-.5,pitch:.4,zoom:1.8},spinous:{center:[0,-4.8,-.2],yaw:-Math.PI/2,pitch:.15,zoom:1.9}}};
+function focusScene(key){const p=FOCUS[viewState.target][key];if(!p)return;viewState.focus=key;viewState.center=p.center.slice();viewState.yaw=p.yaw;viewState.pitch=p.pitch;viewState.zoom=p.zoom;drawScene($('interactive'),p.yaw,p.pitch,p.zoom)}
+document.querySelectorAll('[data-focus]').forEach(b=>b.addEventListener('click',()=>focusScene(b.dataset.focus)));
+window.addEventListener('resize',drawAll);activate('skull','new');
+</script></html>

@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-23",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.1.html",
+  "status": 200,
+  "bytes": 32602,
+  "sha256": "6fd6844c958f74cbefff24fd4333bfb1b22b544e2fc0fb19c7eee1024b004745",
+  "matches_tested_html": true,
+  "public_commit": "aa0bb9521b9d0b329944b3783d94511ed02484e3",
+  "work_commit": "392d327563e6bd10af41dbdef2a324556aa43034",
+  "pages": {
+    "id": 39894844037,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "browser": {
+    "environment": "Cloud Chrome desktop",
+    "visual_confirmations": [
+      "new skull fixed front/right/top and interactive view",
+      "new lumbar fixed front/right/top"
+    ],
+    "controls_observed": [
+      "head old/new switch",
+      "lumbar old/new switch",
+      "jaw and teeth checkbox toggles",
+      "top pose and reset"
+    ],
+    "screenshot": "docs/validation/cleanroom-bone-review-v0.1-browser.jpg",
+    "iphone_tested": false
+  },
+  "anatomical_approval": false,
+  "fullbody_adoption": false
+}

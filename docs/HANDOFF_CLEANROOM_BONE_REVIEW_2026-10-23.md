@@ -65,3 +65,11 @@ node tools/cleanroom/check-bone-review-v0.1.cjs
 2. ユーザーの形状レビュー、iPhone上の待ち時間・回転・比較3図/操作ボタンを確認する。
 3. 頭蓋の正面/側面、腰椎の側面/上面で、改善点と不自然な点を部位ごとに記録。独立した追加資料または専門家による骨面照合を進める。数値基準がないところは承認しない。
 4. 頭蓋の形、上下顎・咬合、腰椎の関節面と椎孔について採用判断がついてから全身へ反映。次の「進もう」でも、単に全身表示へ戻して完成扱いしない。
+
+
+## 公開後確認
+公開URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.1.html
+公開コミット: aa0bb9521b9d0b329944b3783d94511ed02484e3
+Pages run 39894844037: success。
+HTTP200 / 32602 bytes / SHA-256 6fd6844c958f74cbefff24fd4333bfb1b22b544e2fc0fb19c7eee1024b004745、検証済みHTMLと一致。
+クラウドChromeで新頭蓋/新腰椎の固定3図、回転表示、旧/新切替、下顎/歯冠のチェック状態、上面ボタン/リセットを確認。ブラウザ証跡: docs/validation/cleanroom-bone-review-v0.1-browser.jpg。実機のタッチ/速度・骨面精度は未確認。公開確認の正本: docs/validation/cleanroom-bone-review-v0.1-hosted.json。

@@ -911,3 +911,10 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 詳細: docs/HANDOFF_CLEANROOM_BONE_REVIEW_V0.3_2026-10-23.md。experiments/cleanroom-bone-review-v0.3.html。
 
 - 単体v0.3公開: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.3.html 。公開コミット763e223633e96543bdbfffa3034c93f7d64be2d5 / Pages run39969136154成功。HTTP200・検証HTMLのハッシュ一致。Chromeで高/軽量、頭蓋拡大、腰椎関節面描画を確認。画質切替で実Canvasサイズが変わることを確認。iPhone/独立監査は未完了。docs/validation/cleanroom-bone-review-v0.3-hosted.json。
+
+
+### 2026-10-23：単体v0.4、拡大時の表面の細密化
+- ユーザーから大きく表示しても綺麗に見たい要望。頭蓋0.5→0.3、顎0.4→0.25、腰椎0.25→0.18へ表面抽出間隔を細分化。骨の独自設計式は共通、実寸や新しい人体資料を得たものではない。
+- 新頭蓋一式90,036頂点/179,968三角形、新腰椎39,986頂点/79,972三角形。新各メッシュ1連結、辺数/辺方向整合・体積正・ゼロ面積0を確認。格子点付近の交点統合と未参照頂点の整理を修正して再検査。
+- 拡大上限6倍。旧比較を前版v0.3と同じ骨面へ変更。同じ視点の4倍眼窩比較を実描画し目視。初回生成負荷が増える。ローカル生成+描画参考値は頭蓋約62秒/腰椎約19秒、iPhoneの速度ではない。
+- 全身採用/解剖学的承認/iPhone実機は未完了。詳細: docs/HANDOFF_CLEANROOM_BONE_REVIEW_V0.4_2026-10-23.md。experiments/cleanroom-bone-review-v0.4.html。

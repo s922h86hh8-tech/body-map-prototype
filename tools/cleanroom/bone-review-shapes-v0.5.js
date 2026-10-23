@@ -34,7 +34,7 @@ function skullNewField(p){
  let d=vaultD(p);
  // Maxillary body and alveolar process follow separate, connected surfaces.
  d=minBlend(d,superD(p,[0,5.05,-4.4],[4.15,2.6,2.55],2.25),.65);
- d=minBlend(d,archBand(p,4.5,5.7,1.4,[-6.75,.25],.65,[.6,0],2.4),.4);
+ d=minBlend(d,archBand(p,4.5,5.7,1.4,[-6.75,.25],.4,[.6,0],2.4),.4);
  for(const s of [-1,1]){
   // Temporal root and a shorter mastoid approximation, behind the mandibular head.
   d=minBlend(d,superD(p,[s*5.25,-2.8,-1.0],[1.25,3.2,2.0],2.3),.65);
@@ -73,11 +73,11 @@ function jawNewField(p){
  d=minBlend(d,ed(p,[0,6.85,-10.55],[1.25,.5,1.0]),.35);
  for(const s of [-1,1]){
   // Rounded gonial angle with an inclined anterior ramus border.
-  let r=polygonExtrusion(p,s*4.55,[[0,-10.2],[2.7,-10.0],[3.1,-8.1],[3.0,-6.0],[2.6,-5.0],[-.6,-5.0],[-1.4,-8.9],[-1.0,-9.65]],.6)-.25;
+  let r=polygonExtrusion(p,s*4.55,[[0,-10.2],[2.7,-10.0],[3.1,-8.1],[3.0,-6.0],[2.6,-4.6],[-.6,-4.6],[-1.4,-8.9],[-1.0,-9.65]],.6)-.25;
   r=minBlend(r,segmentD(p,[s*4.55,-.8,-6],[s*4.85,-1.15,-3.1],[.55,.6,.65]),.4);
   r=minBlend(r,ed(p,[s*4.85,-1.15,-3.05],[1.0,.6,.5]),.3);
   r=minBlend(r,polygonExtrusion(p,s*4.55,[[1.7,-5.9],[2.8,-3.25],[3.2,-5.7]],.42)-.12,.4);
-  r=Math.max(r,-ed(p,[s*4.6,.6,-3.8],[1.5,1.05,.8]));
+  r=Math.max(r,-ed(p,[s*4.6,.6,-3.8],[1.5,1.35,1.15]));
   d=minBlend(d,r,.6);
   d=minBlend(d,segmentD(p,[s*4.8,2.8,-7.5],[s*3.7,5.3,-9.3],[.25,.35,.3]),.25);
   d=Math.max(d,-ed(p,[s*2.8,6.1,-9.55],[.24,1.1,.24]));
@@ -86,7 +86,7 @@ function jawNewField(p){
 }
 function toothArchNew(){
  for(const upper of [true,false])for(let i=0;i<16;i++){
-  const t=(i+.5)*Math.PI/16,j=Math.min(i,15-i),x=4.5*Math.cos(t),y=1.4+5.7*Math.sin(t),z=(upper?-7.9:-8.95)+.45*Math.abs(Math.cos(t));
+  const t=(i+.5)*Math.PI/16,j=Math.min(i,15-i),x=4.5*Math.cos(t),y=1.4+5.7*Math.sin(t),z=(upper?-7.85:-8.95)+.45*Math.abs(Math.cos(t));
   const front=j>=6,canine=j===5,molar=j<=2,rx=front?.41:canine?.42:molar?.56:.46,ry=front?.31:canine?.4:molar?.62:.47,rz=canine?.62:front?.52:.45;
   crownMesh((upper?'上':'下')+'歯冠'+(i+1),[x*(upper?1:.97),y+(upper?.08:0),z],[rx,ry,rz],t,upper,front);
  }

@@ -872,3 +872,5 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - Canvas2Dによる3D投影でWebGL非依存。363描画部品/24,434頂点/47,416三角形。VMで制御を検証し、実Canvas描画PNGを確認。ブラウザレイアウト・iPhone実機・解剖学的監査は未実施。
 - 全身座標+X身体右/+Y前/+Z上、無単位の描画値。第三者メッシュ・計測座標は不使用。旧アプリ・GLB・過去版を保持。
 - 引継ぎ/制作来歴/再現/次作業: docs/HANDOFF_CLEANROOM_WHOLE_BODY_2026-10-23.md。次は実機確認と部位別の骨形状監査・精密化、筋と図鑑への拡張。
+
+- 公開URL: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-whole-body-v0.1.html 。HTTP200、検証HTMLとSHA-256一致。Pages run39886588281成功。クラウドChromeで全身描画/大腿選択/右側単独表示/方向/リセットを確認。iPhoneは未確認。公開検証: docs/validation/cleanroom-whole-body-v0.1-hosted.json。

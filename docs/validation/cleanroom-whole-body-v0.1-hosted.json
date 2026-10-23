@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-23",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-whole-body-v0.1.html",
+  "http_status": 200,
+  "bytes": 15562,
+  "sha256": "a0e0b7fcb0ac5a03c90fc33f8707a697c938fd922c2112e73cad34d5656f689e",
+  "matches_tested_html": true,
+  "public_commit": "0e5c69463e668bf2930b0f653de3f31fb0db1fed",
+  "work_commit": "d7743f36cb5f08c5721fe468eba60540b9d74dec",
+  "pages": {
+    "id": 39886588281,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "browser": {
+    "environment": "Cloud Chrome desktop",
+    "whole_body_canvas_visible": true,
+    "controls_confirmed": [
+      "thigh region",
+      "R side",
+      "isolate",
+      "right view",
+      "reset to full body"
+    ],
+    "iphone": false
+  },
+  "anatomical_approval": false
+}

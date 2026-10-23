@@ -1,0 +1,26 @@
+'use strict';
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path'),crypto=require('node:crypto');
+const {createCanvas}=require('@napi-rs/canvas');
+const root=path.resolve(__dirname,'../..'),html=fs.readFileSync(path.join(root,'experiments/cleanroom-whole-body-v0.1.html'),'utf8');
+assert.equal(/<script[^>]+src=|fetch\(|<img\b/i.test(html),false);
+const nodes=new Map(),buttons=[];let viewport={width:390,height:600};const surface=createCanvas(390,600);
+function node(id){if(!nodes.has(id))nodes.set(id,{dataset:{},attributes:{},events:{},value:'both',checked:false,hidden:false,textContent:'',setAttribute(k,v){this.attributes[k]=v},addEventListener(k,f){this.events[k]=f},appendChild(b){buttons.push(b)},getBoundingClientRect(){return viewport},getContext(){return surface.getContext('2d')},setPointerCapture(){}});return nodes.get(id)}
+for(let v of ['front','back','right','left']){let b=node('view'+v);b.dataset.view=v;buttons.push(b)}
+const document={getElementById:node,createElement:()=>node('new'+nodes.size),querySelectorAll:s=>buttons.filter(b=>s==='[data-region]'?b.dataset.region:b.dataset.view)};
+const context=vm.createContext({document,window:{addEventListener(){}},devicePixelRatio:1,console});vm.runInContext(html.match(/<script>([\s\S]*?)<\/script>/)[1],context);
+const get=s=>vm.runInContext(s,context),objects=get('objects');
+let triangles=0,verts=0,zero=0;for(let o of objects){assert.ok(o.verts.every(p=>p.length===3&&p.every(Number.isFinite)));verts+=o.verts.length;for(let f of o.faces){assert.ok(f.every(i=>Number.isInteger(i)&&i>=0&&i<o.verts.length));triangles++;const n=get(`V.cross(V.sub(objects[${objects.indexOf(o)}].verts[${f[1]}],objects[${objects.indexOf(o)}].verts[${f[0]}]),V.sub(objects[${objects.indexOf(o)}].verts[${f[2]}],objects[${objects.indexOf(o)}].verts[${f[0]}]))`);if(Math.hypot(...n)<1e-10)zero++}}
+assert.equal(zero,0);assert.equal(objects.filter(o=>o.name.startsWith('肋骨')).length,24);assert.equal(objects.filter(o=>o.name.startsWith('椎体')).length,24);
+const right=objects.filter(o=>o.side==='R'),left=objects.filter(o=>o.side==='L');assert.equal(right.length,left.length);const key=p=>p.map(v=>Math.round(v*1e7)).join(',');right.forEach((o,i)=>{const set=new Set(left[i].verts.map(key));o.verts.forEach(p=>assert.ok(set.has(key([-p[0],p[1],p[2]]))))});
+// Orthographic display: subject's right is screen left in front view.
+assert.ok(get('transform([1,0,0],[0,0,0])[0]')<0);
+const out=path.join(root,'docs/validation');fs.mkdirSync(out,{recursive:true});
+fs.writeFileSync(path.join(out,'cleanroom-whole-body-v0.1-front.png'),surface.toBuffer('image/png'));
+const sheet=createCanvas(1170,1200),sc=sheet.getContext('2d');let i=0;
+for(let id of ['head','chest','pelvis','hand','thigh','foot']){get(`selectRegion('${id}');state.isolate=true;draw()`);sc.drawImage(surface,(i%3)*390,Math.floor(i/3)*600);sc.fillStyle='#ffffff';sc.font='22px sans-serif';sc.fillText(id,(i%3)*390+12,Math.floor(i/3)*600+30);i++}
+fs.writeFileSync(path.join(out,'cleanroom-whole-body-v0.1-regions.png'),sheet.toBuffer('image/png'));
+for(let r of get('REGIONS')){get(`selectRegion('${r[0]}')`);assert.ok(get('objects.filter(chosen).length')>0);for(let s of ['R','L','both']){node('side').onchange({target:{value:s}});assert.ok(get('objects.filter(chosen).length')>0);node('isolate').onchange({target:{checked:true}});get('draw()')}}
+for(let v of ['front','back','right','left'])node('view'+v).events.click();node('plus').onclick();node('minus').onclick();node('reset').onclick();assert.equal(get('state.region'),null);assert.equal(get('state.side'),'both');
+const c=node('view');c.events.pointerdown({pointerId:1,clientX:10,clientY:10});c.events.pointermove({pointerId:1,clientX:50,clientY:20});assert.ok(get('state.yaw')>0);c.events.pointerdown({pointerId:2,clientX:100,clientY:20});c.events.pointermove({pointerId:2,clientX:150,clientY:20});assert.ok(get('state.zoom')>1);for(let id of [1,2])c.events.pointerup({pointerId:id});assert.equal(get('pointers.size'),0);
+for(let width of [320,390,1280]){viewport={width,height:700};get('reset();draw()')}
+const result={date:'2026-10-23',html_sha256:crypto.createHash('sha256').update(html).digest('hex'),objects:objects.length,vertices:verts,triangles,degenerate_triangles:zero,regions:13,ribs:24,vertebral_bodies:24,bilateral_mirror:true,vm_controls:'passed: 13 regions, 3 side settings, isolation, 4 views, zoom/reset, pointer rotation/pinch, widths 320/390/1280',render:'Actual Canvas2D paths rendered using @napi-rs/canvas; front and six region PNGs saved. Not browser DOM/layout or iPhone testing.',anatomical_approval:false,iphone_tested:false,notes:'Independent schematic drawing units. Overlapping separate primitive meshes; no whole-body watertight or self-intersection claim. Component count is not bone count.'};fs.writeFileSync(path.join(out,'cleanroom-whole-body-v0.1.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result,null,2));

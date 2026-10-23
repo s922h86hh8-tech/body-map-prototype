@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-23",
+  "html_sha256": "a0e0b7fcb0ac5a03c90fc33f8707a697c938fd922c2112e73cad34d5656f689e",
+  "objects": 363,
+  "vertices": 24434,
+  "triangles": 47416,
+  "degenerate_triangles": 0,
+  "regions": 13,
+  "ribs": 24,
+  "vertebral_bodies": 24,
+  "bilateral_mirror": true,
+  "vm_controls": "passed: 13 regions, 3 side settings, isolation, 4 views, zoom/reset, pointer rotation/pinch, widths 320/390/1280",
+  "render": "Actual Canvas2D paths rendered using @napi-rs/canvas; front and six region PNGs saved. Not browser DOM/layout or iPhone testing.",
+  "anatomical_approval": false,
+  "iphone_tested": false,
+  "notes": "Independent schematic drawing units. Overlapping separate primitive meshes; no whole-body watertight or self-intersection claim. Component count is not bone count."
+}

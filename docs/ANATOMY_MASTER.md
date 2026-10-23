@@ -864,3 +864,11 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - クラウドブラウザではページ/操作項目を確認したがWebGL起動不可でエラー案内。iPhone表示の結果にはしない。
 - 公開URL：https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-femur-study-v0.4.html
 - 公開確認記録：docs/validation/cleanroom-femur-elliptic-neck-hosted-v0.3.json。次はiPhone実機と解剖学監査。
+
+
+### 2026-10-23：独自全身骨格 v0.1へ拡張
+- ユーザー指示により、独立ページ experiments/cleanroom-whole-body-v0.1.html を追加。頭蓋・脊柱・胸郭・骨盤・四肢・手足を独自の模式プリミティブで構築。全身の骨面精度・人体寸法・筋は未完成。
+- 既存の13部位、左右選択、選択部位の拡大/単独表示、4方向、回転/拡縮を実装。大腿骨詳細v0.4へのリンクを保持。全身版の大腿骨は簡略形状で、詳細メッシュの結合ではない。
+- Canvas2Dによる3D投影でWebGL非依存。363描画部品/24,434頂点/47,416三角形。VMで制御を検証し、実Canvas描画PNGを確認。ブラウザレイアウト・iPhone実機・解剖学的監査は未実施。
+- 全身座標+X身体右/+Y前/+Z上、無単位の描画値。第三者メッシュ・計測座標は不使用。旧アプリ・GLB・過去版を保持。
+- 引継ぎ/制作来歴/再現/次作業: docs/HANDOFF_CLEANROOM_WHOLE_BODY_2026-10-23.md。次は実機確認と部位別の骨形状監査・精密化、筋と図鑑への拡張。

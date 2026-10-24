@@ -930,3 +930,9 @@ iPhone実機で「左｜咬筋」「右｜咬筋」が複数表示される問�
 - 詳細: docs/HANDOFF_CLEANROOM_SKULL_V0.5_2026-10-24.md。experiments/cleanroom-bone-review-v0.5.html。
 
 - 単体v0.5最終公開: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.5.html 。公開コミットf35f12a40d89ced97311015cc5dced1fd9fa7b40、Pages run40041987912成功。HTTP200・最終検証HTMLのハッシュ一致。Chromeで新頭蓋/前版切替/顎拡大/全体復帰を確認。歯槽部の前方張り出しと下顎切痕も追加修正後に再検査。骨面の承認・独立監査・iPhone・全身採用は未完了。docs/validation/cleanroom-bone-review-v0.5-hosted.json。
+
+
+### 2026-10-24：単体v0.6、人工的な面の継ぎ目の低減
+- v0.5の骨面へ移動量制限付きの交互近傍平滑化と頂点照明の平滑化を追加。頭蓋/下顎/腰椎へ適用し歯冠は不変。実際の骨の稜や頭蓋縫合がないという説明ではなく、制作上の段差を抑える目的。
+- 面の向きを保つ適用量へ減衰。実測最大移動量は頭蓋0.015/下顎0.05/腰椎0.02（描画単位、mmではない）。頂点数と面の接続は旧v0.5と完全一致。新各メッシュ1連結、境界/不正辺0、方向整合、正の体積、面積0なし。2対象×2版/操作/拡大/切替をVM検証、3方向/4倍比較を実描画し目視。
+- 新しい解剖資料や計測精度の証明は追加なし。自己交差厳密検査/専門家監査/iPhone実機/全身採用は未完了。詳細: docs/HANDOFF_CLEANROOM_SURFACE_V0.6_2026-10-24.md。experiments/cleanroom-bone-review-v0.6.html。

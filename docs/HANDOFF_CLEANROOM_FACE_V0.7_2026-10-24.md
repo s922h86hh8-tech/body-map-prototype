@@ -35,3 +35,7 @@ node tools/cleanroom/check-bone-review-v0.7.cjs
 
 ## 検査結果
 自動検査は終了コード0で完了。新頭蓋一式80,459頂点/160,810三角形、旧v0.6は82,293/164,478。新各メッシュ1連結、境界/不正辺0、方向整合、正の体積、面積0なし。下顎/歯冠/腰椎は新旧の頂点座標/面接続が完全一致。3方向・部分拡大・4倍比較を目視し、追加眉の突出と頬骨下の部品状の段差の低減を確認。眼窩縁の角張りや上顎の単純さは残る。
+
+## 公開確認
+
+- 単体v0.7公開: https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.7.html 。公開コミット8edce75b740adfa88d2641f30e2359cf2d7e15a5、Pages run40057731210成功。HTTP200・52,202 bytes・検証HTMLハッシュ一致。Chromeで新頭蓋の眼窩拡大/前版v0.6切替/新版復帰/頬骨弓拡大/全体復帰+拡大を確認。初回生成と初回旧版生成時に状態取得タイムアウト、既存タブで完了後の表示を確認。眼窩縁の角張り/上顎の単純さは残る。専門家監査/iPhone/全身採用は未完了。docs/validation/cleanroom-bone-review-v0.7-hosted.json。

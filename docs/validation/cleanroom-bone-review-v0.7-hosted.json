@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-24",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.7.html",
+  "source_branch": "cleanroom-pelvis-v0.1",
+  "source_commit": "69c4286fa7d38e69a9001e979c155ae1071bd7dd",
+  "public_branch": "prototype-0.3",
+  "public_commit": "8edce75b740adfa88d2641f30e2359cf2d7e15a5",
+  "pages": {
+    "id": 40057731210,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "http": {
+    "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.7.html",
+    "status": 200,
+    "bytes": 52202,
+    "sha256": "cf9ec3140e4c08db8d463bdef05787f88ba711e5e4aaa61d899a9dc34db732e4"
+  },
+  "validated_html_sha256": "cf9ec3140e4c08db8d463bdef05787f88ba711e5e4aaa61d899a9dc34db732e4",
+  "html_hash_match": true,
+  "browser": {
+    "environment": "Cloud Chrome desktop",
+    "observed": [
+      "new skull 80459 vertices/160810 triangles",
+      "orbit focus",
+      "previous v0.6 selected and 82293/164478 stats",
+      "return new selected and focused view retained",
+      "cheek arch focus inspected",
+      "reset and plus whole skull viewed"
+    ],
+    "timeouts": "Initial tab creation and first previous mesh generation returned snapshot timeouts; existing tab later finished; no reload required.",
+    "screenshot": "docs/validation/cleanroom-bone-review-v0.7-browser.jpg"
+  },
+  "anatomical_approval": false,
+  "iphone_tested": false,
+  "self_intersection_checked": false,
+  "wholebody_adopted": false,
+  "limitations": "Angular orbital margins and simplified maxilla remain. Shape revision is not proof of anatomical accuracy. Nasal interior, skull base, sutures, roots and occlusion remain incomplete or unaudited."
+}

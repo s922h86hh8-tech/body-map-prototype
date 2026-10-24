@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-24",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.8.html",
+  "source_branch": "cleanroom-pelvis-v0.1",
+  "source_commit": "026447c82cf0354856a7860d18f7da68ea36442f",
+  "public_branch": "prototype-0.3",
+  "public_commit": "c774524147df90bf176db62c0e9d310c70b58c5d",
+  "pages": {
+    "id": 40072306217,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "http": {
+    "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.8.html",
+    "status": 200,
+    "bytes": 53326,
+    "sha256": "fe81114836577bdbed296e855c44c4ed123084c060b208f222eec580b9bf3d36"
+  },
+  "validated_html_sha256": "fe81114836577bdbed296e855c44c4ed123084c060b208f222eec580b9bf3d36",
+  "html_hash_match": true,
+  "browser": {
+    "environment": "Cloud Chrome desktop",
+    "observed": [
+      "new skull 81713 vertices/163322 triangles",
+      "orbit focus",
+      "previous v0.7 selected with 80459/160810 stats",
+      "new selected with 81713/163322 stats",
+      "focused view retained during version switches",
+      "orbital walls/floor and nasal septum/concha approximations visible"
+    ],
+    "screenshot": "docs/validation/cleanroom-bone-review-v0.8-browser.jpg"
+  },
+  "anatomical_approval": false,
+  "iphone_tested": false,
+  "self_intersection_checked": false,
+  "wholebody_adopted": false,
+  "limitations": "Angular artifacts remain on enlarged rims. Orbit apex canals/fissures, bone boundaries/sutures, nasal detail and anatomically measured thickness remain incomplete or unaudited. Field probes are not mesh-space connectivity or anatomical accuracy validation."
+}

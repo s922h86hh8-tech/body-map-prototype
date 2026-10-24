@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-24",
+  "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.6.html",
+  "source_branch": "cleanroom-pelvis-v0.1",
+  "source_commit": "109933fe0ed3f29c6999c9172bac28c2bfbccfb2",
+  "public_branch": "prototype-0.3",
+  "public_commit": "6b2aac46250a0ba803ffef26498a07f526791c45",
+  "pages": {
+    "id": 40043334277,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "http": {
+    "url": "https://s922h86hh8-tech.github.io/body-map-prototype/experiments/cleanroom-bone-review-v0.6.html",
+    "status": 200,
+    "bytes": 41652,
+    "sha256": "585eb105ac2bd3530bb8ff503c0f91d942458b6a27602f0170ec2d6845d42107"
+  },
+  "validated_html_sha256": "585eb105ac2bd3530bb8ff503c0f91d942458b6a27602f0170ec2d6845d42107",
+  "html_hash_match": true,
+  "browser": {
+    "environment": "Cloud Chrome desktop",
+    "observed": [
+      "new skull 82293 vertices /164478 triangles",
+      "orbit focus",
+      "previous v0.5 selected then new selected; focused view retained",
+      "new lumbar 39986 vertices/79972 triangles",
+      "lumbar facet focus rendered",
+      "returned to new skull orbit focus"
+    ],
+    "initial_load": "create tab returned Page.getFrameTree timeout while meshing; existing new tab later completed, bound and tested without reload",
+    "screenshot": "docs/validation/cleanroom-bone-review-v0.6-browser.jpg"
+  },
+  "anatomical_approval": false,
+  "iphone_tested": false,
+  "self_intersection_checked": false,
+  "wholebody_adopted": false,
+  "limitations": "Some angular surface details remain, including when enlarged. This reduces synthetic mesh and shading discontinuities; it does not establish anatomical correctness or modeled cranial sutures."
+}

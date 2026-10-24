@@ -1,0 +1,28 @@
+{
+  "html_sha256": "fe81114836577bdbed296e855c44c4ed123084c060b208f222eec580b9bf3d36",
+  "probes": {
+    "-1:septum": -0.149213864515897,
+    "-1:septum_concha_air": 0.190156556214631,
+    "-1:inferior_concha": -0.15913249893490525,
+    "-1:lower_nasal_air": 0.16903988007687096,
+    "-1:orbital_floor": -0.5452317389103819,
+    "-1:orbital_roof": -1.4244793188267653,
+    "-1:orbit_void_2": 0.5460396166554143,
+    "-1:orbit_void_4": 0.9010569736030246,
+    "-1:orbit_void_6": 1.2471027266740915,
+    "1:septum": -0.149213864515897,
+    "1:septum_concha_air": 0.190156556214631,
+    "1:inferior_concha": -0.15913249893490525,
+    "1:lower_nasal_air": 0.16903988007687096,
+    "1:orbital_floor": -0.5453028860460127,
+    "1:orbital_roof": -1.4244793188267653,
+    "1:orbit_void_2": 0.5460396166554143,
+    "1:orbit_void_4": 0.9010569736030246,
+    "1:orbit_void_6": 1.2471027266740915
+  },
+  "canine_surface_delta": {
+    "fossa": -0.437459821662296,
+    "eminence": 0.17687039978778785
+  },
+  "meaning": "Signed field probes verify authored air/solid layout and deformation direction only; no anatomical accuracy, mesh fidelity, dimensions or thickness approval."
+}

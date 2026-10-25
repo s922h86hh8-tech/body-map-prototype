@@ -12,7 +12,7 @@ button[aria-pressed=true]{background:#386c62;border-color:#82c3a8}button:focus-v
 <header><h1>身体の地図｜仙骨・独自3D造形レビュー v1.0</h1><p class="status">構造を設計し直した新しい仙骨単体モデル。実測骨標本・CTデータではなく、形状は専門監査前です。</p></header>
 <main><section class="block"><canvas id="stage" aria-label="仙骨の立体モデル。スワイプで回転、ピンチで拡大"></canvas>
 <nav class="toolbar" aria-label="視点操作"><button data-view="back" aria-pressed="true">後面</button><button data-view="front">前面</button><button data-view="right">右側面</button><button data-view="top">上面</button><button data-view="oblique">斜め</button><button id="zoomPlus">拡大＋</button><button id="zoomMinus">縮小−</button><button id="reset">戻す</button></nav>
-<p>旧版との比較と4方向の画像は、どちらもこのページ内で実際の三角形メッシュから描画しています。AIで作った完成イメージではありません。</p>
+<p>旧版との比較と4方向の画像は、どちらもこのページ内で実際の三角形メッシュから描画しています。4方向の小窓はiPhoneの描画負荷を抑えるため解像度を落としています。AIで作った完成イメージではありません。</p>
 <div class="stats" id="stats">メッシュ生成中…</div>
 </section><aside class="block"><h2>形状を切り替える</h2>
 <div class="toolbar"><button data-model="sculpt" aria-pressed="true">新しい造形</button><button data-model="old">以前の仙骨 v0.5</button></div>
@@ -186,12 +186,13 @@ function sacrumSculptField(p){
 }
 
 const MODEL={old:null,sculpt:null};
-function makeModel(name){
- if(MODEL[name])return MODEL[name];
+function makeModel(name,preview=false){
+ const cacheKey=name+(preview?':preview':':full');
+ if(MODEL[cacheKey])return MODEL[cacheKey];
  objects.length=0;
  const f=name==='old'?legacySacrumField:sacrumSculptField;
- implicitMesh(name==='old'?'旧形状':'新造形','sacrum','M',f,[-8.8,-6.9,84.8],[8.8,3.7,106],name==='old'?.62:.53);
- const item=objects[0];MODEL[name]=item;return item;
+ implicitMesh(name==='old'?'旧形状':'新造形','sacrum','M',f,[-8.8,-6.9,84.8],[8.8,3.7,106],preview?(name==='old'?.97:.88):(name==='old'?.62:.53));
+ const item=objects[0];MODEL[cacheKey]=item;return item;
 }
 const $=id=>document.getElementById(id);
 const poses={back:[Math.PI,0],front:[0,0],right:[-Math.PI/2,0],top:[Math.PI,1.36],oblique:[Math.PI+.57,.23]};
@@ -221,7 +222,7 @@ function drawCanvas(canvas,model,yaw,pitch,zoom){
 let scheduled=false;
 function redraw(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;const model=makeModel(ui.model);drawCanvas($('stage'),model,ui.yaw,ui.pitch,ui.zoom);$('stats').textContent=model.verts.length.toLocaleString('ja-JP')+' 頂点・'+model.faces.length.toLocaleString('ja-JP')+' 三角形。モデル比較は実3Dから描画。';})}
 function redrawPreviews(){
- const m=makeModel(ui.model);for(const [label,id] of [['back','previewBack'],['front','previewFront'],['right','previewRight'],['top','previewTop']]){
+ const m=makeModel(ui.model,true);for(const [label,id] of [['back','previewBack'],['front','previewFront'],['right','previewRight'],['top','previewTop']]){
  const [y,p]=poses[label];drawCanvas($(id),m,y,p,1.0)
  }}
 function mark(group,name){document.querySelectorAll(group).forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.model||b.dataset.view)===name)))}

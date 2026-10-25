@@ -1,0 +1,241 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>身体の地図｜仙骨単体・独自造形レビュー v1.0</title><style>
+:root{font-family:system-ui,-apple-system,'Hiragino Kaku Gothic ProN',sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;color:#eaf1f2;background:#0e2028;font-size:15px}header,main,footer{max-width:1200px;margin:auto;padding:16px}header{border-bottom:1px solid #39515d}h1{font-size:21px;margin:0 0 7px}h2{font-size:16px;margin:0 0 8px}p{line-height:1.6;color:#bccdd3;font-size:13px;margin:8px 0}
+main{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(245px,1fr);gap:14px}.block{border-radius:12px;background:#1c333d;border:1px solid #3c5964;padding:13px;min-width:0}
+#stage{width:100%;height:64dvh;min-height:360px;max-height:690px;display:block;touch-action:none;background:radial-gradient(circle,#35505b,#11242c 75%);border-radius:9px}
+button{cursor:pointer;font:inherit;padding:8px 12px;min-height:43px;background:#2b4a55;border:1px solid #628391;border-radius:9px;color:#eef9f8}
+button[aria-pressed=true]{background:#386c62;border-color:#82c3a8}button:focus-visible{outline:2px solid #ffe4a0;outline-offset:2px}
+.toolbar{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0}.status{color:#e7cd90}.columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.preview{width:100%;aspect-ratio:1/1;display:block;background:#132831;border:1px solid #385764;border-radius:9px}.previewLabel{font-size:12px;text-align:center;color:#c8d8d7}
+.stats{font-size:12px;margin-top:12px;color:#a5bdc8}footer{font-size:12px;color:#99afb7}input{accent-color:#7abfa8}
+@media(max-width:760px){main{display:block;padding:9px}main>aside{margin-top:12px}h1{font-size:19px}header{padding:12px}#stage{height:46dvh;min-height:340px}.columns{grid-template-columns:repeat(2,1fr)}}
+</style></head><body>
+<header><h1>身体の地図｜仙骨・独自3D造形レビュー v1.0</h1><p class="status">構造を設計し直した新しい仙骨単体モデル。実測骨標本・CTデータではなく、形状は専門監査前です。</p></header>
+<main><section class="block"><canvas id="stage" aria-label="仙骨の立体モデル。スワイプで回転、ピンチで拡大"></canvas>
+<nav class="toolbar" aria-label="視点操作"><button data-view="back" aria-pressed="true">後面</button><button data-view="front">前面</button><button data-view="right">右側面</button><button data-view="top">上面</button><button data-view="oblique">斜め</button><button id="zoomPlus">拡大＋</button><button id="zoomMinus">縮小−</button><button id="reset">戻す</button></nav>
+<p>旧版との比較と4方向の画像は、どちらもこのページ内で実際の三角形メッシュから描画しています。AIで作った完成イメージではありません。</p>
+<div class="stats" id="stats">メッシュ生成中…</div>
+</section><aside class="block"><h2>形状を切り替える</h2>
+<div class="toolbar"><button data-model="sculpt" aria-pressed="true">新しい造形</button><button data-model="old">以前の仙骨 v0.5</button></div>
+<p>仙骨単体で輪郭を比較します。筋肉・神経・血管はこの形状レビューページには表示しません。</p>
+<h2>実際の3Dから描く4方向</h2>
+<div class="columns"><div><canvas id="previewBack" class="preview"></canvas><div class="previewLabel">後面</div></div>
+<div><canvas id="previewFront" class="preview"></canvas><div class="previewLabel">前面</div></div>
+<div><canvas id="previewRight" class="preview"></canvas><div class="previewLabel">右側面</div></div>
+<div><canvas id="previewTop" class="preview"></canvas><div class="previewLabel">上面</div></div></div>
+<details style="margin-top:18px"><summary>造形・検証上の限界</summary>
+<p>5椎骨の癒合による逆三角形状、仙骨翼、仙骨管、後仙骨孔、正中・中間・外側仙骨稜、仙骨裂孔などを独自の立体式で概形化しています。細部の寸法・角度・曲率・筋付着部・仙腸関節面・仙骨神経根の走行は計測・監査されていません。骨の色と陰影は描画効果であり実物表面の再現ではありません。</p></details></aside></main>
+<footer>表示形状は全て独自制作のレビュー用模式3Dです。実人体と同じ精度を示すものではなく、診断・施術の判断には使用できません。以前のページには変更を加えていません。</footer>
+<script>
+'use strict';
+const objects=[];
+const add=(name,region,side,verts,faces)=>objects.push({name,region,side,verts,faces});
+const V={sub:(a,b)=>a.map((v,i)=>v-b[i]),add:(a,b)=>a.map((v,i)=>v+b[i]),mul:(a,s)=>a.map(v=>v*s),cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],unit:a=>{let n=Math.hypot(...a);return a.map(v=>v/n)}};
+function ell(name,reg,side,c,r){let vs=[],fs=[],n=12,m=8;vs.push([c[0],c[1],c[2]+r[2]]);for(let j=1;j<m;j++)for(let i=0;i<n;i++){let t=j*Math.PI/m,p=i*2*Math.PI/n;vs.push([c[0]+r[0]*Math.sin(t)*Math.cos(p),c[1]+r[1]*Math.sin(t)*Math.sin(p),c[2]+r[2]*Math.cos(t)])}let bot=vs.length;vs.push([c[0],c[1],c[2]-r[2]]);for(let i=0;i<n;i++){fs.push([0,1+i,1+(i+1)%n]);fs.push([bot,1+(m-2)*n+(i+1)%n,1+(m-2)*n+i])}for(let j=0;j<m-2;j++)for(let i=0;i<n;i++){let a=1+j*n+i,b=1+j*n+(i+1)%n;fs.push([a,a+n,b],[b,a+n,b+n])}add(name,reg,side,vs,fs)}
+function tube(name,reg,side,pts,r){let vs=[],fs=[],n=8;pts.forEach((p,j)=>{let d=V.unit(V.sub(pts[Math.min(j+1,pts.length-1)],pts[Math.max(0,j-1)]));let u=V.unit(V.cross(d,Math.abs(d[2])<.9?[0,0,1]:[0,1,0])),v=V.cross(d,u);for(let i=0;i<n;i++){let a=i*2*Math.PI/n;vs.push(V.add(p,V.add(V.mul(u,r*Math.cos(a)),V.mul(v,r*Math.sin(a)))))}});for(let j=0;j<pts.length-1;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n;fs.push([a,b,a+n],[b,b+n,a+n])}let a=vs.length;vs.push(pts[0],pts.at(-1));for(let i=0;i<n;i++)fs.push([a,(i+1)%n,i],[a+1,(pts.length-1)*n+i,(pts.length-1)*n+(i+1)%n]);add(name,reg,side,vs,fs)}
+function bone(name,reg,s,a,b,r){tube(name,reg,s,[a,b],r);ell(name+'近位',reg,s,a,[r*1.4,r*1.35,r*1.4]);ell(name+'遠位',reg,s,b,[r*1.4,r*1.35,r*1.4])}
+const PROPORTIONS={"version":"0.2","units":"arbitrary drawing units","height":177,"means_mm":{"height":1696.7,"acromiale":1363.5,"iliocristale":957.2,"trochanterion_laterale":832.0,"mid_patella":448.9,"upper_arm":315.5,"forearm":250.8}};
+const BODY_H=PROPORTIONS.height, M=PROPORTIONS.means_mm;
+const A={shoulder:BODY_H*M.acromiale/M.height,crest:BODY_H*M.iliocristale/M.height,trochanter:BODY_H*M.trochanterion_laterale/M.height,knee:BODY_H*M.mid_patella/M.height};
+A.radial=A.shoulder-BODY_H*M.upper_arm/M.height;A.wrist=A.radial-BODY_H*M.forearm/M.height;
+// Original qualitative construction from anatomical descriptions, not traced vertices.
+// No dimensions here are measured bone dimensions.
+function implicitMesh(name,reg,side,field,lo,hi,step){
+ const n=lo.map((v,i)=>Math.ceil((hi[i]-v)/step)+1),idx=(x,y,z)=>x+n[0]*(y+n[1]*z),values=new Float64Array(n[0]*n[1]*n[2]),coords=[];
+ for(let z=0;z<n[2];z++)for(let y=0;y<n[1];y++)for(let x=0;x<n[0];x++){let p=[lo[0]+x*step,lo[1]+y*step,lo[2]+z*step],k=idx(x,y,z);coords[k]=p;values[k]=field(p)}
+ const vs=[],fs=[],cache=new Map(),corners=[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]],tets=[[0,1,2,6],[0,2,3,6],[0,3,7,6],[0,7,4,6],[0,4,5,6],[0,5,1,6]];
+ function vertex(a,b){let t=values[a]/(values[a]-values[b]);const end=t<1e-7?a:t>1-1e-7?b:null,key=end!==null?'p'+end:a<b?a+':'+b:b+':'+a;if(cache.has(key))return cache.get(key);let p=end!==null?coords[end]:coords[a].map((v,i)=>v+t*(coords[b][i]-v)),k=vs.length;vs.push(p);cache.set(key,k);return k}
+ function tri(a,b,c){if(a===b||b===c||a===c)return;let norm=V.cross(V.sub(vs[b],vs[a]),V.sub(vs[c],vs[a]));if(Math.hypot(...norm)<1e-10)return;let p=vs[a].map((v,i)=>(v+vs[b][i]+vs[c][i])/3),g=[0,1,2].map(i=>{let h=[...p],l=[...p];h[i]+=.02;l[i]-=.02;return field(h)-field(l)});if(norm.reduce((s,v,i)=>s+v*g[i],0)<0)[b,c]=[c,b];fs.push([a,b,c])}
+ for(let z=0;z<n[2]-1;z++)for(let y=0;y<n[1]-1;y++)for(let x=0;x<n[0]-1;x++){let c=corners.map(a=>idx(x+a[0],y+a[1],z+a[2]));if(c.every(k=>values[k]<0)||c.every(k=>values[k]>=0))continue;for(let t of tets){let a=t.map(k=>c[k]).filter(k=>values[k]<0),b=t.map(k=>c[k]).filter(k=>values[k]>=0);if(a.length===1)tri(...b.map(k=>vertex(a[0],k)));else if(a.length===3)tri(...a.map(k=>vertex(k,b[0])));else if(a.length===2){let q=[vertex(a[0],b[0]),vertex(a[0],b[1]),vertex(a[1],b[0]),vertex(a[1],b[1])];tri(q[0],q[1],q[2]);tri(q[1],q[3],q[2])}}}
+ add(name,reg,side,vs,fs);
+}
+function ed(p,c,r){return (Math.hypot(...p.map((v,i)=>(v-c[i])/r[i]))-1)*Math.min(...r)}
+function smoothMin(a,b,k){let h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25}
+
+function legacySacrumField(p){
+ const [x,y,z]=p;
+ const t=Math.max(0,Math.min(1,(z-85.4)/18.3));
+ const width=1.62+5.1*Math.pow(t,.80);
+ const cy=-1.55-.25*Math.sin(Math.PI*t);
+ const depth=2.08+.80*t;
+ const texture=.045*Math.sin(x*5.1+z*.8)*Math.sin(z*3.7-y*4.3)+.025*Math.sin(x*9.3-y*3.7+z*1.4);
+ let d=Math.max(
+   (Math.hypot(x/width,(y-cy)/depth)-1)*Math.min(width,depth),
+   85.3-z,z-103.9
+ )+texture;
+ // S1 ala on either side of the upper sacral body.
+ for(const side of [-1,1]){
+  d=smoothMin(d,ed(p,[side*5.55,-1.55,101.05],[2.12,2.17,2.28]),.52);
+  // Paired lateral crests and irregular transverse tubercles.
+  for(const zz of [98.4,95.2,92.3]){
+   const cx=side*(4.45-.10*(99-zz));
+   d=smoothMin(d,ed(p,[cx,-3.7,zz],[.61,.65,1.22]),.36);
+  }
+  // Superior articular process and corresponding dorsal lateral mass.
+  d=smoothMin(d,ed(p,[side*2.05,-3.22,103.3],[1.05,1.0,1.35]),.35);
+  // Intermediate crests and small lower cornua: sculpted, not measured.
+  for(const zz of [99.0,96.2,93.5]){
+    const crestX=1.48+.10*(zz-93.5);
+    d=smoothMin(d,ed(p,[side*crestX,-4.16,zz],[.35,.57,1.04]),.21);
+  }
+  d=smoothMin(d,ed(p,[side*.83,-3.72,86.7],[.42,.67,1.37]),.24);
+  // Lateral ear-shaped sacroiliac contact region (qualitative, not measured).
+  for(const zz of [96.2,98.0,100.0,101.8])d=smoothMin(d,ed(p,[side*6,-1.35,zz],[.61,1.3,.8]),.22);
+ }
+ // Posterior median sacral crest: discontinuous fused spinous tubercles.
+ for(const zz of [100.1,97.6,95.15,92.75]){
+  d=smoothMin(d,ed(p,[0,-4.22,zz],[.57,.81,1.03]),.3);
+ }
+ // Superior sacral canal opening; a narrow internal canal.
+ const canalWidth=.59+.22*t;
+ const canal=(Math.hypot(x/canalWidth,(y+1.8)/.76)-1)*.70;
+ d=Math.max(d,-Math.max(canal,86.9-z,z-105.0));
+ // Posterior foraminal passages: four paired, decreasing in size inferiorly.
+ // Each connects from dorsal surface inward toward the canal in this proxy.
+ const zRows=[99.2,96.35,93.48,90.75];
+ const xRows=[3.12,2.91,2.55,2.08];
+ const rx=[.62,.56,.50,.43],rz=[.67,.62,.55,.49];
+ for(let row=0;row<4;row++)for(const side of [-1,1]){
+  const ax=side*xRows[row],ay=-5.9, bx=side*.83,by=-1.60;
+  const vx=bx-ax,vy=by-ay;
+  const u=Math.max(0,Math.min(1,((x-ax)*vx+(y-ay)*vy)/(vx*vx+vy*vy)));
+  const deltaX=x-(ax+u*vx),deltaY=y-(ay+u*vy),deltaZ=z-zRows[row];
+  const tunnel=(Math.hypot(deltaX/rx[row],deltaY/(rx[row]*.94),deltaZ/rz[row])-1)*rx[row];
+  d=Math.max(d,-tunnel);
+ }
+ // Sacral hiatus: open inferior notch in the posterior wall, NOT a central round hole.
+ const notchW=Math.max(.42,1.02-.13*Math.max(0,z-86));
+ const hiatus=Math.max(Math.abs(x)-notchW, y+1.90,z-90.1);
+ d=Math.max(d,-hiatus);
+ return d;
+}
+
+// v1.0 independently authored sacrum sculpt: reference anatomy relationships,
+// not a measured or scanned bone; all numeric coordinates are arbitrary design values.
+const bounded=(x,a,b)=>Math.max(a,Math.min(b,x));
+function capsule3D(p,a,b,r){
+ const v=V.sub(b,a),u=bounded(V.sub(p,a).reduce((s,x,i)=>s+x*v[i],0)/(v.reduce((s,x)=>s+x*x,0)||1),0,1);
+ return Math.hypot(...V.sub(p,V.add(a,V.mul(v,u))))-r;
+}
+function sacrumSculptField(p){
+ const [x,y,z]=p, t=bounded((z-85.6)/18.25,0,1),ax=Math.abs(x),sign=x<0?-1:1;
+ // The broad S1 base tapers through fused S2-S5; the mid-body is curved,
+ // deliberately avoiding the vertical-cylinder silhouette of the prior model.
+ const w=1.18+4.55*Math.pow(t,.84)+.30*Math.exp(-Math.pow((t-.73)/.18,2));
+ const ky=Math.sin(Math.PI*t);
+ const centerY=-1.40+.67*Math.cos(Math.PI*t)+.23*Math.sin(Math.PI*t*2);
+ const thick=1.38+.75*t+.36*ky;
+ const nx=ax/Math.max(w,.1),ny=(y-centerY)/thick;
+ const section=(Math.pow(Math.pow(nx,2.45)+Math.pow(Math.abs(ny),2.3),1/2.3)-1)*Math.min(w,thick);
+ let d=Math.max(section,85.55-z,z-103.82);
+ // Model S1 as a large superior body with two separately flared alae.
+ d=smoothMin(d,ed(p,[0, .05,101.85],[3.8,2.5,2.1]),.7);
+ for(const side of [-1,1]){
+  d=smoothMin(d,ed(p,[side*5.23,-.32,101.3],[2.9,2.06,2.55]),.62);
+  d=smoothMin(d,ed(p,[side*6.52,-1.58,100.72],[1.13,1.42,1.52]),.40);
+  // Superior articular processes and non-flat lateral auricular contact zone.
+  d=smoothMin(d,ed(p,[side*2.42,-3.03,103.55],[1.18,1.15,1.39]),.36);
+  for(const zz of [101.1,99.45,97.55]){
+    const px=side*(5.70-(101.1-zz)*.17);
+    d=smoothMin(d,ed(p,[px,-2.00,zz],[.76,1.05,.91]),.28);
+  }
+  // Lateral and intermediate fused crests: separate rounded bumps, not rods.
+  for(let row=0;row<4;row++){
+   const zRow=99.9-2.68*row,latX=side*(4.62-.52*row),intX=side*(1.65-.18*row);
+   d=smoothMin(d,ed(p,[latX,-3.14+.16*row,zRow],[.56,.64,.82]),.30);
+   d=smoothMin(d,ed(p,[intX,-3.46+.18*row,zRow-.15],[.39,.59,.68]),.23);
+  }
+  // The inferior cornua flank the lower opening of the sacral canal.
+  d=smoothMin(d,ed(p,[side*.77,-2.76,86.7],[.37,.64,1.28]),.27);
+ }
+ // Four successive remnants of spinous processes along the median crest.
+ for(let row=0;row<4;row++){
+  const zz=101.0-2.64*row;
+  d=smoothMin(d,ed(p,[0,-3.55+.10*row,zz],[.62,.74,1.06]),.28);
+ }
+ // Subtle irregular dorsal bone surface only; no decorative mesh noise/blur.
+ const micro=.019*Math.sin(x*4.9+z*1.7)*Math.sin(y*6.1-z*2.8)+.012*Math.sin(x*9.3+z*4.5);
+ d+=micro;
+ // Central canal, wider and triangular-ish superiorly, narrowing toward apex.
+ const canW=.50+.44*Math.pow(t,1.6);
+ const canDepth=.64+.12*t;
+ const canal=(Math.pow(Math.abs(x/canW),2.5)+Math.pow(Math.abs((y+.73)/canDepth),2.1)-1)*.54;
+ d=Math.max(d,-Math.max(canal,86.65-z,z-104.1));
+ // Posterior foramina: 4 genuinely excavated paired openings; anterior
+ // continuation is schematic and not an anatomically verified nerve canal.
+ const rows=[99.35,96.70,93.98,91.2];
+ const offsets=[2.98,2.73,2.43,1.96];
+ const radii=[.47,.44,.40,.34];
+ for(let k=0;k<4;k++)for(const side of [-1,1]){
+  const a=[side*offsets[k],-5.12,rows[k]],b=[side*(offsets[k]-.17),-.52,rows[k]+.16];
+  // Offset x/z curvature gives a slightly oblique, oval foramen.
+  const v=V.sub(b,a),u=bounded(V.sub(p,a).reduce((s,x,i)=>s+x*v[i],0)/v.reduce((s,x)=>s+x*x,0),0,1);
+  const q=V.add(a,V.mul(v,u)),dx=(x-q[0])/(radii[k]*1.02),dz=(z-q[2])/(radii[k]*1.27),dy=(y-q[1])/(radii[k]*.9);
+  const tube=(Math.hypot(dx,dz,dy)-1)*radii[k];
+  d=Math.max(d,-tube);
+ }
+ // Inferior U-/V-shaped hiatus is a cutout of the POSTERIOR sacral wall only.
+ const openT=bounded((z-86.2)/4.55,0,1);
+ const slotW=.68+.44*(1-openT),inferiorNotch=Math.max(Math.abs(x)-slotW,y+1.02,z-90.6);
+ d=Math.max(d,-inferiorNotch);
+ // Anterior transverse fusion lines: faint shallow depressions, not actual holes.
+ for(const zz of [100.4,97.75,95.1,92.4]){
+  const e=Math.exp(-Math.pow((z-zz)/.20,2))*Math.exp(-Math.pow((y-1.20)/2.1,2));
+  d+=.070*e;
+ }
+ return d;
+}
+
+const MODEL={old:null,sculpt:null};
+function makeModel(name){
+ if(MODEL[name])return MODEL[name];
+ objects.length=0;
+ const f=name==='old'?legacySacrumField:sacrumSculptField;
+ implicitMesh(name==='old'?'旧形状':'新造形','sacrum','M',f,[-8.8,-6.9,84.8],[8.8,3.7,106],name==='old'?.62:.53);
+ const item=objects[0];MODEL[name]=item;return item;
+}
+const $=id=>document.getElementById(id);
+const poses={back:[Math.PI,0],front:[0,0],right:[-Math.PI/2,0],top:[Math.PI,1.36],oblique:[Math.PI+.57,.23]};
+const ui={model:'sculpt',yaw:Math.PI,pitch:0,zoom:1.0};
+function project(v,yaw,pitch){let x=v[0],y=v[1]+1.3,z=v[2]-94.8,u=x*Math.cos(yaw)+y*Math.sin(yaw),depth=-x*Math.sin(yaw)+y*Math.cos(yaw);return [-u,z*Math.cos(pitch)-depth*Math.sin(pitch),z*Math.sin(pitch)+depth*Math.cos(pitch)]}
+function drawCanvas(canvas,model,yaw,pitch,zoom){
+ const rect=canvas.getBoundingClientRect(),w=Math.max(1,rect.width),h=Math.max(1,rect.height),dpr=Math.min(window.devicePixelRatio||1,1.5);
+ canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
+ const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+ const scale=Math.min(w/21.8,h/25.8)*zoom,v=model.verts.map(p=>project(p,yaw,pitch)),faces=[];
+ for(const ids of model.faces){
+  const a=v[ids[0]],b=v[ids[1]],c=v[ids[2]];
+  if(!a||!b||!c)continue;
+  const n=V.cross(V.sub(b,a),V.sub(c,a)),len=Math.hypot(...n);if(len<1e-9)continue;
+  const illumination=.38+.60*Math.max(0,(n[0]*-.45+n[1]*.20+n[2]*.87)/len);
+  faces.push({verts:[a,b,c],depth:(a[2]+b[2]+c[2])/3,shade:illumination});
+ }
+ faces.sort((a,b)=>a.depth-b.depth);
+ for(const face of faces){
+  const g=Math.max(.22,Math.min(1.0,face.shade));
+  ctx.fillStyle='rgb('+[224,215,193].map(c=>Math.floor(c*g)).join(',')+')';
+  ctx.beginPath();
+  face.verts.forEach((p,i)=>ctx[i?'lineTo':'moveTo'](w/2+p[0]*scale,h/2-p[1]*scale));
+  ctx.closePath();ctx.fill();
+ }
+}
+let scheduled=false;
+function redraw(){if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;const model=makeModel(ui.model);drawCanvas($('stage'),model,ui.yaw,ui.pitch,ui.zoom);$('stats').textContent=model.verts.length.toLocaleString('ja-JP')+' 頂点・'+model.faces.length.toLocaleString('ja-JP')+' 三角形。モデル比較は実3Dから描画。';})}
+function redrawPreviews(){
+ const m=makeModel(ui.model);for(const [label,id] of [['back','previewBack'],['front','previewFront'],['right','previewRight'],['top','previewTop']]){
+ const [y,p]=poses[label];drawCanvas($(id),m,y,p,1.0)
+ }}
+function mark(group,name){document.querySelectorAll(group).forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.model||b.dataset.view)===name)))}
+document.querySelectorAll('[data-model]').forEach(b=>b.onclick=()=>{ui.model=b.dataset.model;mark('[data-model]',ui.model);redraw();redrawPreviews()});
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{[ui.yaw,ui.pitch]=poses[b.dataset.view];mark('[data-view]',b.dataset.view);redraw()});
+function zoom(v){ui.zoom=Math.max(.55,Math.min(3.6,ui.zoom*v));redraw()}
+$('zoomPlus').onclick=()=>zoom(1.18);$('zoomMinus').onclick=()=>zoom(1/1.18);
+$('reset').onclick=()=>{Object.assign(ui,{yaw:Math.PI,pitch:0,zoom:1});mark('[data-view]','back');redraw()};
+const canvas=$('stage'),touches=new Map();let dist0=0;
+function distance(){const a=[...touches.values()];return Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])}
+canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);touches.set(e.pointerId,[e.clientX,e.clientY]);if(touches.size===2)dist0=distance()});
+canvas.addEventListener('pointermove',e=>{if(!touches.has(e.pointerId))return;let p=touches.get(e.pointerId);touches.set(e.pointerId,[e.clientX,e.clientY]);if(touches.size===1){ui.yaw+=(e.clientX-p[0])*.012;ui.pitch=Math.max(-1.4,Math.min(1.4,ui.pitch+(e.clientY-p[1])*.009));mark('[data-view]','none');redraw()}else if(touches.size===2){const d=distance();if(dist0>0)zoom(d/dist0);dist0=d}});
+for(const name of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(name,e=>{touches.delete(e.pointerId);dist0=0});
+canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(Math.exp(-e.deltaY*.001))},{passive:false});
+window.addEventListener('resize',()=>{redraw();redrawPreviews()});
+makeModel('sculpt');redraw();redrawPreviews();
+</script></body></html>

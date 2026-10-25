@@ -197,7 +197,7 @@ function sacrumAnteriorV11Field(p){
  const baseThickness=1.45+.70*t+.27*Math.sin(Math.PI*t);
  const lateral=bounded((ax-2.45)/4.6,0,1),blend=lateral*lateral*(3-2*lateral);
  const thick=baseThickness*(1-.32*blend);
- const lip=.18*Math.exp(-Math.pow(x/3.45,2)-Math.pow((z-103)/1.38,2));
+ const lip=.92*Math.exp(-Math.pow(x/3.50,2)-Math.pow((z-102.15)/1.70,2));
  const nx=ax/Math.max(w,.1),ny=(y-lip-centerY)/thick;
  const section=(Math.pow(Math.pow(nx,2.45)+Math.pow(Math.abs(ny),2.22),1/2.22)-1)*Math.min(w,thick);
  let d=Math.max(section,85.55-z,z-104.00);

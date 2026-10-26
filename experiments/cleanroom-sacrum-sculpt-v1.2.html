@@ -9,7 +9,7 @@ button[aria-pressed=true]{background:#386c62;border-color:#82c3a8}button:focus-v
 .stats{font-size:12px;margin-top:12px;color:#a5bdc8}footer{font-size:12px;color:#99afb7}input{accent-color:#7abfa8}
 @media(max-width:760px){main{display:block;padding:9px}main>aside{margin-top:12px}h1{font-size:19px}header{padding:12px}#stage{height:46dvh;min-height:340px}.columns{grid-template-columns:repeat(2,1fr)}}
 </style></head><body>
-<header><h1>身体の地図｜仙骨・前面形状調整 3Dレビュー v1.2</h1><p class="status">前面上縁を一律の直線から曲線に変更し、仙骨翼・前仙骨孔・横隆線を調整。実測ではなく監査前の独自造形です。</p></header>
+<header><h1>身体の地図｜仙骨・前面形状調整 3Dレビュー v1.2</h1><p class="status">前面の上縁を緩やかな曲線に変更し、仙骨翼・前仙骨孔・横隆線と滑らかな陰影を調整。実測ではなく監査前の独自造形です。</p></header>
 <main><section class="block"><canvas id="stage" aria-label="仙骨の立体モデル。スワイプで回転、ピンチで拡大"></canvas>
 <nav class="toolbar" aria-label="視点操作"><button data-view="back" aria-pressed="true">後面</button><button data-view="front">前面</button><button data-view="right">右側面</button><button data-view="top">上面</button><button data-view="oblique">斜め</button><button id="zoomPlus">拡大＋</button><button id="zoomMinus">縮小−</button><button id="reset">戻す</button></nav>
 <p>旧v1.1との比較と4方向の画像は、どちらもこのページ内で実際の三角形メッシュから描画しています。4方向の小窓はiPhoneの描画負荷を抑えるため解像度を落としています。AIで作った完成イメージではありません。</p>
@@ -362,7 +362,7 @@ function makeModel(name,preview=false){
  if(MODEL[cacheKey])return MODEL[cacheKey];
  objects.length=0;
  const f=name==='old'?sacrumAnteriorV11Field:sacrumAnteriorV12Field;
- implicitMesh(name==='old'?'旧形状':'新造形','sacrum','M',f,[-8.8,-6.9,84.8],[8.8,3.7,106],preview?(name==='old'?.97:.88):(name==='old'?.62:.53));
+ implicitMesh(name==='old'?'旧形状':'新造形','sacrum','M',f,[-8.8,-6.9,84.8],[8.8,3.7,106],preview?(name==='old'?.97:.82):(name==='old'?.62:.47));
  const item=objects[0];MODEL[cacheKey]=item;return item;
 }
 const $=id=>document.getElementById(id);
@@ -386,6 +386,17 @@ function drawCanvas(canvas,model,yaw,pitch,zoom){
  const zbuf=new Float32Array(w*h);zbuf.fill(-Infinity);
  const scale=Math.min(w/21.8,h/25.8)*zoom, v=model.verts.map(p=>project(p,yaw,pitch));
  const light=[-.40,.40,.82],bone=[224,215,193];
+ // Weighted vertex normals: smooth shading across the single bone surface.
+ const normals=new Float32Array(v.length*3),vertexShade=new Float32Array(v.length);
+ for(const face of model.faces){
+  const a=v[face[0]],b=v[face[1]],c=v[face[2]],n=V.cross(V.sub(b,a),V.sub(c,a));
+  for(const index of face){const k=index*3;normals[k]+=n[0];normals[k+1]+=n[1];normals[k+2]+=n[2]}
+ }
+ for(let k=0;k<v.length;k++){
+  const i=k*3,nx=normals[i],ny=normals[i+1],nz=normals[i+2],mag=Math.hypot(nx,ny,nz)||1;
+  const diffuse=Math.abs((nx*light[0]+ny*light[1]+nz*light[2])/mag);
+  vertexShade[k]=Math.min(1,.43+.53*diffuse);
+ }
  let drawn=0;
  for(const ids of model.faces){
   const a=v[ids[0]],b=v[ids[1]],c=v[ids[2]];
@@ -400,10 +411,7 @@ function drawCanvas(canvas,model,yaw,pitch,zoom){
   if(minX>maxX||minY>maxY)continue;
   const n=V.cross(V.sub(b,a),V.sub(c,a)),len=Math.hypot(...n);
   if(len<1e-9)continue;
-  // Front/backs differ naturally in lighting but never disappear via backface culling.
-  const diffuse=Math.abs((n[0]*light[0]+n[1]*light[1]+n[2]*light[2])/len);
-  const brightness=Math.min(1,.44+.52*diffuse);
-  const red=Math.round(bone[0]*brightness),green=Math.round(bone[1]*brightness),blue=Math.round(bone[2]*brightness);
+  const shadeA=vertexShade[ids[0]],shadeB=vertexShade[ids[1]],shadeC=vertexShade[ids[2]];
   // Incremental barycentric rasterization, using the true depth of every pixel.
   const invDenom=1/denom;
   for(let py=minY;py<=maxY;py++){
@@ -418,7 +426,11 @@ function drawCanvas(canvas,model,yaw,pitch,zoom){
     const z=wa*a[2]+wb*b[2]+wc*c[2],idx=py*w+px;
     if(z<=zbuf[idx])continue;
     zbuf[idx]=z;const o=idx*4;
-    pixels[o]=red;pixels[o+1]=green;pixels[o+2]=blue;pixels[o+3]=255;
+    const brightness=wa*shadeA+wb*shadeB+wc*shadeC;
+    pixels[o]=Math.round(bone[0]*brightness);
+    pixels[o+1]=Math.round(bone[1]*brightness);
+    pixels[o+2]=Math.round(bone[2]*brightness);
+    pixels[o+3]=255;
     drawn++;
    }
   }

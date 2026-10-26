@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>施術者のための身体の地図｜腰椎L3・WebGL表示実験 v0.3</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;color:#243641;background:#f4f1ed}
+*{box-sizing:border-box}body{margin:0}header,.content,footer{max-width:1100px;margin:auto;padding:15px 16px}
+header{border-bottom:1px solid #e0ddd8}h1{font-size:21px;margin:0 0 7px}p{font-size:13px;line-height:1.6;margin:6px 0;color:#536570}
+.content{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(230px,1fr);gap:13px}.panel{background:white;padding:12px;border-radius:14px;border:1px solid #e1ded8}
+#viewer{height:min(64dvh,620px);min-height:390px;width:100%;position:relative;background:linear-gradient(#f6f4f0,#e9e8e4);border-radius:10px;overflow:hidden;touch-action:none}
+#viewer canvas{display:block;width:100%;height:100%}.status{position:absolute;left:10px;bottom:10px;right:10px;border-radius:7px;padding:7px 9px;background:#ffffffcc;font-size:12px;color:#384f58;pointer-events:none}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}button{padding:9px 12px;min-height:43px;border-radius:9px;border:1px solid #bcc9ce;background:#f6f9fa;color:#2d4653;font:inherit;font-size:13px}
+button[aria-pressed=true]{background:#d6e9e9;border-color:#6a9899;font-weight:700}
+.card{padding:12px 0;border-top:1px solid #e4e5e4;font-size:13px;line-height:1.7;color:#465860}
+.card:first-of-type{border-top:0}
+.label{font-weight:700;color:#253941}footer{font-size:12px;color:#62737b}
+@media(max-width:760px){.content{display:block;padding:9px}aside{margin-top:11px}#viewer{height:52dvh;min-height:370px}h1{font-size:19px}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+<header><h1>施術者のための身体の地図｜L3の3D表示比較 v0.3</h1><p>以前の全身3Dで使っていたWebGL/Three.js系の描画技術に、独自制作L3形状を表示する実験です。</p></header>
+<div class="content">
+<section class="panel">
+<div id="viewer"><div id="status" class="status">3Dを初期化しています…</div></div>
+<div class="toolbar" aria-label="視点操作">
+<button data-view="anterior">前面</button><button data-view="posterior">後面</button><button data-view="right">右側</button><button data-view="superior">上面</button><button data-view="oblique" aria-pressed="true">斜め</button><button id="reset">初期位置</button>
+</div>
+<p>一本指・ドラッグで回転、二本指で拡大・移動できます。iPhoneではSafariのWebGL機能を利用します。</p>
+</section>
+<aside class="panel">
+<h2 style="font-size:16px;margin-top:0">表示する形状</h2>
+<div class="toolbar"><button data-model="sculpt" aria-pressed="true">改良版L3 v0.2</button><button data-model="old">前回L3 v0.1</button></div>
+<div class="card"><span class="label">この版で確認すること</span><p>立体の陰影、骨の丸み、拡大した時の画質、自由回転の操作性。モデルの形が実物に合っているかとは別の検査です。</p></div>
+<div class="card"><span class="label">表示と形状の違い</span><p>3Dエンジン：Three.js / WebGL。骨の頂点・面：このプロジェクトで作成した独自の数式モデル。外部の骨格GLBは読み込みません。</p></div>
+<div class="card"><span class="label">解剖学的な限界</span><p>これは典型的なL3を参考にした独自模式形状です。椎孔の形、関節面の方向、椎弓根の厚み、棘突起などは監査未完了です。実測CTや骨標本から再構成したものではありません。</p></div>
+<div class="card"><span class="label">旧版</span><p><a href="./cleanroom-lumbar-l3-v0.2.html">Canvas描画版v0.2と比べる</a></p></div>
+</aside>
+</div>
+<footer>v0.3: 3D表示技術の比較試作。iPhone実機・外部CDNの読み込み・解剖学的監査は未確認。既存の仙骨・全身ページは変更していません。</footer>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const objects=[];
+const add=(name,region,side,verts,faces)=>objects.push({name,region,side,verts,faces});
+const V={sub:(a,b)=>a.map((v,i)=>v-b[i]),add:(a,b)=>a.map((v,i)=>v+b[i]),mul:(a,s)=>a.map(v=>v*s),cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],unit:a=>{let n=Math.hypot(...a);return a.map(v=>v/n)}};
+function ell(name,reg,side,c,r){let vs=[],fs=[],n=12,m=8;vs.push([c[0],c[1],c[2]+r[2]]);for(let j=1;j<m;j++)for(let i=0;i<n;i++){let t=j*Math.PI/m,p=i*2*Math.PI/n;vs.push([c[0]+r[0]*Math.sin(t)*Math.cos(p),c[1]+r[1]*Math.sin(t)*Math.sin(p),c[2]+r[2]*Math.cos(t)])}let bot=vs.length;vs.push([c[0],c[1],c[2]-r[2]]);for(let i=0;i<n;i++){fs.push([0,1+i,1+(i+1)%n]);fs.push([bot,1+(m-2)*n+(i+1)%n,1+(m-2)*n+i])}for(let j=0;j<m-2;j++)for(let i=0;i<n;i++){let a=1+j*n+i,b=1+j*n+(i+1)%n;fs.push([a,a+n,b],[b,a+n,b+n])}add(name,reg,side,vs,fs)}
+function tube(name,reg,side,pts,r){let vs=[],fs=[],n=8;pts.forEach((p,j)=>{let d=V.unit(V.sub(pts[Math.min(j+1,pts.length-1)],pts[Math.max(0,j-1)]));let u=V.unit(V.cross(d,Math.abs(d[2])<.9?[0,0,1]:[0,1,0])),v=V.cross(d,u);for(let i=0;i<n;i++){let a=i*2*Math.PI/n;vs.push(V.add(p,V.add(V.mul(u,r*Math.cos(a)),V.mul(v,r*Math.sin(a)))))}});for(let j=0;j<pts.length-1;j++)for(let i=0;i<n;i++){let a=j*n+i,b=j*n+(i+1)%n;fs.push([a,b,a+n],[b,b+n,a+n])}let a=vs.length;vs.push(pts[0],pts.at(-1));for(let i=0;i<n;i++)fs.push([a,(i+1)%n,i],[a+1,(pts.length-1)*n+i,(pts.length-1)*n+(i+1)%n]);add(name,reg,side,vs,fs)}
+function bone(name,reg,s,a,b,r){tube(name,reg,s,[a,b],r);ell(name+'近位',reg,s,a,[r*1.4,r*1.35,r*1.4]);ell(name+'遠位',reg,s,b,[r*1.4,r*1.35,r*1.4])}
+const PROPORTIONS={"version":"0.2","units":"arbitrary drawing units","height":177,"means_mm":{"height":1696.7,"acromiale":1363.5,"iliocristale":957.2,"trochanterion_laterale":832.0,"mid_patella":448.9,"upper_arm":315.5,"forearm":250.8}};
+const BODY_H=PROPORTIONS.height, M=PROPORTIONS.means_mm;
+const A={shoulder:BODY_H*M.acromiale/M.height,crest:BODY_H*M.iliocristale/M.height,trochanter:BODY_H*M.trochanterion_laterale/M.height,knee:BODY_H*M.mid_patella/M.height};
+A.radial=A.shoulder-BODY_H*M.upper_arm/M.height;A.wrist=A.radial-BODY_H*M.forearm/M.height;
+// Original qualitative construction from anatomical descriptions, not traced vertices.
+// No dimensions here are measured bone dimensions.
+function implicitMesh(name,reg,side,field,lo,hi,step){
+ const n=lo.map((v,i)=>Math.ceil((hi[i]-v)/step)+1),idx=(x,y,z)=>x+n[0]*(y+n[1]*z),values=new Float64Array(n[0]*n[1]*n[2]),coords=[];
+ for(let z=0;z<n[2];z++)for(let y=0;y<n[1];y++)for(let x=0;x<n[0];x++){let p=[lo[0]+x*step,lo[1]+y*step,lo[2]+z*step],k=idx(x,y,z);coords[k]=p;values[k]=field(p)}
+ const vs=[],fs=[],cache=new Map(),corners=[[0,0,0],[1,0,0],[1,1,0],[0,1,0],[0,0,1],[1,0,1],[1,1,1],[0,1,1]],tets=[[0,1,2,6],[0,2,3,6],[0,3,7,6],[0,7,4,6],[0,4,5,6],[0,5,1,6]];
+ function vertex(a,b){let t=values[a]/(values[a]-values[b]);const end=t<1e-7?a:t>1-1e-7?b:null,key=end!==null?'p'+end:a<b?a+':'+b:b+':'+a;if(cache.has(key))return cache.get(key);let p=end!==null?coords[end]:coords[a].map((v,i)=>v+t*(coords[b][i]-v)),k=vs.length;vs.push(p);cache.set(key,k);return k}
+ function tri(a,b,c){if(a===b||b===c||a===c)return;let norm=V.cross(V.sub(vs[b],vs[a]),V.sub(vs[c],vs[a]));if(Math.hypot(...norm)<1e-10)return;let p=vs[a].map((v,i)=>(v+vs[b][i]+vs[c][i])/3),g=[0,1,2].map(i=>{let h=[...p],l=[...p];h[i]+=.02;l[i]-=.02;return field(h)-field(l)});if(norm.reduce((s,v,i)=>s+v*g[i],0)<0)[b,c]=[c,b];fs.push([a,b,c])}
+ for(let z=0;z<n[2]-1;z++)for(let y=0;y<n[1]-1;y++)for(let x=0;x<n[0]-1;x++){let c=corners.map(a=>idx(x+a[0],y+a[1],z+a[2]));if(c.every(k=>values[k]<0)||c.every(k=>values[k]>=0))continue;for(let t of tets){let a=t.map(k=>c[k]).filter(k=>values[k]<0),b=t.map(k=>c[k]).filter(k=>values[k]>=0);if(a.length===1)tri(...b.map(k=>vertex(a[0],k)));else if(a.length===3)tri(...a.map(k=>vertex(k,b[0])));else if(a.length===2){let q=[vertex(a[0],b[0]),vertex(a[0],b[1]),vertex(a[1],b[0]),vertex(a[1],b[1])];tri(q[0],q[1],q[2]);tri(q[1],q[3],q[2])}}}
+ add(name,reg,side,vs,fs);
+}
+function ed(p,c,r){return (Math.hypot(...p.map((v,i)=>(v-c[i])/r[i]))-1)*Math.min(...r)}
+function smoothMin(a,b,k){let h=Math.max(k-Math.abs(a-b),0)/k;return Math.min(a,b)-h*h*k*.25}
+
+// L3-like vertebra. Coordinates are qualitative, not CT measurements.
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function capsule(p,a,b,r){let v=V.sub(b,a),u=clamp(V.sub(p,a).reduce((s,x,i)=>s+x*v[i],0)/v.reduce((s,x)=>s+x*x,0),0,1);return Math.hypot(...V.sub(p,V.add(a,V.mul(v,u))))-r}
+function lumbarBaselineField(p){
+ let d=ed(p,[0,3,94],[8,5.7,4.2]);
+ for(let side of [-1,1]){d=smoothMin(d,capsule(p,[side*5,0,94],[side*12,-2,94],1.35),1);d=smoothMin(d,ed(p,[side*4,-4,94],[2.2,3.5,2]),1)}
+ d=smoothMin(d,capsule(p,[0,-5,94],[0,-12,94],1.4),1);
+ return d;
+}
+function lumbarV01Field(p){
+ const [x,y,z]=p,ax=Math.abs(x);
+ // Thick kidney-like centrum, with upper/lower endplates gently concave.
+ const radial=Math.pow(Math.abs(x/8.0),2.35)+Math.pow(Math.abs((y-4.0)/5.65),2.2);
+ let d=Math.max((Math.pow(radial,1/2.2)-1)*5.6,Math.abs(z-94)-4.3);
+ // Smooth front wall and cortical rim of the vertebral body.
+ const rim=Math.exp(-Math.pow((Math.abs(z-94)-3.85)/.48,2));
+ d-=.18*rim*Math.exp(-Math.pow(x/7.5,4));
+ // Paired pedicles connecting the body to the posterior arch.
+ for(const side of [-1,1]){
+  d=smoothMin(d,capsule(p,[side*5.45,-.45,94],[side*5.85,-5.7,94],1.55),.55);
+  // Inferior and superior notches are schematic, not a verified nerve exit.
+  d=smoothMin(d,ed(p,[side*6.15,-5.4,94],[2.35,2.2,2.65]),.65);
+  // Lamina forms a continuous posterior arch to the midline.
+  d=smoothMin(d,capsule(p,[side*6.15,-6.1,94],[side*1.7,-10.1,94],1.25),.65);
+  // Transverse processes are flattened and directed laterally.
+  d=smoothMin(d,capsule(p,[side*6.25,-5.8,94],[side*13.3,-7.6,94.2],1.02),.48);
+  // Superior articular processes with inward-facing facet surfaces.
+  d=smoothMin(d,ed(p,[side*5.3,-7.4,97.9],[1.5,1.6,2.5]),.6);
+  // Inferior articular processes below the lamina.
+  d=smoothMin(d,ed(p,[side*4.65,-8.3,90.3],[1.5,1.55,2.1]),.55);
+ }
+ // Broad, nearly horizontal lumbar spinous process.
+ d=smoothMin(d,capsule(p,[0,-9.7,94],[0,-14.3,94.0],1.48),.65);
+ d=smoothMin(d,ed(p,[0,-13.5,94],[1.6,1.9,2.15]),.6);
+ // Vertebral foramen: central opening behind body, between pedicles and lamina.
+ const canal=Math.max(Math.abs(z-94)-6.0,(Math.pow(Math.abs(x/4.0),2.3)+Math.pow(Math.abs((y+4.0)/3.3),2.1)-1)*3.2);
+ d=Math.max(d,-canal);
+ return d;
+}
+
+function lumbarV02Field(p){
+ const [x,y,z]=p,ax=Math.abs(x),dz=z-94;
+ const radial=Math.pow(ax/8.0,2.4)+Math.pow(Math.abs((y-4)/5.7),2.25);
+ const bodySide=(Math.pow(radial,1/2.25)-1)*5.7;
+ // Biconcave endplate depressions, strongest at the centrum center.
+ const centerDep=.44*Math.exp(-Math.pow(x/5.9,4)-Math.pow((y-4)/4.2,4));
+ const cap= Math.abs(dz)-(4.35-centerDep);
+ let d=Math.max(bodySide,cap);
+ const rim=Math.exp(-Math.pow((Math.abs(dz)-3.95)/.48,2));
+ d-=.12*rim*Math.exp(-Math.pow(x/7.6,6));
+ for(const side of [-1,1]){
+  d=smoothMin(d,capsule(p,[side*5.4,-.4,94],[side*5.65,-5.85,94],1.52),.55);
+  d=smoothMin(d,ed(p,[side*5.85,-5.7,94],[2.3,2.05,2.55]),.58);
+  d=smoothMin(d,capsule(p,[side*5.9,-6.1,94],[side*1.45,-10.1,94],1.2),.6);
+  // Tapered costal process: thicker root, flattened rounded tip.
+  d=smoothMin(d,capsule(p,[side*6.3,-5.8,94],[side*10.8,-7.3,94.1],1.05),.45);
+  d=smoothMin(d,capsule(p,[side*10.5,-7.2,94.1],[side*13.2,-7.9,94.4],.72),.4);
+  d=smoothMin(d,ed(p,[side*5.2,-7.3,97.65],[1.65,1.65,2.5]),.6);
+  d=smoothMin(d,ed(p,[side*4.7,-8.2,90.55],[1.42,1.52,2.0]),.55);
+  // Mammillary process as a small dorsal prominence on the superior process.
+  d=smoothMin(d,ed(p,[side*5.55,-8.7,98.6],[.75,.7,.9]),.25);
+ }
+ d=smoothMin(d,capsule(p,[0,-9.5,94],[0,-12.6,94],1.55),.55);
+ d=smoothMin(d,ed(p,[0,-13.4,94],[1.75,1.9,2.25]),.5);
+ // Rounded triangular canal (broad anterior base, narrower posterior apex).
+ const q=clamp((y+1.2)/(-6.2),0,1);
+ const halfWidth=4.15-1.4*q;
+ const canalCross=Math.max((ax/halfWidth)-1,Math.abs((y+4.15)/3.3)-1)*2.9;
+ const canal=Math.max(canalCross,Math.abs(dz)-6.2);
+ d=Math.max(d,-canal);
+ return d;
+}
+
+const root=document.querySelector('#viewer'),label=document.querySelector('#status');
+let scene,camera,renderer,controls,mesh;
+const geometryCache=new Map();
+function geometryFor(type) {
+ if(geometryCache.has(type))return geometryCache.get(type);
+ objects.length=0;
+ const field=type==='old'?lumbarV01Field:lumbarV02Field;
+ const step=type==='old'?.56:.39;
+ implicitMesh('L3','lumbar','M',field,[-15,-17,87],[15,12,102],step);
+ const data=objects[0];
+ const positions=new Float32Array(data.verts.length*3);
+ data.verts.forEach((v,i)=>{positions[i*3]=v[0];positions[i*3+1]=v[1];positions[i*3+2]=v[2]-94});
+ const indices=new Uint32Array(data.faces.length*3);
+ data.faces.forEach((f,i)=>{indices[i*3]=f[0];indices[i*3+1]=f[1];indices[i*3+2]=f[2]});
+ const geo=new THREE.BufferGeometry();
+ geo.setAttribute('position',new THREE.BufferAttribute(positions,3));
+ geo.setIndex(new THREE.BufferAttribute(indices,1));
+ geo.computeVertexNormals();geo.computeBoundingSphere();
+ geometryCache.set(type,{geo,vertices:data.verts.length,faces:data.faces.length});
+ return geometryCache.get(type);
+}
+function changeModel(type){
+ const info=geometryFor(type);
+ if(mesh)scene.remove(mesh);
+ const mat=new THREE.MeshStandardMaterial({color:0xe9dfcb,roughness:.83,metalness:0,side:THREE.DoubleSide});
+ mesh=new THREE.Mesh(info.geo,mat);
+ mesh.rotation.set(0,0,0);scene.add(mesh);
+ label.textContent=(type==='old'?'L3 v0.1':'L3 v0.2')+'　独自造形 '+info.vertices.toLocaleString('ja-JP')+'頂点／'+info.faces.toLocaleString('ja-JP')+'三角形。WebGL表示';
+ document.querySelectorAll('[data-model]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.model===type)));
+}
+function setView(type){
+ const dist=35,positions={
+ anterior:[0,dist,8],posterior:[0,-dist,8],right:[dist,0,5],
+ superior:[0,0,dist],oblique:[25,27,20]
+ };
+ camera.position.set(...(positions[type]||positions.oblique));
+ controls.target.set(0,-2,0);controls.update();
+ document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===type)));
+}
+try{
+ scene=new THREE.Scene();scene.background=new THREE.Color(0xf4f1ed);
+ camera=new THREE.PerspectiveCamera(35,1,.1,500);camera.up.set(0,0,1);
+ renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+ renderer.outputColorSpace=THREE.SRGBColorSpace;
+ renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.5;
+ root.insertBefore(renderer.domElement,label);
+ const hemi=new THREE.HemisphereLight(0xffffff,0xc6c9ca,2.0);hemi.position.set(0,0,30);scene.add(hemi);
+ const key=new THREE.DirectionalLight(0xffffff,3.0);key.position.set(18,32,45);scene.add(key);
+ const fill=new THREE.DirectionalLight(0xc4d6e8,1.0);fill.position.set(-28,-22,12);scene.add(fill);
+ controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+ controls.dampingFactor=.08;controls.minDistance=14;controls.maxDistance=90;
+ controls.target.set(0,-2,0);controls.enablePan=true;
+ function resize(){const w=Math.max(1,root.clientWidth),h=Math.max(1,root.clientHeight);renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}
+ resize();window.addEventListener('resize',resize);
+ changeModel('sculpt');setView('oblique');
+ document.querySelectorAll('[data-model]').forEach(b=>b.addEventListener('click',()=>changeModel(b.dataset.model)));
+ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+ document.getElementById('reset').addEventListener('click',()=>setView('oblique'));
+ renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+}catch(error){label.textContent='3D描画の初期化に失敗しました：'+error.message;console.error(error)}
+</script>
+</body></html>

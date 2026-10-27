@@ -39,7 +39,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 </section>
 <aside class="panel">
 <h2 style="font-size:16px;margin-top:0">表示する形状</h2>
-<div class="toolbar"><button data-model="sculpt" aria-pressed="true">新版L3 v0.5</button><button data-model="old">旧版L3 v0.4</button></div>
+<div class="toolbar"><button data-model="sculpt" aria-pressed="true">新版L3 v0.5</button><button data-model="old">旧版L3 v0.4</button></div><p>旧v0.4には左右の下関節突起が本体とつながっていない不具合が残ります。比較目的で保存しています。</p>
 <div class="card"><span class="label">この版で確認すること</span><p>前回のv0.4を残し、椎体後縁のくびれ、椎孔の三角形状、椎弓と棘突起、関節突起の凹凸と陰影を重点比較します。</p></div>
 <div class="card"><span class="label">表示と形状の違い</span><p>3Dエンジン：Three.js / WebGL。骨の頂点・面：このプロジェクトで作成した独自の数式モデル。外部の骨格GLBは読み込みません。</p></div>
 <div class="card"><span class="label">解剖学的な限界</span><p>独自制作のL3相当モデルです。典型的な腰椎の特徴を形状に反映していますが、骨標本・CTとの定量的照合、関節面の曲率・向き、椎弓根の切痕は未承認です。</p></div>
@@ -284,13 +284,14 @@ function captureFourViews(){
    document.getElementById(id).src=renderer.domElement.toDataURL('image/png');
   }
   grid.hidden=false;
+  grid.scrollIntoView?.({behavior:'smooth',block:'nearest'});
  }catch(error){label.textContent='4方向画像の取得に失敗しました：'+error.message}
  finally{
   camera.up.copy(savedUp);camera.position.copy(savedPosition);controls.target.copy(savedTarget);
   controls.update();renderer.render(scene,camera);
  }
 }
-function setTheme(theme){scene.background=new THREE.Color(theme==='dark'?0x122a37:0xe1e4e4);active('[data-theme]',theme)}
+function setTheme(theme){scene.background=new THREE.Color(theme==='dark'?0x122a37:0xe1e4e4);document.getElementById('reviewGrid').hidden=true;active('[data-theme]',theme)}
 function resize(){if(!renderer)return;const r=root.getBoundingClientRect(),w=Math.max(1,r.width),h=Math.max(1,r.height);
  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,quality==='high'?2:1.5));
  renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}

@@ -36,6 +36,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 <button data-view="anterior">前面</button><button data-view="posterior">後面</button><button data-view="right">右側</button><button data-view="superior">上面</button><button data-view="oblique" aria-pressed="true">斜め</button><button id="reset">初期位置</button><button id="compareViews">実3Dを4方向で比較</button>
 </div>
 <p>一本指で回転、二本指で拡大・移動。iPhoneではSafariのWebGL機能を利用します。</p><div class="toolbar" aria-label="表示範囲"><button data-stack="single" aria-pressed="true">L3単体</button><button data-stack="triple">L2–L4 仮配置</button></div>
+<p>上下の椎骨は同じL3形状のコピーです。青色半透明は正確なL2・L4を意味しません。</p>
 <div class="toolbar"><button data-quality="standard" aria-pressed="true">標準画質</button><button data-quality="high">精細画質（負荷大）</button></div><div class="toolbar"><button data-theme="dark" aria-pressed="true">暗い背景</button><button data-theme="light">明るい背景</button><button id="outlineToggle" aria-pressed="false">輪郭補助 OFF</button></div>
 </section>
 <aside class="panel">
@@ -327,9 +328,9 @@ function showModel(){
  mesh=new THREE.Mesh(info.geo,new THREE.MeshStandardMaterial({color:0xded5c6,metalness:0,roughness:.91,side:THREE.DoubleSide}));scene.add(mesh);
  if(outline){outlineMesh=new THREE.Mesh(info.geo,new THREE.MeshBasicMaterial({color:0x0a1b25,side:THREE.BackSide,depthWrite:false}));outlineMesh.scale.setScalar(1.023);outlineMesh.renderOrder=-1;scene.add(outlineMesh)}
  if(stackMode==='triple'){
-  const shared=new THREE.MeshStandardMaterial({color:0x7fabb9,metalness:0,roughness:.93,transparent:true,opacity:.36,depthWrite:false,side:THREE.DoubleSide});
+  const shared={color:0x7fabb9,metalness:0,roughness:.93,transparent:true,opacity:.36,depthWrite:false,side:THREE.DoubleSide};
   for(const [id,z,y] of [['L2',12.6,-.35],['L4',-12.6,.35]]){
-   const obj=new THREE.Mesh(info.geo,shared.clone());
+   const obj=new THREE.Mesh(info.geo,new THREE.MeshStandardMaterial(shared));
    obj.position.set(0,y,z);obj.userData.temporaryLevel=id;scene.add(obj);neighbors.push(obj);
   }
  }
@@ -366,7 +367,7 @@ function resize(){if(!renderer)return;const r=root.getBoundingClientRect(),w=Mat
  renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
 try{
  scene=new THREE.Scene();camera=new THREE.PerspectiveCamera(35,1,.1,500);camera.up.set(0,0,1);
- renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+ renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,preserveDrawingBuffer:true,powerPreference:'high-performance'});
  renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.1;
  root.insertBefore(renderer.domElement,label);
  scene.add(new THREE.AmbientLight(0xeff6ff,.52));

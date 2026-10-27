@@ -18,6 +18,11 @@ button[aria-pressed=true]{background:#3a7169;border-color:#94c9b7;color:#fff;fon
 button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2px}
 .card{padding:12px 0;border-top:1px solid #38505e;font-size:13px;line-height:1.7;color:#b8cbd3}
 .card:first-of-type{border-top:0}.label{font-weight:700;color:#eaf0f1}a{color:#9bd9ca}footer{font-size:12px;color:#9db3bb}
+.fourviews{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.fourviews figure{margin:0;min-width:0;background:#102632;border:1px solid #496675;border-radius:8px;overflow:hidden}
+.fourviews img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
+.fourviews figcaption{text-align:center;padding:4px;font-size:12px}
+#reviewGrid[hidden]{display:none}
 @media(max-width:760px){.content{display:block;padding:9px}aside{margin-top:11px}#viewer{height:52dvh;min-height:370px}header{padding:12px}}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
@@ -28,7 +33,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 <section class="panel">
 <div id="viewer"><div id="status" class="status">3Dを初期化しています…</div></div>
 <div class="toolbar" aria-label="視点操作">
-<button data-view="anterior">前面</button><button data-view="posterior">後面</button><button data-view="right">右側</button><button data-view="superior">上面</button><button data-view="oblique" aria-pressed="true">斜め</button><button id="reset">初期位置</button>
+<button data-view="anterior">前面</button><button data-view="posterior">後面</button><button data-view="right">右側</button><button data-view="superior">上面</button><button data-view="oblique" aria-pressed="true">斜め</button><button id="reset">初期位置</button><button id="compareViews">実3Dを4方向で比較</button>
 </div>
 <p>一本指で回転、二本指で拡大・移動。iPhoneではSafariのWebGL機能を利用します。</p><div class="toolbar"><button data-quality="standard" aria-pressed="true">標準画質</button><button data-quality="high">精細画質（負荷大）</button></div><div class="toolbar"><button data-theme="dark" aria-pressed="true">暗い背景</button><button data-theme="light">明るい背景</button><button id="outlineToggle" aria-pressed="false">輪郭補助 OFF</button></div>
 </section>
@@ -38,6 +43,14 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 <div class="card"><span class="label">この版で確認すること</span><p>前回のv0.4を残し、椎体後縁のくびれ、椎孔の三角形状、椎弓と棘突起、関節突起の凹凸と陰影を重点比較します。</p></div>
 <div class="card"><span class="label">表示と形状の違い</span><p>3Dエンジン：Three.js / WebGL。骨の頂点・面：このプロジェクトで作成した独自の数式モデル。外部の骨格GLBは読み込みません。</p></div>
 <div class="card"><span class="label">解剖学的な限界</span><p>独自制作のL3相当モデルです。典型的な腰椎の特徴を形状に反映していますが、骨標本・CTとの定量的照合、関節面の曲率・向き、椎弓根の切痕は未承認です。</p></div>
+<div class="card" id="reviewGrid" hidden><span class="label">実際の3Dから描画した4方向</span>
+<p>現在選択中の形状と画質で生成します。AIによる完成イメージではありません。</p>
+<div class="fourviews">
+<figure><img id="snapAnterior" alt="L3前面の実3Dスクリーンショット"><figcaption>前面</figcaption></figure>
+<figure><img id="snapPosterior" alt="L3後面の実3Dスクリーンショット"><figcaption>後面</figcaption></figure>
+<figure><img id="snapRight" alt="L3右側面の実3Dスクリーンショット"><figcaption>右側面</figcaption></figure>
+<figure><img id="snapSuperior" alt="L3上面の実3Dスクリーンショット"><figcaption>上面</figcaption></figure>
+</div></div>
 <div class="card"><span class="label">旧版</span><p><a href="./cleanroom-lumbar-l3-webgl-v0.3.html">前の白背景WebGL版v0.3</a> ／ <a href="./cleanroom-lumbar-l3-v0.2.html">Canvas版v0.2</a></p></div>
 </aside>
 </div>
@@ -199,6 +212,8 @@ function lumbarV05Field(p){
   // Inferior articular process: directed lower and slightly medial,
   // convex lateral surface for contact with adjacent lower vertebra.
   d=smoothMin(d,ed(p,[side*4.25,-8.38,90.23],[1.42,1.44,2.0]),.60);
+  // Attach inferior articular process to vertebral lamina and pars.
+  d=smoothMin(d,capsule(p,[side*5.20,-6.42,94.03],[side*4.25,-8.38,90.95],1.10),.64);
   // Accessory tubercle on posterior base of costal process.
   d=smoothMin(d,ed(p,[side*7.25,-7.28,94.00],[.64,.63,.79]),.29);
   // Small medial facing facet indentation (shallow, not a through-hole).
@@ -245,6 +260,7 @@ function geometryFor(type,q){
 function showModel(){
  label.textContent='骨の形を準備中…';
  const info=geometryFor(modelType,quality);
+ document.getElementById('reviewGrid').hidden=true;
  if(mesh){scene.remove(mesh);mesh.material.dispose()}
  if(outlineMesh){scene.remove(outlineMesh);outlineMesh.material.dispose();outlineMesh=null}
  mesh=new THREE.Mesh(info.geo,new THREE.MeshStandardMaterial({color:0xded5c6,metalness:0,roughness:.91,side:THREE.DoubleSide}));scene.add(mesh);
@@ -252,9 +268,27 @@ function showModel(){
  label.textContent=(modelType==='old'?'以前のL3 v0.4':'修正版L3 v0.5')+' ｜ '+info.vertices.toLocaleString('ja-JP')+'頂点・'+info.triangles.toLocaleString('ja-JP')+'三角形 ｜ '+(quality==='high'?'精細':'標準');
  active('[data-model]',modelType);
 }
-function setView(view){
- const pos={anterior:[0,35,6],posterior:[0,-35,7],right:[35,0,6],superior:[0,0,35],oblique:[26,27,20]};
- camera.position.set(...(pos[view]||pos.oblique));controls.target.set(0,-2.4,0);controls.update();active('[data-view]',view);
+const positions={anterior:[0,35,6],posterior:[0,-35,7],right:[35,0,6],superior:[0,0,35],oblique:[26,27,20]};
+function aimAt(view){
+ camera.up.set(...(view==='superior'?[0,1,0]:[0,0,1]));
+ camera.position.set(...(positions[view]||positions.oblique));
+ controls.target.set(0,-2.4,0);controls.update();
+}
+function setView(view){aimAt(view);active('[data-view]',view)}
+function captureFourViews(){
+ const grid=document.getElementById('reviewGrid');
+ const savedPosition=camera.position.clone(),savedTarget=controls.target.clone(),savedUp=camera.up.clone();
+ try{
+  for(const [view,id] of [['anterior','snapAnterior'],['posterior','snapPosterior'],['right','snapRight'],['superior','snapSuperior']]){
+   aimAt(view);renderer.render(scene,camera);
+   document.getElementById(id).src=renderer.domElement.toDataURL('image/png');
+  }
+  grid.hidden=false;
+ }catch(error){label.textContent='4方向画像の取得に失敗しました：'+error.message}
+ finally{
+  camera.up.copy(savedUp);camera.position.copy(savedPosition);controls.target.copy(savedTarget);
+  controls.update();renderer.render(scene,camera);
+ }
 }
 function setTheme(theme){scene.background=new THREE.Color(theme==='dark'?0x122a37:0xe1e4e4);active('[data-theme]',theme)}
 function resize(){if(!renderer)return;const r=root.getBoundingClientRect(),w=Math.max(1,r.width),h=Math.max(1,r.height);
@@ -281,6 +315,7 @@ try{
  document.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.theme)));
  document.getElementById('outlineToggle').addEventListener('click',e=>{outline=!outline;e.currentTarget.textContent=outline?'輪郭補助 ON':'輪郭補助 OFF';e.currentTarget.setAttribute('aria-pressed',String(outline));showModel()});
  document.querySelector('#reset').addEventListener('click',()=>setView('oblique'));
+ document.querySelector('#compareViews').addEventListener('click',captureFourViews);
  window.addEventListener('resize',resize);
  renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
 }catch(err){label.textContent='3D描画に失敗しました：'+err.message;console.error(err)}

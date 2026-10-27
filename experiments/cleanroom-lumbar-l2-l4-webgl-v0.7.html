@@ -41,8 +41,9 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 </section>
 <aside class="panel">
 <h2 style="font-size:16px;margin-top:0">表示する形状</h2>
-<div class="toolbar"><button data-model="sculpt" aria-pressed="true">新版L3 v0.6</button><button data-model="old">旧版L3 v0.5</button></div><p>旧版を保全。L2・L4は独立メッシュですが、実測による椎骨の個体差や椎間関節・椎間板を再現したものではありません。</p>
-<div class="card"><span class="label">この版で確認すること</span><p>上関節面の内側への浅い凹面と下関節面の外側への凸面を見直し、椎骨を並べたときの関節位置・間隔を模式的に比較します。</p></div>
+<div class="toolbar" aria-label="単体で見る椎骨">
+<button data-level="L2">L2を見る</button><button data-level="L3" aria-pressed="true">L3を見る</button><button data-level="L4">L4を見る</button></div><p>3椎骨表示ではL3を中央に、L2を上、L4を下に表示します。L2とL4は別メッシュですが、実測骨標本に基づく形ではありません。</p>
+<div class="card"><span class="label">この版で確認すること</span><p>個別のL2・L3・L4を回転表示し、横幅・厚み・関節突起の位置・隣接骨との接近を確認します。並びの間隔は仮の設定です。</p></div>
 <div class="card"><span class="label">表示と形状の違い</span><p>3Dエンジン：Three.js / WebGL。骨の頂点・面：このプロジェクトで作成した独自の数式モデル。外部の骨格GLBは読み込みません。</p></div>
 <div class="card"><span class="label">解剖学的な限界</span><p>骨格形状や椎間隔は定性的な仮設定です。L2・L4を独立生成していますが、解剖学的な精度判定は未承認。椎間板・軟骨・神経は未制作です。</p></div>
 <div class="card" id="reviewGrid" hidden><span class="label">実際の3Dから描画した4方向</span>
@@ -309,14 +310,14 @@ function levelField(p,id){const t=LEVELS[id]||LEVELS.L3;
 }
 const root=document.querySelector('#viewer'),label=document.querySelector('#status');
 let scene,camera,renderer,controls,mesh,outlineMesh,neighbors=[];
-let modelType='sculpt',quality='standard',outline=false,stackMode='single';
+let selectedLevel='L3',quality='standard',outline=false,stackMode='single';
 const geometryCache=new Map();
-function active(selector,value){document.querySelectorAll(selector).forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.model||b.dataset.quality||b.dataset.theme||b.dataset.view)===value)))}
+function active(selector,value){document.querySelectorAll(selector).forEach(b=>b.setAttribute('aria-pressed',String((b.dataset.level||b.dataset.quality||b.dataset.theme||b.dataset.view)===value)))}
 function geometryFor(type,q){
  const key=type+':'+q;if(geometryCache.has(key))return geometryCache.get(key);
- objects.length=0;const field=type==='old'?lumbarV06Field:(p=>levelField(p,type));
- const step=.60; // Both modes use verified stable topology; high increases pixel resolution.
- implicitMesh(type==='old'?'L3':type,'lumbar','M',field,[-17.5,-19.2,85],[17.5,14,104],step);
+ objects.length=0;const field=p=>levelField(p,type);
+ const step=.60; // Verified stable topology. High increases pixel resolution, not mesh complexity.
+ implicitMesh(type,'lumbar','M',field,[-17.5,-19.2,85],[17.5,14,104],step);
  const ob=objects[0],positions=new Float32Array(ob.verts.length*3),indices=new Uint32Array(ob.faces.length*3);
  ob.verts.forEach((p,i)=>{positions[i*3]=p[0];positions[i*3+1]=p[1];positions[i*3+2]=p[2]-94});
  ob.faces.forEach((f,i)=>indices.set(f,i*3));
@@ -326,7 +327,8 @@ function geometryFor(type,q){
 }
 function showModel(){
  label.textContent='骨の形を準備中…';
- const info=geometryFor(modelType==='old'?'old':'L3',quality);
+ const displayedLevel=stackMode==='triple'?'L3':selectedLevel;
+ const info=geometryFor(displayedLevel,quality);
  document.getElementById('reviewGrid').hidden=true;
  if(mesh){scene.remove(mesh);mesh.material.dispose()}
  if(outlineMesh){scene.remove(outlineMesh);outlineMesh.material.dispose();outlineMesh=null}
@@ -340,8 +342,11 @@ function showModel(){
    obj.position.set(0,y,z);obj.userData.temporaryLevel=id;scene.add(obj);neighbors.push(obj);
   }
  }
- label.textContent=(modelType==='old'?'旧L3 v0.6':'独立L3 v0.7')+' ｜ '+info.vertices.toLocaleString('ja-JP')+'頂点・'+info.triangles.toLocaleString('ja-JP')+'三角形 ｜ '+(quality==='high'?'精細':'標準')+(stackMode==='triple'?' ｜ L2・L4別メッシュ（仮寸法）':'');
- active('[data-model]',modelType);
+ label.textContent=(stackMode==='triple'?'L2–L4 3椎骨':'独立'+displayedLevel)+
+  ' ｜ '+info.vertices.toLocaleString('ja-JP')+'頂点・'+info.triangles.toLocaleString('ja-JP')+'三角形'+
+  ' ｜ '+(quality==='high'?'高解像度表示':'標準表示')+
+  (stackMode==='triple'?' ｜ L2・L4は別メッシュ、配置は模式':'');
+ active('[data-level]',displayedLevel);
 }
 const positions={anterior:[0,35,6],posterior:[0,-35,7],right:[35,0,6],superior:[0,0,42],oblique:[30,30,27]};
 function aimAt(view){
@@ -386,8 +391,12 @@ try{
  controls.minDistance=14;controls.maxDistance=100;
  controls.touches.ONE=THREE.TOUCH.ROTATE;controls.touches.TWO=THREE.TOUCH.DOLLY_PAN;
  controls.target.set(0,-2.4,0);setTheme('dark');resize();showModel();setView('oblique');
- document.querySelectorAll('[data-model]').forEach(b=>b.addEventListener('click',()=>{modelType=b.dataset.model;showModel()}));
- document.querySelectorAll('[data-stack]').forEach(b=>b.addEventListener('click',()=>{stackMode=b.dataset.stack;document.querySelectorAll('[data-stack]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.stack===stackMode)));showModel();setView('oblique')}));
+ document.querySelectorAll('[data-level]').forEach(b=>b.addEventListener('click',()=>{
+  selectedLevel=b.dataset.level;stackMode='single';
+  document.querySelectorAll('[data-stack]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.stack===stackMode)));
+  showModel();setView('oblique');
+ }));
+ document.querySelectorAll('[data-stack]').forEach(b=>b.addEventListener('click',()=>{stackMode=b.dataset.stack;if(stackMode==='triple')selectedLevel='L3';document.querySelectorAll('[data-stack]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.stack===stackMode)));showModel();setView('oblique')}));
  document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
  document.querySelectorAll('[data-quality]').forEach(b=>b.addEventListener('click',()=>{if(quality===b.dataset.quality)return;quality=b.dataset.quality;active('[data-quality]',quality);resize();showModel()}));
  document.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>setTheme(b.dataset.theme)));

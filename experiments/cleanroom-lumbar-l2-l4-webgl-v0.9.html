@@ -37,8 +37,8 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 </div>
 <p>一本指で回転、二本指で拡大・移動。iPhoneではSafariのWebGL機能を利用します。</p><div class="toolbar" aria-label="表示範囲"><button data-stack="single" aria-pressed="true">L3単体</button><button data-stack="triple">L2–L4 3椎骨表示</button></div>
 <p>v0.9では各椎骨の椎体・突起・椎弓根を別々の設計値で生成。形状は実測データに基づきません。</p>
-<div class="toolbar"><button data-quality="standard" aria-pressed="true">標準メッシュ</button><button data-quality="high">高精細メッシュ（約2倍の面数）</button></div>
-<p id="loadDetails" aria-live="polite">形状を生成するときは専用の処理で計算します。端末により生成時間が変わります。</p><div class="toolbar"><button data-theme="dark" aria-pressed="true">暗い背景</button><button data-theme="light">明るい背景</button><button id="outlineToggle" aria-pressed="false">輪郭補助 OFF</button></div>
+<div class="toolbar"><button data-quality="standard">標準メッシュ</button><button data-quality="high" aria-pressed="true">高精細メッシュ（約2倍の面数）</button></div>
+<p id="loadDetails" aria-live="polite">標準メッシュを先に表示し、選択している骨を高精細へ更新します。端末により生成時間が変わります。</p><div class="toolbar"><button data-theme="dark" aria-pressed="true">暗い背景</button><button data-theme="light">明るい背景</button><button id="outlineToggle" aria-pressed="false">輪郭補助 OFF</button></div>
 </section>
 <aside class="panel">
 <h2 style="font-size:16px;margin-top:0">表示する形状</h2>
@@ -70,7 +70,7 @@ const positions={anterior:[0,35,6],posterior:[0,-35,7],right:[35,0,6],superior:[
 const cache=new Map(),pending=new Map(),ready=new Map();
 let worker=null,workerId=0,requestToken=0;
 let scene,camera,renderer,controls,model=null,neighbors=[],outlineMesh=null;
-let selectedLevel='L3',quality='standard',stackMode='single',outline=false,currentView='oblique',currentTheme='dark';
+let selectedLevel='L3',quality='high',stackMode='single',outline=false,currentView='oblique',currentTheme='dark';
 function updateSelectedButtons(selector,prop,value){
  document.querySelectorAll(selector).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[prop]===value)));
 }
@@ -143,27 +143,43 @@ function installScene(levels){
   outlineMesh.scale.setScalar(1.017);scene.add(outlineMesh);
  }
  const info=levels.map(x=>x.level+': '+x.triangles.toLocaleString('ja-JP')+'面').join(' ／ ');
- setStatus((stackMode==='triple'?'L2～L4':'単体 '+shown)+' ｜ '+info+(quality==='high'?' ｜ 選択骨：高精細':' ｜ 標準'));
+ const loadedHigh=levels.some(x=>x.level===shown&&x.quality==='high');
+ setStatus((stackMode==='triple'?'L2～L4':'単体 '+shown)+' ｜ '+info+
+  (loadedHigh?' ｜ 高精細メッシュ':quality==='high'?' ｜ 標準メッシュで先行表示':' ｜ 標準メッシュ'));
  loader.textContent='生成済み：'+info+'。解剖学的な形状精度は未承認です。';
  $('reviewGrid').hidden=true;
 }
 async function rebuild(){
  const token=++requestToken;
  const expected=stackMode==='triple'?['L3','L2','L4']:[selectedLevel];
- // Fetch center first; make neighboring proxies economical.
- const jobs=expected.map(level=>({level,resolution:chooseQualityForLevel(level)}));
- const pendingJobs=jobs.filter(v=>!cache.has(v.level+':'+v.resolution));
- if(pendingJobs.length){
-  setStatus('3Dメッシュを生成中…');
-  loader.textContent='画面操作は続けられます。'+pendingJobs.map(x=>x.level+' '+(x.resolution==='high'?'高精細':'標準')).join('、')+'を準備中。';
+ const mainLevel=stackMode==='triple'?'L3':selectedLevel;
+ // Progressive loading: show quick standard meshes before computing high-detail.
+ const baseJobs=expected.map(level=>requestGeometry(level,'standard'));
+ const missing=expected.filter(level=>!cache.has(level+':standard'));
+ if(missing.length){
+  setStatus('標準メッシュで立体を準備中…');
+  loader.textContent=missing.join('、')+'の形状を別処理で生成しています。操作は続けられます。';
  }
- try{
-  const items=await Promise.all(jobs.map(job=>requestGeometry(job.level,job.resolution)));
+ try {
+  const low=await Promise.all(baseJobs);
   if(token!==requestToken)return;
-  installScene(items);
+  installScene(low);
+  if(quality!=='high')return;
+  if(!cache.has(mainLevel+':high')){
+   setStatus('標準モデルを表示中 ｜ '+mainLevel+'の高精細形状を生成中…');
+   loader.textContent='選択中の'+mainLevel+'を高精細化しています。画面は操作できます。';
+  }
+  try {
+   const detailed=await requestGeometry(mainLevel,'high');
+   if(token!==requestToken)return;
+   installScene(low.map(v=>v.level===mainLevel?detailed:v));
+  }catch(error){
+   if(token!==requestToken)return;
+   statusWarning('標準メッシュは利用できます。高精細生成に失敗：'+error.message);
+  }
  }catch(error){
   if(token!==requestToken)return;
-  statusWarning('モデルの生成に失敗しました：'+error.message);
+  statusWarning('標準メッシュの生成に失敗しました：'+error.message);
  }
 }
 function setView(view){
@@ -190,7 +206,7 @@ function resize(){
 }
 function captureViews(){
  if(!model){statusWarning('3Dメッシュの生成が終わってから比較できます');return}
- const saved={position:camera.position.clone(),target:controls.target.clone(),up:camera.up.clone()};
+ const saved={position:camera.position.clone(),target:controls.target.clone(),up:camera.up.clone(),view:currentView};
  try{
   for(const [view,id] of [['anterior','snapAnterior'],['posterior','snapPosterior'],['right','snapRight'],['superior','snapSuperior']]){
    setView(view);renderer.render(scene,camera);
@@ -201,7 +217,7 @@ function captureViews(){
  }catch(error){statusWarning('画像の取得に失敗しました：'+error.message)}
  finally{
   camera.up.copy(saved.up);camera.position.copy(saved.position);controls.target.copy(saved.target);
-  controls.update();renderer.render(scene,camera);
+  currentView=saved.view;controls.update();renderer.render(scene,camera);
   updateSelectedButtons('[data-view]','view',currentView);
  }
 }
@@ -240,7 +256,7 @@ try {
   quality=b.dataset.quality;updateSelectedButtons('[data-quality]','quality',quality);resize();rebuild();
  }));
  document.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>themeSet(b.dataset.theme)));
- $('outlineToggle').addEventListener('click',e=>{outline=!outline;e.currentTarget.setAttribute('aria-pressed',String(outline));e.currentTarget.textContent=outline?'輪郭補助 ON':'輪郭補助 OFF';if(model){const current=model;const selected=cache.get(selectedLevel+':'+chooseQualityForLevel(selectedLevel));if(selected)rebuild()}});
+ $('outlineToggle').addEventListener('click',e=>{outline=!outline;e.currentTarget.setAttribute('aria-pressed',String(outline));e.currentTarget.textContent=outline?'輪郭補助 ON':'輪郭補助 OFF';if(model)rebuild()});
  $('reset').addEventListener('click',()=>setView('oblique'));
  $('compareViews').addEventListener('click',captureViews);
  window.addEventListener('resize',resize);

@@ -441,6 +441,40 @@ function levelV11(p,id){
  return d;
 }
 
+// Independent section-proxy audit: derive dimensions FROM OUTPUT VERTICES.
+// This is NOT a clinical endplate measurement or CT registration.
+function sectionProxyAudit(mesh,level){
+ const ref=LUMBAR_REF_MM[level],t=calibratedLumbarParameters(level),mm=CALIBRATION_MM_PER_UNIT;
+ const sections=[],maxError={};
+ for(const surface of ['upper','lower']){
+  const targetZ=94+(surface==='upper'?.86:-.86)*t.H;
+  let n=0,minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  for(const point of mesh.verts){
+   const [x,y,z]=point;
+   if(Math.abs(z-targetZ)>.23||y< -2.65)continue;
+   minX=Math.min(minX,x);maxX=Math.max(maxX,x);
+   minY=Math.min(minY,y);maxY=Math.max(maxY,y);n++;
+  }
+  if(n<40)throw Error('断面に十分なメッシュ頂点がありません：'+level+surface);
+  const keyW=surface==='upper'?'upperEndplateWidth':'lowerEndplateWidth';
+  const keyD=surface==='upper'?'upperEndplateDepth':'lowerEndplateDepth';
+  const measuredW=mm*(maxX-minX),measuredD=mm*(maxY-minY);
+  const errW=100*(measuredW/ref[keyW]-1),errD=100*(measuredD/ref[keyD]-1);
+  sections.push({surface,verticesSampled:n,widthMM:measuredW,depthMM:measuredD,
+    targetWidthMM:ref[keyW],targetDepthMM:ref[keyD],
+    widthErrorPct:errW,depthErrorPct:errD});
+ }
+ const maxAbsSectionErrorPct=Math.max(...sections.flatMap(s=>[Math.abs(s.widthErrorPct),Math.abs(s.depthErrorPct)]));
+ return {
+  reference:'Koziej et al. 2025; lumbar-reference-v1.2.json',
+  sectionMethod:'Vertex extrema at z=±0.86*design anterior half-height, tolerance 0.23 project units, y>-2.65 (arch excluded).',
+  sliceMeasurementsNotClinical:true,
+  sections,
+  maxAbsSectionErrorPct,
+  designFitWithin2_5pct:maxAbsSectionErrorPct<=2.5
+ };
+}
+
 const SETTINGS=Object.freeze({standard:.60,high:.43});
 self.onmessage=function(event){
  const {id,level,quality,variant='measured'}=event.data||{};
@@ -476,7 +510,8 @@ self.onmessage=function(event){
   const indices=new Uint32Array(m.faces.length*3);
   m.verts.forEach((v,i)=>{positions[i*3]=v[0];positions[i*3+1]=v[1];positions[i*3+2]=v[2]-94});
   m.faces.forEach((f,i)=>indices.set(f,i*3));
-  const result={id,level,quality,variant,vertices:m.verts.length,triangles:m.faces.length,step,elapsedMs:Date.now()-t0,positions,indices};
+  const proxy=variant==='measured'?sectionProxyAudit(m,level):null;
+  const result={id,level,quality,variant,vertices:m.verts.length,triangles:m.faces.length,step,elapsedMs:Date.now()-t0,proxy,positions,indices};
   objects.length=0;
   self.postMessage(result,[positions.buffer,indices.buffer]);
  }catch(error){

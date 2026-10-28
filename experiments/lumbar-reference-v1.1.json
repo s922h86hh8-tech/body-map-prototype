@@ -1,0 +1,62 @@
+{
+  "schema": "body-map.lumbar.morphometry.reference.v1.1",
+  "issued": "2026-10-28",
+  "title": "L2–L4 腰椎の参照計測値（人体集団の平均）",
+  "primarySource": {
+    "authors": "Koziej et al.",
+    "title": "The morphology of the lumbar vertebrae: a systematic review with meta-analysis of 1481 individuals with implications for spine surgery",
+    "doi": "10.1007/s00276-024-03509-4",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11624215/",
+    "year": 2025,
+    "personsInMetaAnalysis": 1481,
+    "tableMapping": {
+      "L2": "Table 3",
+      "L3": "Table 4",
+      "L4": "Table 5"
+    }
+  },
+  "units": "mm",
+  "measurements": {
+    "L2": {
+      "upperEndplateWidth": 42.98,
+      "upperEndplateDepth": 32.12,
+      "anteriorBodyHeight": 25.75,
+      "posteriorBodyHeight": 27.02,
+      "pedicleWidth": 8.23,
+      "spinalCanalWidth": 22.15
+    },
+    "L3": {
+      "upperEndplateWidth": 44.82,
+      "upperEndplateDepth": 33.17,
+      "anteriorBodyHeight": 26.83,
+      "posteriorBodyHeight": 26.67,
+      "pedicleWidth": 9.71,
+      "spinalCanalWidth": 22.62
+    },
+    "L4": {
+      "upperEndplateWidth": 47.5,
+      "upperEndplateDepth": 33.83,
+      "anteriorBodyHeight": 26.86,
+      "posteriorBodyHeight": 25.76,
+      "pedicleWidth": 11.52,
+      "spinalCanalWidth": 23.19
+    }
+  },
+  "interpretation": {
+    "measurementsAreGroupMeans": true,
+    "projectCoordinateUnitsAreNotMillimeters": true,
+    "samplingMethod": "Upper endplate width anchors scale independently for each level; other body and pedicle parameters derive as dimensionless ratios to width.",
+    "noPatientSpecificDiagnosis": true,
+    "noFullMeshMeasurementYet": true,
+    "noDirectMeshOrImageCopied": true,
+    "limits": "Matching model design ratios is NOT evidence that mesh or facet surfaces have medically valid dimensions. Confirm by landmark/CT shape registration and anatomical expert review."
+  },
+  "referenceGeometryCandidate": {
+    "name": "BodyParts3D official archive 4.0",
+    "officialLicenseUrl": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+    "downloadPage": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html",
+    "licenseAsOf20250227": "CC BY 4.0",
+    "intendedUse": "independent reference-only shape comparison; not embedded in this model",
+    "caveat": "Older versions and third-party distributions may have different license terms; verify the exact asset/version before use."
+  }
+}

@@ -462,6 +462,22 @@ function levelV12(p,id){
  return d;
 }
 
+// Deterministic 3D value noise for decorative bone coloration.
+// The color texture is original and contains no anatomical data.
+function hash3(ix,iy,iz){
+ let n=(Math.imul(ix,374761393)+Math.imul(iy,668265263)+Math.imul(iz,1442695041))|0;
+ n=Math.imul(n^(n>>>13),1274126177);
+ return ((n^(n>>>16))>>>0)/4294967295;
+}
+function noise3(x,y,z){
+ const i=Math.floor(x),j=Math.floor(y),k=Math.floor(z);
+ const u=smoothStep01(x-i),v=smoothStep01(y-j),w=smoothStep01(z-k);
+ const m=(a,b,t)=>a+(b-a)*t;
+ const n0=m(m(hash3(i,j,k),hash3(i+1,j,k),u),m(hash3(i,j+1,k),hash3(i+1,j+1,k),u),v);
+ const n1=m(m(hash3(i,j,k+1),hash3(i+1,j,k+1),u),m(hash3(i,j+1,k+1),hash3(i+1,j+1,k+1),u),v);
+ return m(n0,n1,w);
+}
+
 // Independent section-proxy audit: derive dimensions FROM OUTPUT VERTICES.
 // This is NOT a clinical endplate measurement or CT registration.
 function sectionProxyAudit(mesh,level){
@@ -538,10 +554,13 @@ self.onmessage=function(event){
    colors=new Float32Array(m.verts.length*3);
    for(let i=0;i<m.verts.length;i++){
     const [x,y,z]=m.verts[i];
-    const wave=.56*Math.sin(1.73*x+.43*y)*Math.cos(.67*z-1.11*y)
-          +.26*Math.sin(3.11*x+.86*z)*Math.sin(1.53*y+.36*z);
-    const v=Math.max(.84,Math.min(.98,.925+.055*wave));
-    colors[3*i]=v;colors[3*i+1]=v*.951;colors[3*i+2]=v*.866;
+    const fine=(.55*noise3(x*.70,y*.70,z*.70)
+        +.30*noise3(x*1.95,y*1.95,z*1.95)
+        +.15*noise3(x*5.80,y*5.80,z*5.80))-.50;
+    const bodyMask=smoothStep01((y+.85)/2.5);
+    const lightVariation=(.047*bodyMask+.020*(1-bodyMask))*fine;
+    const v=Math.max(.85,Math.min(.99,.932+lightVariation));
+    colors[3*i]=v;colors[3*i+1]=v*.960;colors[3*i+2]=v*.894;
    }
   }
   const result={id,level,quality,variant,vertices:m.verts.length,triangles:m.faces.length,step,elapsedMs:Date.now()-t0,proxy,topology:{components,boundary,nonManifold,zero,nonFinite},colors,positions,indices};

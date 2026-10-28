@@ -387,7 +387,7 @@ function levelV11(p,id){
  const notch=.67*Math.exp(-Math.pow(x/2.77,2)-Math.pow((y+1.29)/1.95,2));
  const bodyFraction=clamp((dz/t.H+1)/2,0,1);
  const halfW=t.Wlower*(1-bodyFraction)+t.W*bodyFraction;
- const halfD=t.Dlower*(1-bodyFraction)+t.D*bodyFraction;
+ const halfD=(t.Dlower*(1-bodyFraction)+t.D*bodyFraction)*1.04; // independent section-fit correction, not a measured anatomical constant
  const radial=Math.pow(ax/halfW,2.39)+Math.pow(Math.abs((y-notch-t.bodyY)/halfD),2.23);
  const disk=.40*Math.exp(-Math.pow(x/(halfW*.77),4)-Math.pow((y-t.bodyY)/(halfD*.75),4));
  const frontness=clamp((y-(t.bodyY-halfD))/(2*halfD),0,1);

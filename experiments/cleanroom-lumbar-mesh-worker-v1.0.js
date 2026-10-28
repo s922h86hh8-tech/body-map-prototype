@@ -373,7 +373,7 @@ self.onmessage=function(event){
  const {id,level,quality,variant='refined'}=event.data||{};
  try {
   if(!MORPH[level]||!Object.hasOwn(SETTINGS,quality)||!['legacy','refined'].includes(variant))throw new Error('不正な形状要求');
-  const step=SETTINGS[quality],t0=Date.now();
+  const step=(quality==='high'&&level==='L4'&&variant==='refined')?.44:SETTINGS[quality],t0=Date.now();
   objects.length=0;
   implicitMesh(level,'lumbar','M',p=>(variant==='legacy'?levelV08(p,level):levelV10(p,level)),[-17.5,-19.2,85],[17.5,14,104],step);
   const m=objects[0];

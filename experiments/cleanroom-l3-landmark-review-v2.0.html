@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>施術者のための身体の地図｜腰椎L3・ランドマーク／断面造形の比較試作 v2.0</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;color:#ebf1f2;background:#0d202b;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0}header,.content,footer{max-width:1120px;margin:auto;padding:15px 16px}
+header{border-bottom:1px solid #39515c}h1{font-size:clamp(19px,3vw,23px);margin:0 0 7px}p{font-size:13px;line-height:1.65;margin:6px 0;color:#b7c8d0}
+.content{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(235px,1fr);gap:13px}
+.panel{background:#1a303d;padding:13px;border-radius:14px;border:1px solid #435e6a;min-width:0}
+#viewer{height:min(65dvh,640px);min-height:390px;width:100%;position:relative;background:#122a37;border-radius:10px;overflow:hidden;touch-action:none}
+#viewer canvas{display:block;width:100%;height:100%}
+.status{position:absolute;left:10px;bottom:10px;right:10px;border-radius:7px;padding:8px 10px;background:#0a1a25e8;border:1px solid #395563;font-size:12px;color:#ecd9ae;pointer-events:none}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
+button{cursor:pointer;padding:9px 11px;min-height:43px;border-radius:9px;border:1px solid #5d7b87;background:#2a4855;color:#edf4f4;font:inherit;font-size:13px}
+button[aria-pressed=true]{background:#3a7169;border-color:#94c9b7;color:#fff;font-weight:700}
+button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2px}
+.card{padding:12px 0;border-top:1px solid #38505e;font-size:13px;line-height:1.7;color:#b8cbd3}
+.card:first-of-type{border-top:0}.label{font-weight:700;color:#eaf0f1}a{color:#9bd9ca}footer{font-size:12px;color:#9db3bb}
+.fourviews{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.fourviews figure{margin:0;min-width:0;background:#102632;border:1px solid #496675;border-radius:8px;overflow:hidden}
+.fourviews img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
+.fourviews figcaption{text-align:center;padding:4px;font-size:12px}
+#reviewGrid[hidden]{display:none}
+.auditScroll{overflow-x:auto;margin:9px 0}.auditTable{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}
+.auditTable th,.auditTable td{padding:7px 5px;text-align:right;border-bottom:1px solid #395361}
+.auditTable th:first-child,.auditTable td:first-child{text-align:left}
+@media(max-width:760px){.content{display:block;padding:9px}aside{margin-top:11px}#viewer{height:52dvh;min-height:370px}header{padding:12px}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+<header><h1>施術者のための身体の地図｜L3・別方式で作り直す 独自造形 v2.0</h1><p>従来の楕円体・棒状構造の継ぎ足しから、手設計の輪郭点と連続断面による独立形状へ変更。上面・側面・斜めで旧版と比較し、実物との違いを検証します。</p></header>
+<div class="content">
+<section class="panel">
+<div id="viewer"><div id="status" class="status">3Dを初期化しています…</div></div>
+<div class="toolbar" aria-label="視点操作">
+<button data-view="anterior">前面</button><button data-view="posterior">後面</button><button data-view="right">右側</button><button data-view="superior">上面</button><button data-view="oblique" aria-pressed="true">斜め</button><button id="facetFocus">右関節突起を拡大</button><button id="reset">初期位置</button><button id="compareViews">実3Dを4方向で比較</button>
+</div>
+<p>一本指で回転、二本指で拡大・移動。iPhoneではSafariのWebGL機能を利用します。</p><div class="toolbar" aria-label="表示範囲"><button data-stack="single" aria-pressed="true">L3単体</button><button data-stack="triple">L2–L4 3椎骨表示</button></div>
+<p>各骨の椎体・椎弓根・横突起・関節突起を部位別の独自数式から生成。実測標本の再現ではありません。</p>
+<div class="toolbar" aria-label="形状の比較">
+<button data-shape="loft" aria-pressed="true">新方式・断面造形 v2.0</button>
+<button data-shape="contour">従来方式 v1.4</button>
+<button data-shape="measured">寸法基準 v1.1</button>
+</div>
+<p>v2.0はL3の椎体・椎弓根・椎弓・横突起・棘突起・関節突起を輪郭点と断面から再構築した比較試作。L2・L4は引き続きv1.1を表示します。</p>
+<div class="toolbar" aria-label="表面の表示"><button data-finish="bone" aria-pressed="true">骨標本風の表示</button><button data-finish="plain">形状だけ確認</button></div>
+<div class="toolbar"><button data-quality="standard">標準メッシュ</button><button data-quality="high" aria-pressed="true">高精細メッシュ（約2倍の面数）</button></div>
+<p id="loadDetails" aria-live="polite">標準メッシュを先に表示し、選択している骨を高精細へ更新します。端末により生成時間が変わります。</p><div class="toolbar"><button data-theme="dark" aria-pressed="true">暗い背景</button><button data-theme="light">明るい背景</button><button id="outlineToggle" aria-pressed="false">輪郭補助 OFF</button></div>
+</section>
+<aside class="panel">
+<h2 style="font-size:16px;margin-top:0">表示する形状</h2>
+<div class="toolbar" aria-label="単体で見る椎骨">
+<button data-level="L2">L2を見る</button><button data-level="L3" aria-pressed="true">L3を見る</button><button data-level="L4">L4を見る</button></div><p>以前の3Dのリアリティにはまだ届きません。今回の目的は、旧方式を延長せず、形状設計そのものを交換することです。</p>
+<div class="card"><span class="label">この版で確認すること</span><p>腎臓形の椎体輪郭、前方が広い丸みのある三角形椎孔、断面で太さが変わる椎弓根・横突起・関節突起を確認。どれも実測形状とは限らず、未承認です。</p></div>
+<div class="card"><span class="label">解像度の違い</span><p>軽量メッシュを先に表示し、必要な骨だけ高精細化します。外部骨格モデル・CTメッシュ・第三者のテクスチャを取り込んでいません。</p></div>
+<div class="card" id="morphAudit"><span class="label">メッシュの断面寸法 × 文献平均</span>
+<p id="auditSummary">メッシュ生成後、断面の測定結果を表示します。</p>
+<div class="auditScroll"><table class="auditTable"><thead><tr><th>測定</th><th>論文平均</th><th>生成メッシュ</th><th>差</th></tr></thead>
+<tbody id="auditRows"></tbody></table></div>
+<p>幅と奥行きは「上方・下方の指定断面から抽出した頂点」の代理測定です。関節面の曲率や骨全体の形状を評価する数字ではありません。</p>
+<p><a href="./lumbar-reference-v1.2.json">出典・単位・基準値のJSON</a></p></div>
+<div class="card"><span class="label">解剖学的な確認と限界</span>
+<p>典型的な腰椎では、上関節面は主に後内側向きの凹面、下関節面は主に前外側向きの凸面、椎弓根下切痕は上切痕より深いという特徴があります。今回はその方向性を形状に反映しましたが、寸法・接触面・椎間板の厚みは未検証です。</p>
+<p>構造の照合資料：<a href="https://www.ncbi.nlm.nih.gov/books/NBK459278/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf</a>・<a href="https://www.kenhub.com/en/library/anatomy/lumbar-vertebrae" target="_blank" rel="noopener noreferrer">Kenhub</a>（図版や他者の3Dデータは転用していません）。</p></div>
+<div class="card" id="reviewGrid" hidden><span class="label">実際の3Dから描画した4方向</span>
+<p>現在選択中の独自3Dを4方向から描画して取得します。高精細表示は選択中の椎骨を優先します。AI生成の完成イメージではありません。</p>
+<div class="fourviews">
+<figure><img id="snapAnterior" alt="L3前面の実3Dスクリーンショット"><figcaption>前面</figcaption></figure>
+<figure><img id="snapPosterior" alt="L3後面の実3Dスクリーンショット"><figcaption>後面</figcaption></figure>
+<figure><img id="snapRight" alt="L3右側面の実3Dスクリーンショット"><figcaption>右側面</figcaption></figure>
+<figure><img id="snapSuperior" alt="L3上面の実3Dスクリーンショット"><figcaption>上面</figcaption></figure>
+</div></div>
+<div class="card"><span class="label">リアリティと構造の違い</span><p>断面モデルの再構築後も、突起・関節面の細部と骨の自然な質感は未達です。寸法一致とメッシュの連結だけでは品質合格にしません。次の受入条件は、実物由来資料との立体的な輪郭比較です。</p></div>
+<div class="card"><span class="label">比較の見方</span>
+<p>「新方式 v2.0」↔「従来方式 v1.4」を同じ角度で切り替えてください。特に上面の椎孔、椎体後縁、右側から見た椎弓根の連続性を確認します。</p></div>
+<div class="card"><span class="label">残る未達項目</span>
+<p>関節面の実測曲率・骨表面の非一様な起伏・椎体前縁の微細形態・実物の3Dとの位置合わせは未実装です。メッシュ検査合格は解剖学的完成を意味しません。</p></div>
+<div class="card"><span class="label">旧版を保全</span><p><a href="./cleanroom-lumbar-l3-morphology-v1.4.html">従来方式 v1.4</a> ／ <a href="./cleanroom-lumbar-l3-morphology-v1.3.html">v1.3</a></p></div>
+</aside>
+</div>
+<footer>v2.0: オリジナルの輪郭点・連続断面によるL3の設計方式を試行。v1.4を保持し比較可能。解剖学的精密形状への到達は未承認、iPhoneでのv2.0描画は未確認。</footer>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+const $=id=>document.getElementById(id);
+const root=$('viewer'),label=$('status'),loader=$('loadDetails');
+const PRESETS={L2:{name:'第2腰椎 L2'},L3:{name:'第3腰椎 L3'},L4:{name:'第4腰椎 L4'}};
+const neighborPositions={L2:[0,-.35,12.6],L4:[0,.35,-12.6]};
+const positions={anterior:[0,35,6],posterior:[0,-35,7],right:[35,0,6],superior:[0,0,42],oblique:[30,30,27]};
+const cache=new Map(),pending=new Map(),ready=new Map();
+let worker=null,workerId=0,requestToken=0;
+let scene,camera,renderer,controls,model=null,neighbors=[],outlineMesh=null;
+let selectedLevel='L3',quality='high',stackMode='single',outline=false,currentView='oblique',currentTheme='dark',shapeVersion='loft',finishStyle='bone';
+function updateSelectedButtons(selector,prop,value){
+ document.querySelectorAll(selector).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[prop]===value)));
+}
+function setStatus(text){label.textContent=text}
+function statusWarning(text){setStatus(text);loader.textContent=text}
+function startWorker(){
+ if(worker)return worker;
+ if(typeof Worker==='undefined')throw new Error('このブラウザーではWeb Workerに対応していません');
+ worker=new Worker('./cleanroom-lumbar-mesh-worker-v2.0.js',{name:'body-map-vertebrae-loft-v20'});
+ worker.addEventListener('message',e=>{
+  const data=e.data;
+  if(!data||!Number.isInteger(data.id))return;
+  const r=pending.get(data.id);if(!r)return;
+  pending.delete(data.id);
+  if(data.error){r.reject(new Error(data.error));return}
+  if(!(data.positions instanceof Float32Array)||!(data.indices instanceof Uint32Array)){r.reject(new Error('3Dデータの転送が正しくありません'));return}
+  try {
+   const geometry=new THREE.BufferGeometry();
+   geometry.setAttribute('position',new THREE.BufferAttribute(data.positions,3));
+   geometry.setIndex(new THREE.BufferAttribute(data.indices,1));
+   if(data.colors instanceof Float32Array){
+    if(data.colors.length!==data.positions.length)throw new Error('骨表面の色データの頂点数が一致しません');
+    geometry.setAttribute('color',new THREE.BufferAttribute(data.colors,3));
+   }
+   geometry.computeVertexNormals();geometry.computeBoundingSphere();
+   const value={geometry,level:data.level,quality:data.quality,variant:data.variant,vertices:data.vertices,triangles:data.triangles,elapsedMs:data.elapsedMs,proxy:data.proxy||null,topology:data.topology||null,hasColors:data.colors instanceof Float32Array};
+   cache.set(r.key,value);r.resolve(value);
+  }catch(error){r.reject(error)}
+ });
+ worker.addEventListener('error',e=>{
+  for(const r of pending.values())r.reject(new Error('形状生成Workerにエラーが発生しました'));
+  pending.clear();worker.terminate();worker=null;
+  statusWarning('3D形状の生成に失敗しました。旧v0.9ページも保全されています。');
+ });
+ return worker;
+}
+function requestGeometry(level,resolution,variant){
+ const key=variant+':'+level+':'+resolution;
+ if(cache.has(key))return Promise.resolve(cache.get(key));
+ if(ready.has(key))return ready.get(key);
+ const task=new Promise((resolve,reject)=>{
+  try {
+   const id=++workerId;
+   pending.set(id,{resolve,reject,key});
+   startWorker().postMessage({id,level,quality:resolution,variant});
+  } catch(error){reject(error)}
+ });
+ ready.set(key,task);
+ task.then(()=>ready.delete(key),()=>ready.delete(key));
+ return task;
+}
+function chooseQualityForLevel(level){return quality==='high'&&level===selectedLevel?'high':'standard'}
+function variantForLevel(level){return (shapeVersion==='loft'||shapeVersion==='contour')&&level!=='L3'?'measured':shapeVersion}
+function displayMorphometry(item){
+ const summary=$('auditSummary'),rows=$('auditRows');
+ rows.replaceChildren();
+ if(!item?.proxy){summary.textContent='この旧形状には寸法照合の結果がありません。v1.2かv1.1を選択してください。';return}
+ const p=item.proxy,fmt=n=>Number(n).toFixed(1);
+ summary.textContent=item.level+'：指定断面での文献平均との最大差 '+Number(p.maxAbsSectionErrorPct).toFixed(2)+'％。骨全体の一致率ではありません。';
+ for(const section of p.sections){
+  const side=section.surface==='upper'?'上方':'下方';
+  for(const [label,target,mesh,error] of [
+   ['幅',section.targetWidthMM,section.widthMM,section.widthErrorPct],
+   ['奥行き',section.targetDepthMM,section.depthMM,section.depthErrorPct]]){
+   const tr=document.createElement('tr');
+   for(const text of [side+'・'+label,fmt(target)+' mm',fmt(mesh)+' mm',(error>=0?'+':'')+fmt(error)+'％']){
+    const td=document.createElement('td');td.textContent=text;tr.appendChild(td);
+   }
+   rows.appendChild(tr);
+  }
+ }
+}
+function makeBoneMaterial(item){
+ const colorized=finishStyle==='bone'&&item.hasColors;
+ return new THREE.MeshStandardMaterial({
+  color:colorized?0xffffff:(finishStyle==='bone'?0xe6d9c4:0xb9c3ca),
+  roughness:finishStyle==='bone'?.83:1,
+  metalness:0,vertexColors:colorized,
+  side:THREE.DoubleSide
+ });
+}
+function applyFinish(){
+ if(!model)return;
+ const activeVariant=variantForLevel(stackMode==='triple'?'L3':selectedLevel);
+ const activeKey=activeVariant+':'+(stackMode==='triple'?'L3':selectedLevel)+':'+(model.geometry===cache.get(activeVariant+':'+(stackMode==='triple'?'L3':selectedLevel)+':high')?.geometry?'high':'standard');
+ const datum=cache.get(activeKey);
+ if(!datum)return;
+ const old=model.material;model.material=makeBoneMaterial(datum);old.dispose();
+}
+function clearModel(){
+ if(model){scene.remove(model);model.material.dispose();model=null}
+ if(outlineMesh){scene.remove(outlineMesh);outlineMesh.material.dispose();outlineMesh=null}
+ for(const o of neighbors){scene.remove(o);o.material.dispose()}neighbors=[];
+}
+function installScene(levels){
+ const shown=stackMode==='triple'?'L3':selectedLevel;
+ const selected=levels.find(x=>x.level===shown) || levels[0];
+ clearModel();
+ model=new THREE.Mesh(selected.geometry,makeBoneMaterial(selected));
+ scene.add(model);
+ if(stackMode==='triple'){
+  for(const id of ['L2','L4']){
+   const d=levels.find(x=>x.level===id);
+   const obj=new THREE.Mesh(d.geometry,new THREE.MeshStandardMaterial({color:0x8ac1d2,roughness:.89,metalness:0,transparent:true,opacity:.45,depthWrite:false,side:THREE.DoubleSide}));
+   obj.position.set(...neighborPositions[id]);obj.userData.level=id;
+   scene.add(obj);neighbors.push(obj);
+  }
+ }
+ if(outline){
+  outlineMesh=new THREE.Mesh(selected.geometry,new THREE.MeshBasicMaterial({color:0x091823,side:THREE.BackSide,depthWrite:false}));
+  outlineMesh.scale.setScalar(1.017);scene.add(outlineMesh);
+ }
+ displayMorphometry(selected);
+ const info=levels.map(x=>x.level+': '+x.triangles.toLocaleString('ja-JP')+'面').join(' ／ ');
+ const loadedHigh=levels.some(x=>x.level===shown&&x.quality==='high');
+ setStatus((shapeVersion==='loft'?'新方式・L3 v2.0':shapeVersion==='contour'?'従来方式 v1.4':'計測基準 v1.1')+' ｜ '+(stackMode==='triple'?'L2～L4':'単体 '+shown)+' ｜ '+info+
+  (loadedHigh?' ｜ 高精細メッシュ':quality==='high'?' ｜ 標準メッシュで先行表示':' ｜ 標準メッシュ'));
+ loader.textContent='形状：'+(shapeVersion==='loft'?'断面・ランドマークから独立設計':shapeVersion==='contour'?'楕円体から発展した従来造形':'計測基準の旧版')+' ／ '+info+'。実測精度は未承認です。';
+ $('reviewGrid').hidden=true;
+}
+async function rebuild(){
+ const token=++requestToken,variant=shapeVersion;
+ const expected=stackMode==='triple'?['L3','L2','L4']:[selectedLevel];
+ const mainLevel=stackMode==='triple'?'L3':selectedLevel;
+ // Progressive loading: show quick standard meshes before computing high-detail.
+ const baseJobs=expected.map(level=>requestGeometry(level,'standard',variantForLevel(level)));
+ const missing=expected.filter(level=>!cache.has(variantForLevel(level)+':'+level+':standard'));
+ if(missing.length){
+  setStatus('標準メッシュで立体を準備中…');
+  loader.textContent=missing.join('、')+'の形状を別処理で生成しています。操作は続けられます。';
+ }
+ try {
+  const low=await Promise.all(baseJobs);
+  if(token!==requestToken)return;
+  installScene(low);
+  if(quality!=='high')return;
+  if(!cache.has(variantForLevel(mainLevel)+':'+mainLevel+':high')){
+   setStatus('標準モデルを表示中 ｜ '+mainLevel+'の高精細形状を生成中…');
+   loader.textContent='選択中の'+mainLevel+'を高精細化しています。画面は操作できます。';
+  }
+  try {
+   const detailed=await requestGeometry(mainLevel,'high',variantForLevel(mainLevel));
+   if(token!==requestToken)return;
+   installScene(low.map(v=>v.level===mainLevel?detailed:v));
+  }catch(error){
+   if(token!==requestToken)return;
+   statusWarning('標準メッシュは利用できます。高精細生成に失敗：'+error.message);
+  }
+ }catch(error){
+  if(token!==requestToken)return;
+  statusWarning('標準メッシュの生成に失敗しました：'+error.message);
+ }
+}
+function setView(view){
+ currentView=view;
+ camera.up.set(...(view==='superior'?[0,1,0]:[0,0,1]));
+ const v=positions[view]||positions.oblique;
+ const zoom=stackMode==='triple'?1.35:1;
+ camera.position.set(v[0]*zoom,v[1]*zoom,v[2]*zoom);
+ controls.target.set(0,-2.4,0);
+ controls.update();
+ updateSelectedButtons('[data-view]','view',view);
+}
+function focusFacet(){
+ if(stackMode==='triple'){
+  stackMode='single';selectedLevel='L3';
+  updateSelectedButtons('[data-stack]','stack','single');
+  updateSelectedButtons('[data-level]','level','L3');
+  rebuild();
+ }
+ currentView='facet';
+ camera.up.set(0,0,1);
+ camera.position.set(18,-19,14);
+ controls.target.set(5,-7,2);
+ controls.update();
+ updateSelectedButtons('[data-view]','view','facet');
+}
+function themeSet(mode){
+ currentTheme=mode;
+ scene.background=new THREE.Color(mode==='dark'?0x122a37:0xe2e5e6);
+ updateSelectedButtons('[data-theme]','theme',mode);
+ $('reviewGrid').hidden=true;
+}
+function resize(){
+ const box=root.getBoundingClientRect(),width=Math.max(box.width,1),height=Math.max(box.height,1);
+ renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,quality==='high'?2:1.5));
+ renderer.setSize(width,height,false);
+ camera.aspect=width/height;camera.updateProjectionMatrix();
+}
+function captureViews(){
+ if(!model){statusWarning('3Dメッシュの生成が終わってから比較できます');return}
+ const saved={position:camera.position.clone(),target:controls.target.clone(),up:camera.up.clone(),view:currentView};
+ try{
+  for(const [view,id] of [['anterior','snapAnterior'],['posterior','snapPosterior'],['right','snapRight'],['superior','snapSuperior']]){
+   setView(view);renderer.render(scene,camera);
+   $(id).src=renderer.domElement.toDataURL('image/png');
+  }
+  $('reviewGrid').hidden=false;
+  $('reviewGrid').scrollIntoView?.({behavior:'smooth',block:'nearest'});
+ }catch(error){statusWarning('画像の取得に失敗しました：'+error.message)}
+ finally{
+  camera.up.copy(saved.up);camera.position.copy(saved.position);controls.target.copy(saved.target);
+  currentView=saved.view;controls.update();renderer.render(scene,camera);
+  updateSelectedButtons('[data-view]','view',currentView);
+ }
+}
+try {
+ scene=new THREE.Scene();
+ camera=new THREE.PerspectiveCamera(35,1,.1,500);camera.up.set(0,0,1);
+ renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,powerPreference:'high-performance'});
+ renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
+ renderer.toneMappingExposure=1.1;
+ root.insertBefore(renderer.domElement,label);
+ scene.add(new THREE.AmbientLight(0xeee8df,.37));
+ const hemi=new THREE.HemisphereLight(0xe7f0fb,0x344d5a,.67);hemi.position.set(0,0,30);scene.add(hemi);
+ const key=new THREE.DirectionalLight(0xffefdb,1.85);key.position.set(18,28,42);scene.add(key);
+ const fill=new THREE.DirectionalLight(0xb5d4e8,.58);fill.position.set(-25,-16,18);scene.add(fill);
+ const rim=new THREE.DirectionalLight(0xd4e7f0,.95);rim.position.set(-14,-27,24);scene.add(rim);
+ controls=new OrbitControls(camera,renderer.domElement);
+ controls.enableDamping=true;controls.dampingFactor=.085;controls.enablePan=true;controls.screenSpacePanning=true;
+ controls.minDistance=14;controls.maxDistance=100;
+ controls.touches.ONE=THREE.TOUCH.ROTATE;controls.touches.TWO=THREE.TOUCH.DOLLY_PAN;
+ controls.target.set(0,-2.4,0);
+ themeSet('dark');resize();setView('oblique');
+ document.querySelectorAll('[data-shape]').forEach(b=>b.addEventListener('click',()=>{
+  shapeVersion=b.dataset.shape;
+  if((shapeVersion==='loft'||shapeVersion==='contour')&&selectedLevel!=='L3'){selectedLevel='L3';updateSelectedButtons('[data-level]','level','L3');}updateSelectedButtons('[data-shape]','shape',shapeVersion);
+  rebuild();
+ }));
+ document.querySelectorAll('[data-level]').forEach(b=>b.addEventListener('click',()=>{
+  selectedLevel=b.dataset.level;if(selectedLevel!=='L3'&&(shapeVersion==='loft'||shapeVersion==='contour')){shapeVersion='measured';updateSelectedButtons('[data-shape]','shape','measured')}stackMode='single';
+  updateSelectedButtons('[data-stack]','stack',stackMode);
+  updateSelectedButtons('[data-level]','level',selectedLevel);
+  setView('oblique');rebuild();
+ }));
+ document.querySelectorAll('[data-stack]').forEach(b=>b.addEventListener('click',()=>{
+  stackMode=b.dataset.stack;if(stackMode==='triple')selectedLevel='L3';
+  updateSelectedButtons('[data-stack]','stack',stackMode);
+  updateSelectedButtons('[data-level]','level',selectedLevel);
+  setView('oblique');rebuild();
+ }));
+ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+ document.querySelectorAll('[data-quality]').forEach(b=>b.addEventListener('click',()=>{
+  quality=b.dataset.quality;updateSelectedButtons('[data-quality]','quality',quality);resize();rebuild();
+ }));
+ document.querySelectorAll('[data-theme]').forEach(b=>b.addEventListener('click',()=>themeSet(b.dataset.theme)));
+ document.querySelectorAll('[data-finish]').forEach(b=>b.addEventListener('click',()=>{
+  finishStyle=b.dataset.finish;updateSelectedButtons('[data-finish]','finish',finishStyle);applyFinish();
+ }));
+ $('outlineToggle').addEventListener('click',e=>{outline=!outline;e.currentTarget.setAttribute('aria-pressed',String(outline));e.currentTarget.textContent=outline?'輪郭補助 ON':'輪郭補助 OFF';if(model)rebuild()});
+ $('facetFocus').addEventListener('click',focusFacet);
+ $('reset').addEventListener('click',()=>setView('oblique'));
+ $('compareViews').addEventListener('click',captureViews);
+ window.addEventListener('resize',resize);
+ renderer.setAnimationLoop(()=>{controls.update();renderer.render(scene,camera)});
+ rebuild();
+} catch(error){statusWarning('3Dの初期化に失敗しました：'+error.message);console.error(error)}
+</script>
+</body></html>

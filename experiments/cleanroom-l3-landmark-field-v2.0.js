@@ -15,6 +15,7 @@ function sectionLoft(p,axis,sections){
  const cap=Math.max(sections[0][0]-a,a-sections.at(-1)[0]);
  return Math.hypot(Math.max(cross,0),Math.max(cap,0))+Math.min(Math.max(cross,cap),0);
 }
+function smoothMaxLoft(a,b,k){return -smoothMin(-a,-b,k)}
 function L3LandmarkLoftV2(p){
  const [x,y,z]=p,ax=Math.abs(x),dz=z-94,t=calibratedLumbarParameters('L3'),u=clamp((dz/t.H+1)/2,0,1);
  const waist=Math.pow(Math.max(0,1-(dz/t.H)**2),1.4);
@@ -41,7 +42,12 @@ function L3LandmarkLoftV2(p){
   d=Math.max(d,-ed(p,[side*6.24,-3.32,91.1],[1,1.1,.85]));
  }
  d=smoothMin(d,sectionLoft(p,1,[[-14.35,0,94,.58,1.12],[-13.55,0,94,1,1.48],[-12.48,0,94,1.23,1.54],[-11.28,0,94,1.19,1.62],[-10,0,94,1.22,1.64],[-9.37,0,94,.93,1.48]]),.72);
- const frac=clamp((-1.37-y)/7.98,0,1),halfWidth=3.98*(1-.55*Math.pow(frac,1.21));
- const canal=Math.max((ax-halfWidth)*.92,y+1.37,-9.35-y,Math.abs(dz)-6.72);
- return Math.max(d,-canal);
+ // Anatomically directed triangular lumbar foramen, rounded by smoothing.
+ const polygon=[[-4.30,-1.38],[4.30,-1.38],[0,-9.12]],lines=[];
+ for(let i=0;i<3;i++){
+  const a=polygon[i],b=polygon[(i+1)%3],ex=b[0]-a[0],ey=b[1]-a[1];
+  lines.push((ex*(y-a[1])-ey*(x-a[0]))/Math.hypot(ex,ey));
+ }
+ const tri=smoothMaxLoft(smoothMaxLoft(lines[0],lines[1],.66),lines[2],.66);
+ return Math.max(d,-Math.max(tri,Math.abs(dz)-6.72));
 }

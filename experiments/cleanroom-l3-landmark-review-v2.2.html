@@ -54,9 +54,18 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 <aside class="panel">
 <h2 style="font-size:16px;margin-top:0">表示する形状</h2>
 <div class="toolbar" aria-label="単体で見る椎骨">
-<button data-level="L2">L2を見る</button><button data-level="L3" aria-pressed="true">L3を見る</button><button data-level="L4">L4を見る</button></div><p>以前の3Dのリアリティにはまだ届きません。今回の目的は、旧方式を延長せず、形状設計そのものを交換することです。</p>
+<button data-level="L2">L2を見る</button><button data-level="L3" aria-pressed="true">L3を見る</button><button data-level="L4">L4を見る</button></div><p>骨標本の精度にはまだ届いていません。今回の修正は、単に面数を増やすのではなく、誤差の大きかった構造を修正して測る試作です。</p>
 <div class="card"><span class="label">この版で確認すること</span><p>腎臓形の椎体輪郭、前方が広い丸みのある三角形椎孔、断面で太さが変わる椎弓根・横突起・関節突起を確認。どれも実測形状とは限らず、未承認です。</p></div>
 <div class="card"><span class="label">解像度の違い</span><p>軽量メッシュを先に表示し、必要な骨だけ高精細化します。外部骨格モデル・CTメッシュ・第三者のテクスチャを取り込んでいません。</p></div>
+<div class="card" id="landmarkAudit">
+<span class="label">L3の構造寸法（実測参照）</span>
+<p id="anatomyAuditSummary">メッシュを生成すると、旧版との差を表示します。</p>
+<div class="auditScroll"><table class="auditTable">
+<thead><tr><th>項目</th><th>文献平均</th><th>現モデル</th><th>差</th></tr></thead>
+<tbody id="anatomyAuditRows"></tbody></table></div>
+<p>横突起全幅は完成メッシュから測定。椎孔は独自形状の中央断面を格子状に調べた代理測定であり、CTからの測定ではありません。</p>
+<p><a href="https://doi.org/10.1007/s00276-024-03509-4" target="_blank" rel="noopener noreferrer">出典：Bonczarら、2025年</a></p>
+</div>
 <div class="card" id="morphAudit"><span class="label">メッシュの断面寸法 × 文献平均</span>
 <p id="auditSummary">メッシュ生成後、断面の測定結果を表示します。</p>
 <div class="auditScroll"><table class="auditTable"><thead><tr><th>測定</th><th>論文平均</th><th>生成メッシュ</th><th>差</th></tr></thead>
@@ -74,15 +83,15 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 <figure><img id="snapRight" alt="L3右側面の実3Dスクリーンショット"><figcaption>右側面</figcaption></figure>
 <figure><img id="snapSuperior" alt="L3上面の実3Dスクリーンショット"><figcaption>上面</figcaption></figure>
 </div></div>
-<div class="card"><span class="label">リアリティと構造の違い</span><p>断面モデルの再構築後も、突起・関節面の細部と骨の自然な質感は未達です。寸法一致とメッシュの連結だけでは品質合格にしません。次の受入条件は、実物由来資料との立体的な輪郭比較です。</p></div>
+<div class="card"><span class="label">リアリティと構造の違い</span><p>v2.2では椎孔の断面積と前後径が文献平均に近づきました。ただし、椎孔横幅はまだ約10％狭く、関節面・骨表面の細かな凹凸、実物由来3Dとの表面距離は未検証です。</p></div>
 <div class="card"><span class="label">比較の見方</span>
 <p>「新方式 v2.0」↔「従来方式 v1.4」を同じ角度で切り替えてください。特に上面の椎孔、椎体後縁、右側から見た椎弓根の連続性を確認します。</p></div>
 <div class="card"><span class="label">残る未達項目</span>
 <p>関節面の実測曲率・骨表面の非一様な起伏・椎体前縁の微細形態・実物の3Dとの位置合わせは未実装です。メッシュ検査合格は解剖学的完成を意味しません。</p></div>
-<div class="card"><span class="label">旧版を保全</span><p><a href="./cleanroom-lumbar-l3-morphology-v1.4.html">従来方式 v1.4</a> ／ <a href="./cleanroom-lumbar-l3-morphology-v1.3.html">v1.3</a></p></div>
+<div class="card"><span class="label">旧版を保全</span><p><a href="./cleanroom-l3-landmark-review-v2.0.html">断面新方式 v2.0</a> ／ <a href="./cleanroom-lumbar-l3-morphology-v1.4.html">旧方式 v1.4</a></p></div>
 </aside>
 </div>
-<footer>v2.0: オリジナルの輪郭点・連続断面によるL3の設計方式を試行。v1.4を保持し比較可能。解剖学的精密形状への到達は未承認、iPhoneでのv2.0描画は未確認。</footer>
+<footer>v2.2: 椎孔・椎弓根・椎弓板・上下関節突起・棘突起の位置関係と横突起全幅を再設計。文献平均に基づく断面監査を追加。CT再構成ではなく実機未検証。旧版保持。</footer>
 <script type="module">
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
@@ -120,7 +129,7 @@ function startWorker(){
     geometry.setAttribute('color',new THREE.BufferAttribute(data.colors,3));
    }
    geometry.computeVertexNormals();geometry.computeBoundingSphere();
-   const value={geometry,level:data.level,quality:data.quality,variant:data.variant,vertices:data.vertices,triangles:data.triangles,elapsedMs:data.elapsedMs,proxy:data.proxy||null,topology:data.topology||null,hasColors:data.colors instanceof Float32Array};
+   const value={geometry,level:data.level,quality:data.quality,variant:data.variant,vertices:data.vertices,triangles:data.triangles,elapsedMs:data.elapsedMs,proxy:data.proxy||null,anatomyAudit:data.anatomyAudit||null,topology:data.topology||null,hasColors:data.colors instanceof Float32Array};
    cache.set(r.key,value);r.resolve(value);
   }catch(error){r.reject(error)}
  });
@@ -148,6 +157,33 @@ function requestGeometry(level,resolution,variant){
 }
 function chooseQualityForLevel(level){return quality==='high'&&level===selectedLevel?'high':'standard'}
 function variantForLevel(level){return (shapeVersion==='loft22'||shapeVersion==='loft'||shapeVersion==='contour')&&level!=='L3'?'measured':shapeVersion}
+function displayAnatomicalAudit(item){
+ const info=$('anatomyAuditSummary'),rows=$('anatomyAuditRows');rows.replaceChildren();
+ if(!item||!item.anatomyAudit){
+  info.textContent='この形状には4項目の監査結果がありません。v2.2またはv2.0を選択してください。';
+  return;
+ }
+ const a=item.anatomyAudit,c=a.canal;
+ if(c.error){info.textContent='椎孔の測定に失敗：'+c.error;return}
+ const number=n=>Number(n).toFixed(1);
+ const values=[
+  ['横突起の左右幅',a.targetTransverseSpanMM,a.transverseSpanMM,a.transverseErrorPct,'mm'],
+  ['椎孔の左右幅',c.targetWidthMM,c.widthMM,c.widthErrorPct,'mm'],
+  ['椎孔の前後径',c.targetDepthMM,c.depthMM,c.depthErrorPct,'mm'],
+  ['椎孔の断面積',c.targetAreaMM2,c.areaMM2,c.areaErrorPct,'mm²']
+ ];
+ for(const [name,target,actual,percent,unit] of values){
+  const tr=document.createElement('tr');
+  for(const value of [name,number(target)+' '+unit,number(actual)+' '+unit,
+    (percent>=0?'+':'')+number(percent)+'%']){
+   const td=document.createElement('td');td.textContent=value;tr.appendChild(td)
+  }
+  rows.appendChild(tr)
+ }
+ info.textContent='横突起の左右幅は'+(a.transverseErrorPct>=0?'+':'')+number(a.transverseErrorPct)+
+  '%。椎孔は幅'+number(c.widthErrorPct)+'%、前後径'+(c.depthErrorPct>=0?'+':'')+number(c.depthErrorPct)+
+  '%、面積'+(c.areaErrorPct>=0?'+':'')+number(c.areaErrorPct)+'%。4項目だけの参考比較であり解剖学的な完成判定ではありません。';
+}
 function displayMorphometry(item){
  const summary=$('auditSummary'),rows=$('auditRows');
  rows.replaceChildren();
@@ -208,11 +244,12 @@ function installScene(levels){
   outlineMesh.scale.setScalar(1.017);scene.add(outlineMesh);
  }
  displayMorphometry(selected);
+ displayAnatomicalAudit(selected);
  const info=levels.map(x=>x.level+': '+x.triangles.toLocaleString('ja-JP')+'面').join(' ／ ');
  const loadedHigh=levels.some(x=>x.level===shown&&x.quality==='high');
- setStatus((shapeVersion==='loft'?'新方式・L3 v2.0':shapeVersion==='contour'?'従来方式 v1.4':'計測基準 v1.1')+' ｜ '+(stackMode==='triple'?'L2～L4':'単体 '+shown)+' ｜ '+info+
+ setStatus((shapeVersion==='loft22'?'断面再設計 v2.2':shapeVersion==='loft'?'前版 v2.0':shapeVersion==='contour'?'従来 v1.4':'旧寸法 v1.1')+' ｜ '+(stackMode==='triple'?'L2～L4':'単体 '+shown)+' ｜ '+info+
   (loadedHigh?' ｜ 高精細メッシュ':quality==='high'?' ｜ 標準メッシュで先行表示':' ｜ 標準メッシュ'));
- loader.textContent='形状：'+(shapeVersion==='loft'?'断面・ランドマークから独立設計':shapeVersion==='contour'?'楕円体から発展した従来造形':'計測基準の旧版')+' ／ '+info+'。実測精度は未承認です。';
+ loader.textContent='形状：'+(shapeVersion==='loft22'?'椎弓・椎孔・横突起を再検証':shapeVersion==='loft'?'前版の断面造形':shapeVersion==='contour'?'従来造形':'旧計測基準')+' ／ '+info+'。実測精度は未承認です。';
  $('reviewGrid').hidden=true;
 }
 async function rebuild(){

@@ -27,6 +27,7 @@ function L3LandmarkLoftV2(p){
  let d=Math.max(wall,Math.abs(dz)-(height-depression));
  d-=.08*Math.exp(-Math.pow((Math.abs(dz)-(height-.32))/.38,2)-Math.pow(rel/.97,8));
  for(const side of [-1,1]){
+  if(side*x < -.05)continue; // each process belongs to its anatomical side only
   const q=[side*x,y,z];
   d=smoothMin(d,sectionLoft(q,1,[[-6.35,5.24,94,1.45,2.05],[-5.2,5.49,94,1.77,2.43],[-3.5,5.53,94,1.75,2.58],[-1.7,5.55,94,2.12,2.46],[-.25,5.16,94,2.39,2.33]]),.96);
   d=smoothMin(d,sectionLoft(q,0,[[1,-10.25,94,.99,1.72],[2.35,-9.53,94,1.08,1.7],[4.2,-7.8,94,1.2,1.89],[5.8,-6.12,94,1.36,2.12]]),.73);

@@ -368,7 +368,7 @@ function levelV10(p,id){
  return d;
 }
 
-// Morphometric design reference from lumbar-reference-v1.2.json (Koziej 2025 Tables 3–5).
+// Morphometric design reference from lumbar-reference-v1.3.json (Koziej 2025 Tables 3–5).
 const CALIBRATION_MM_PER_UNIT=44.82/(2*8.10);
 const LUMBAR_REF_MM={"L2":{"upperEndplateWidth":42.98,"upperEndplateDepth":32.12,"anteriorBodyHeight":25.75,"posteriorBodyHeight":27.02,"pedicleWidth":8.23,"spinalCanalWidth":22.15,"pedicleHeight":14.9,"spinalCanalDepth":15.08,"lowerEndplateWidth":46.1,"lowerEndplateDepth":32.91},"L3":{"upperEndplateWidth":44.82,"upperEndplateDepth":33.17,"anteriorBodyHeight":26.83,"posteriorBodyHeight":26.67,"pedicleWidth":9.71,"spinalCanalWidth":22.62,"pedicleHeight":14.52,"spinalCanalDepth":14.69,"lowerEndplateWidth":49.12,"lowerEndplateDepth":33.76},"L4":{"upperEndplateWidth":47.5,"upperEndplateDepth":33.83,"anteriorBodyHeight":26.86,"posteriorBodyHeight":25.76,"pedicleWidth":11.52,"spinalCanalWidth":23.19,"pedicleHeight":14.2,"spinalCanalDepth":15.06,"lowerEndplateWidth":50.63,"lowerEndplateDepth":34.07}};
 function calibratedLumbarParameters(id){
@@ -603,7 +603,7 @@ function sectionProxyAudit(mesh,level){
  }
  const maxAbsSectionErrorPct=Math.max(...sections.flatMap(s=>[Math.abs(s.widthErrorPct),Math.abs(s.depthErrorPct)]));
  return {
-  reference:'Koziej et al. 2025; lumbar-reference-v1.2.json',
+  reference:'Bonczar et al. 2025; lumbar-reference-v1.3.json',
   sectionMethod:'Vertex extrema at z=±0.86*design anterior half-height, tolerance 0.23 project units, y>-2.65 (arch excluded).',
   sliceMeasurementsNotClinical:true,
   sections,

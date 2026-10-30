@@ -1,0 +1,113 @@
+{
+  "schema": "body-map.lumbar.morphometry.reference.v1.3",
+  "issued": "2026-10-30",
+  "title": "L2–L4 腰椎の論文由来参照寸法と監査条件（第一著者表記修正）",
+  "primarySource": {
+    "authors": "Bonczar et al.",
+    "title": "The morphology of the lumbar vertebrae: a systematic review with meta-analysis of 1481 individuals with implications for spine surgery",
+    "doi": "10.1007/s00276-024-03509-4",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11624215/",
+    "year": 2025,
+    "personsInMetaAnalysis": 1481,
+    "tableMapping": {
+      "L2": "Table 3",
+      "L3": "Table 4",
+      "L4": "Table 5"
+    },
+    "verifiedInSource": "Bonczar et al. Table 3–5; Surgical and Radiologic Anatomy 47, article 22 (2025); first online 2024-12-06",
+    "verified": "2026-10-28",
+    "firstAuthor": "Michał Bonczar",
+    "onlinePublished": "2024-12-06"
+  },
+  "units": "mm",
+  "measurements": {
+    "L2": {
+      "upperEndplateWidth": 42.98,
+      "upperEndplateDepth": 32.12,
+      "anteriorBodyHeight": 25.75,
+      "posteriorBodyHeight": 27.02,
+      "pedicleWidth": 8.23,
+      "spinalCanalWidth": 22.15,
+      "pedicleHeight": 14.9,
+      "spinalCanalDepth": 15.08,
+      "lowerEndplateWidth": 46.1,
+      "lowerEndplateDepth": 32.91
+    },
+    "L3": {
+      "upperEndplateWidth": 44.82,
+      "upperEndplateDepth": 33.17,
+      "anteriorBodyHeight": 26.83,
+      "posteriorBodyHeight": 26.67,
+      "pedicleWidth": 9.71,
+      "spinalCanalWidth": 22.62,
+      "pedicleHeight": 14.52,
+      "spinalCanalDepth": 14.69,
+      "lowerEndplateWidth": 49.12,
+      "lowerEndplateDepth": 33.76,
+      "pedicleWidthRight": 9.56,
+      "pedicleHeightRight": 15.31,
+      "pedicleWidthLeft": 9.77,
+      "pedicleHeightLeft": 14.36,
+      "transverseProcessSpan": 83.59,
+      "spinalCanalArea": 213.87
+    },
+    "L4": {
+      "upperEndplateWidth": 47.5,
+      "upperEndplateDepth": 33.83,
+      "anteriorBodyHeight": 26.86,
+      "posteriorBodyHeight": 25.76,
+      "pedicleWidth": 11.52,
+      "spinalCanalWidth": 23.19,
+      "pedicleHeight": 14.2,
+      "spinalCanalDepth": 15.06,
+      "lowerEndplateWidth": 50.63,
+      "lowerEndplateDepth": 34.07
+    }
+  },
+  "interpretation": {
+    "measurementsAreGroupMeans": true,
+    "projectCoordinateUnitsAreNotMillimeters": true,
+    "samplingMethod": "Upper endplate width anchors scale independently for each level; other body and pedicle parameters derive as dimensionless ratios to width.",
+    "noPatientSpecificDiagnosis": true,
+    "noFullMeshMeasurementYet": true,
+    "noDirectMeshOrImageCopied": true,
+    "limits": "Pedicle X/Z rays are not minimal perpendicular isthmus sections. Facet curvature/orientation and adjacent-joint congruence are not yet validated. ±5% is an internal research screening threshold, not a medical certification threshold."
+  },
+  "referenceGeometryCandidate": {
+    "name": "BodyParts3D official archive 4.0",
+    "officialLicenseUrl": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/lic.html",
+    "downloadPage": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html",
+    "licenseAsOf20250227": "CC BY 4.0",
+    "intendedUse": "independent reference-only shape comparison; not embedded in this model",
+    "caveat": "Older versions and third-party distributions may have different license terms; verify the exact asset/version before use."
+  },
+  "calibration": {
+    "anchor": "Set project-units-per-mm using L3 superior endplate width / (2 * project L3 W=8.10)",
+    "millimetersPerProjectUnit": 2.7666666666666666,
+    "sourceToModelConversion": "Upper endplate widths, depths, and anterior body heights map to design half-extents; pedicle widths/heights and spinal canal widths map to preliminary section parameters only.",
+    "notPatientSpecific": true,
+    "caution": "Published group means are NOT normative patient-specific standards; v2.3 uses fixed local mesh-ray scans for pedicles, separate proxy section screening for canal and mesh topology checks. Neither is CT surface registration.",
+    "preservedVersion": "experiments/lumbar-reference-v1.1.json"
+  },
+  "versionHistory": {
+    "preceding": "lumbar-reference-v1.2.json",
+    "corrections": [
+      "Correct first-author designation: Bonczar et al. (Koziej is coauthor, not first author).",
+      "Do not treat acceptable proxy dimensional error as clinical anatomical approval.",
+      "Add sided pedicle width and height means and gate descriptions."
+    ]
+  },
+  "qualityScreening": {
+    "maxReferenceDeviationPct": 5,
+    "dimensions": [
+      "transverseProcessSpan",
+      "spinalCanalWidth",
+      "spinalCanalDepth",
+      "spinalCanalArea"
+    ],
+    "requireAllFour": true,
+    "doNotAutoApproveTeachingModel": true,
+    "requireFacetSurfaceAndPedicleAxisValidation": true,
+    "note": "Project-internal screening only; not a medical or clinical tolerance."
+  }
+}

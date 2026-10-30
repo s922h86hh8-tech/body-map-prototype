@@ -79,9 +79,9 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 <div class="auditScroll"><table class="auditTable"><thead><tr><th>測定</th><th>論文平均</th><th>生成メッシュ</th><th>差</th></tr></thead>
 <tbody id="auditRows"></tbody></table></div>
 <p>幅と奥行きは「上方・下方の指定断面から抽出した頂点」の代理測定です。関節面の曲率や骨全体の形状を評価する数字ではありません。</p>
-<p><a href="./lumbar-reference-v1.2.json">出典・単位・基準値のJSON</a></p></div>
+<p><a href="./lumbar-reference-v1.3.json">出典・単位・基準値のJSON</a></p></div>
 <div class="card"><span class="label">解剖学的な確認と限界</span>
-<p>典型的な腰椎では、上関節面は主に後内側向きの凹面、下関節面は主に前外側向きの凸面、椎弓根下切痕は上切痕より深いという特徴があります。今回はその方向性を形状に反映しましたが、寸法・接触面・椎間板の厚みは未検証です。</p>
+<p>典型的な腰椎では、上関節面は主に後内側向きの凹面、下関節面は主に前外側向きの凸面、椎弓根下切痕は上切痕より深いという特徴があります。その形状的特徴を参考に独自造形を試作しましたが、関節面の法線方向・実測曲率・隣接椎骨との接触適合性は未検証です。</p>
 <p>構造の照合資料：<a href="https://www.ncbi.nlm.nih.gov/books/NBK459278/" target="_blank" rel="noopener noreferrer">NCBI Bookshelf</a>・<a href="https://www.kenhub.com/en/library/anatomy/lumbar-vertebrae" target="_blank" rel="noopener noreferrer">Kenhub</a>（図版や他者の3Dデータは転用していません）。</p></div>
 <div class="card" id="reviewGrid" hidden><span class="label">実際の3Dから描画した4方向</span>
 <p>現在選択中の独自3Dを4方向から描画して取得します。高精細表示は選択中の椎骨を優先します。AI生成の完成イメージではありません。</p>
@@ -96,7 +96,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 <p>「新方式 v2.0」↔「従来方式 v1.4」を同じ角度で切り替えてください。特に上面の椎孔、椎体後縁、右側から見た椎弓根の連続性を確認します。</p></div>
 <div class="card"><span class="label">残る未達項目</span>
 <p>関節面の実測曲率・骨表面の非一様な起伏・椎体前縁の微細形態・実物の3Dとの位置合わせは未実装です。メッシュ検査合格は解剖学的完成を意味しません。</p></div>
-<div class="card"><span class="label">旧版を保全</span><p><a href="./cleanroom-l3-landmark-review-v2.0.html">断面新方式 v2.0</a> ／ <a href="./cleanroom-lumbar-l3-morphology-v1.4.html">旧方式 v1.4</a></p></div>
+<div class="card"><span class="label">旧版を保全</span><p><a href="./cleanroom-l3-landmark-review-v2.2.html">直前版 v2.2</a> ／ <a href="./cleanroom-l3-landmark-review-v2.0.html">断面新方式 v2.0</a> ／ <a href="./cleanroom-lumbar-l3-morphology-v1.4.html">旧方式 v1.4</a></p></div>
 </aside>
 </div>
 <footer>v2.3: 上関節面凹部と下関節面凸部の独立造形を試作。椎弓根局所の実メッシュ断面測定と誤合格防止を追加。CT再構成ではなく、実機・専門監査は未完了。旧版保全。</footer>

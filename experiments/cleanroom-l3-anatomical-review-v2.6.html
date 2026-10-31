@@ -301,7 +301,8 @@ function displayPedicleSweepV26(item){
   body.appendChild(tr);
  }
  info.textContent='左右それぞれ9断面。レイの交差2点：'+(p.allCrossSectionsHaveTwoRayHits?'全測定で確認':'一部異常')+
-  '。試験範囲の最小値は医学的な最狭部ではありません。教材完成：不合格。';
+  '。'+(p.anyMinimumAtSearchBoundary?'警告：少なくとも1か所の最小値が試験範囲の端にあり、探索範囲外にさらに小さい値がある可能性を除外できません。':'全最小値は試験範囲の内側です。')+
+  ' どちらも医学的な最狭部ではありません。教材完成：不合格。';
 }
 function displayFacetProxyV25(item){
  const summary=$('facetSummaryV25'),rows=$('facetRowsV25');

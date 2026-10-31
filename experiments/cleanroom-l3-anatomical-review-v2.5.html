@@ -36,7 +36,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 <section class="panel">
 <div id="viewer"><div id="status" class="status">3Dを初期化しています…</div></div>
 <div class="toolbar" aria-label="視点操作">
-<button data-view="anterior">前面</button><button data-view="posterior">後面</button><button data-view="right">右側</button><button data-view="superior">上面</button><button data-view="oblique" aria-pressed="true">斜め</button><button id="facetFocus">右関節面付近を拡大（参考）</button><button id="reset">初期位置</button><button id="compareViews">実3Dを4方向で比較</button>
+<button data-view="anterior">前面</button><button data-view="posterior">後面</button><button data-view="right">右側</button><button data-view="superior">上面</button><button data-view="oblique" aria-pressed="true">斜め</button><button id="facetFocus">右関節面付近を拡大（参考）</button><button id="facetROIShow" aria-pressed="false">4領域の測定範囲 OFF</button><button id="reset">初期位置</button><button id="compareViews">実3Dを4方向で比較</button>
 </div>
 <p>一本指で回転、二本指で拡大・移動。iPhoneではSafariのWebGL機能を利用します。</p><div class="toolbar" aria-label="表示範囲"><button data-stack="single" aria-pressed="true">L3単体</button><button data-stack="triple">L2–L4 3椎骨表示</button></div>
 <p>各骨の椎体・椎弓根・横突起・関節突起を部位別の独自数式から生成。実測標本の再現ではありません。</p>
@@ -78,7 +78,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #e4c98b;outline-offset:2p
 <div class="auditScroll"><table class="auditTable">
 <thead><tr><th>関節面周辺</th><th>法線 (X, Y, Z)</th><th>法線のばらつき</th><th>方向の符号</th></tr></thead>
 <tbody id="facetRowsV25"></tbody></table></div>
-<p>4か所は手作業で指定した局所領域（ROI）です。三角形の面積加重平均を使います。ばらつきは曲率ではありません。対象部位の独立した同定、CT/標本との面対応、実測曲率、接触適合は未検証です。方向の符号が一致しても教材合格にはしません。</p>
+<p>4か所は手作業で指定した局所領域（ROI）です。「4領域の測定範囲」をONにするとメッシュ計測に使用する半径1.2モデル単位の球状範囲を表示します（上関節面候補＝青、下関節面候補＝橙）。位置の妥当性が証明されたわけではありません。三角形の面積加重平均を使います。ばらつきは曲率ではありません。対象部位の独立した同定、CT/標本との面対応、実測曲率、接触適合は未検証です。方向の符号が一致しても教材合格にはしません。</p>
 </div>
 <div class="card"><span class="label">厳格な品質判定</span><p id="strictGate">3D生成後に表示します。</p>
 <p>4種類の椎孔・横突起寸法と左右椎弓根の4項目は、それぞれ独自の暫定±5%目標で検査。これは医学的な許容誤差ではありません。実物の輪郭、関節面の向き・曲率、隣接椎骨との接触は独立検証が必要です。</p></div>
@@ -173,7 +173,7 @@ function facetNormalProxy(positions,indices){
 }
 
 let worker=null,workerId=0,requestToken=0;
-let scene,camera,renderer,controls,model=null,neighbors=[],outlineMesh=null;
+let scene,camera,renderer,controls,model=null,neighbors=[],outlineMesh=null,facetROIGroup=null,showFacetROIs=false;
 let selectedLevel='L3',quality='high',stackMode='single',outline=false,currentView='oblique',currentTheme='dark',shapeVersion='loft24',finishStyle='bone';
 function updateSelectedButtons(selector,prop,value){
  document.querySelectorAll(selector).forEach(b=>b.setAttribute('aria-pressed',String(b.dataset[prop]===value)));
@@ -359,6 +359,7 @@ function installScene(levels){
  displayAnatomicalAudit(selected);
  displayPedicleGate(selected);
   displayFacetProxyV25(selected);
+  setFacetROIMarkers(showFacetROIs);
  const info=levels.map(x=>x.level+': '+x.triangles.toLocaleString('ja-JP')+'面').join(' ／ ');
  const loadedHigh=levels.some(x=>x.level===shown&&x.quality==='high');
  setStatus((shapeVersion==='loft24'?'寸法修正 v2.4':shapeVersion==='loft23'?'前版 v2.3':shapeVersion==='loft22'?'旧版 v2.2':shapeVersion==='loft'?'前々版 v2.0':shapeVersion==='contour'?'従来 v1.4':'旧寸法 v1.1')+' ｜ '+(stackMode==='triple'?'L2～L4':'単体 '+shown)+' ｜ '+info+
@@ -408,6 +409,33 @@ function setView(view){
  controls.target.set(0,-2.4,0);
  controls.update();
  updateSelectedButtons('[data-view]','view',view);
+}
+function setFacetROIMarkers(visible){
+ showFacetROIs=Boolean(visible);
+ const btn=$('facetROIShow');
+ btn.setAttribute('aria-pressed',String(showFacetROIs));
+ btn.textContent='4領域の測定範囲 '+(showFacetROIs?'ON':'OFF');
+ if(facetROIGroup){
+  scene.remove(facetROIGroup);
+  facetROIGroup.traverse(x=>{x.geometry?.dispose?.();x.material?.dispose?.()});
+  facetROIGroup=null;
+ }
+ if(!showFacetROIs||selectedLevel!=='L3'||stackMode!=='single'||shapeVersion!=='loft24')return;
+ facetROIGroup=new THREE.Group();
+ for(const r of [
+  {x:3.82,y:-5.1,z:4.2,color:0x65b5e7},
+  {x:-3.82,y:-5.1,z:4.2,color:0x65b5e7},
+  {x:5.87,y:-4.73,z:-3.06,color:0xedb26b},
+  {x:-5.87,y:-4.73,z:-3.06,color:0xedb26b}
+ ]){
+  const sphere=new THREE.Mesh(new THREE.SphereGeometry(1.2,18,12),
+   new THREE.MeshBasicMaterial({color:r.color,wireframe:true,transparent:true,opacity:.8,depthTest:false}));
+  sphere.position.set(r.x,r.y,r.z);facetROIGroup.add(sphere);
+  const dot=new THREE.Mesh(new THREE.SphereGeometry(.12,10,8),
+   new THREE.MeshBasicMaterial({color:r.color,depthTest:false}));
+  dot.position.set(r.x,r.y,r.z);facetROIGroup.add(dot);
+ }
+ scene.add(facetROIGroup);
 }
 function focusFacet(){
  if(stackMode==='triple'){
@@ -497,6 +525,7 @@ try {
  }));
  $('outlineToggle').addEventListener('click',e=>{outline=!outline;e.currentTarget.setAttribute('aria-pressed',String(outline));e.currentTarget.textContent=outline?'輪郭補助 ON':'輪郭補助 OFF';if(model)rebuild()});
  $('facetFocus').addEventListener('click',focusFacet);
+ $('facetROIShow').addEventListener('click',()=>setFacetROIMarkers(!showFacetROIs));
  $('reset').addEventListener('click',()=>setView('oblique'));
  $('compareViews').addEventListener('click',captureViews);
  window.addEventListener('resize',resize);

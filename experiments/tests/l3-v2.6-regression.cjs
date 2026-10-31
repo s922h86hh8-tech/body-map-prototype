@@ -37,6 +37,8 @@ for(const q of ['standard','high']){
  assert.equal(p.measuredAxisNormalIsthmus,false);
  assert.equal(p.referenceSpecimenCompared,false);
  assert.equal(p.medicallyApproved,false);
+ assert.equal(p.anyMinimumAtSearchBoundary,true,'scan minimum must warn at search boundary for current geometry');
+ assert(p.sides.some(x=>x.minimumWidthAtSearchBoundary),'boundary flag must be shown');
  for(const s of p.sides){
   assert(Number.isFinite(s.sampledMinWidthMM)&&Number.isFinite(s.sampledMinHeightMM));
   assert(s.samplesWidth===9&&s.samplesHeight===9);

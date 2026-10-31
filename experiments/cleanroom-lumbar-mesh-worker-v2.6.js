@@ -1004,9 +1004,12 @@ function pedicleFixedYSweepV26(mesh){
     baselineWidthMM:baseline?.widthMM??null,baselineHeightMM:baseline?.heightMM??null,
     sampledMinWidthMM:Number.isFinite(minW.value)?minW.value:null,sampledMinWidthY:minW.y,
     sampledMinHeightMM:Number.isFinite(minH.value)?minH.value:null,sampledMinHeightY:minH.y,
-    widthAndHeightMinNotSamePlane:minW.y!==minH.y};
+    widthAndHeightMinNotSamePlane:minW.y!==minH.y,
+    minimumWidthAtSearchBoundary:minW.y===-3.75||minW.y===-1.75,
+    minimumHeightAtSearchBoundary:minH.y===-3.75||minH.y===-1.75};
  });
  return {rows,sides,rangeY:[-3.75,-1.75],stepY:.25,
+   anyMinimumAtSearchBoundary:sides.some(s=>s.minimumWidthAtSearchBoundary||s.minimumHeightAtSearchBoundary),
    allCrossSectionsHaveTwoRayHits:rows.every(x=>x.measurements.every(m=>m.widthHits===2&&m.heightHits===2)),
    method:'Finished mesh: at each fixed Y, X-ray width near pedicle and Z-ray height. Trial range only.',
    measuredPedicleAnatomicAxis:false,measuredAxisNormalIsthmus:false,referenceSpecimenCompared:false,

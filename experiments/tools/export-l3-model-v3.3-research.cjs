@@ -10,7 +10,7 @@ if(!outfile||!['standard','high'].includes(quality)){
  console.error('Usage: node experiments/tools/export-l3-model.cjs output.obj [standard|high]');
  process.exit(2);
 }
-const file=path.resolve(__dirname,'..','cleanroom-lumbar-mesh-worker-v3.3 research candidate.js');
+const file=path.resolve(__dirname,'..','cleanroom-lumbar-mesh-worker-v3.3-research.js');
 let output=null;
 const ctx={self:{postMessage:d=>{output=d}},console,Date,Math};
 vm.runInNewContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});

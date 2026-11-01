@@ -1,0 +1,87 @@
+name: L3 research v3.3 spinous hypothesis vs two CT cases (NOT clinical)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths:
+      - '.github/workflows/l3-v33-spinous-research-comparison.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_id: verse005
+            sha256: d56af4e19b21f1335b156e66ef3f7d487be11fb3e2b545496f0675050a30f2b5
+          - case_id: verse008
+            sha256: 00cb18b24858f9984c98a0379e4e0e9e063b26848ac9ce96c7fa637856fcc8f3
+    env:
+      CASE_ID: ${{ matrix.case_id }}
+      EXPECTED_SHA: ${{ matrix.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install local-only comparison dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
+      - name: Export previous and candidate author-created meshes
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/l3-baseline.obj" high
+          node experiments/tools/export-l3-model-v3.3-research.cjs "$RUNNER_TEMP/l3-candidate.obj" high
+      - name: Download checksum-verified public VerSe mask to temporary runner space
+        run: |
+          curl --fail --location --retry 2 --connect-timeout 20 --max-time 120 --silent --show-error \
+            "https://huggingface.co/datasets/MedOtter/VERSE20/resolve/main/VERSE20/01_training/$CASE_ID/${CASE_ID}_seg.nii.gz" \
+            --output "$RUNNER_TEMP/l3-reference.nii.gz"
+          echo "$EXPECTED_SHA  $RUNNER_TEMP/l3-reference.nii.gz" | sha256sum -c -
+      - name: Measure baseline against SAME reference and sample settings
+        run: |
+          python experiments/tools/compare-l3-reference-v3.2.py \
+            --model "$RUNNER_TEMP/l3-baseline.obj" \
+            --seg "$RUNNER_TEMP/l3-reference.nii.gz" --label 22 \
+            --samples 6000 --out "$RUNNER_TEMP/l3-base-private.json"
+      - name: Measure posterior length candidate, WITHOUT auto approval
+        run: |
+          python experiments/tools/compare-l3-reference-v3.2.py \
+            --model "$RUNNER_TEMP/l3-candidate.obj" \
+            --seg "$RUNNER_TEMP/l3-reference.nii.gz" --label 22 \
+            --samples 6000 --out "$RUNNER_TEMP/l3-candidate-private.json"
+      - name: Emit only aggregate differences and warnings
+        run: |
+          python - <<'PY'
+          import json,os,trimesh
+          from pathlib import Path
+          folder=Path(os.environ['RUNNER_TEMP'])
+          a=json.loads((folder/'l3-base-private.json').read_text())
+          b=json.loads((folder/'l3-candidate-private.json').read_text())
+          reference=a['reference']
+          posterior=lambda x:x['reference_surface_missing_region_proxies']['regions']['posterior_y_lt_minus8']
+          metrics=lambda x:{'bidirectional_p95_mm':x['bidirectional_surface_error']['p95_mm'],
+             'ref_to_model_p95_mm':x['reference_to_model_error']['p95_mm'],
+             'model_to_ref_p95_mm':x['model_to_reference_error']['p95_mm'],
+             'posterior_spatial_bin_p95_mm':posterior(x)['p95_mm'],
+             'orientation_ambiguity':x['registration']['possible_orientation_ambiguity']}
+          mb=trimesh.load(folder/'l3-baseline.obj',force='mesh',process=False)
+          mc=trimesh.load(folder/'l3-candidate.obj',force='mesh',process=False)
+          am,bm=metrics(a),metrics(b)
+          diff={k:round(bm[k]-am[k],3) for k in am if type(am[k]) is not bool}
+          print(json.dumps({'case':os.environ['CASE_ID'],
+            'candidate_hypothesis':'extend posterior spinous-process length; no anatomical approval',
+            'baseline':am,'candidate':bm,'candidate_minus_baseline':diff,
+            'model_volume_baseline_mm3':round(abs(mb.volume)),
+            'model_volume_candidate_mm3':round(abs(mc.volume)),
+            'reference_L3_label_voxels':reference['label_voxels'],
+            'provisional_comparison_only':True,'registration_expert_verified':False,
+            'facet_congruence_verified':False,'anatomy_approved':False},ensure_ascii=False))
+          PY
+      - name: Delete temporary CT data, mesh and private reports; NEVER upload artifacts
+        if: always()
+        run: rm -f "$RUNNER_TEMP/l3-baseline.obj" "$RUNNER_TEMP/l3-candidate.obj" "$RUNNER_TEMP/l3-reference.nii.gz" "$RUNNER_TEMP/l3-base-private.json" "$RUNNER_TEMP/l3-candidate-private.json"

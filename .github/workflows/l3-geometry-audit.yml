@@ -1,0 +1,40 @@
+name: L3 geometry audit (non-clinical)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths:
+      - '.github/workflows/l3-geometry-audit.yml'
+      - 'experiments/cleanroom-lumbar-mesh-worker-v2.4.js'
+      - 'experiments/cleanroom-lumbar-mesh-worker-v2.6.js'
+      - 'experiments/cleanroom-lumbar-mesh-worker-v2.7.js'
+      - 'experiments/cleanroom-l3-anatomical-review-v2.5.html'
+      - 'experiments/cleanroom-l3-anatomical-review-v2.6.html'
+      - 'experiments/cleanroom-l3-anatomical-review-v2.7.html'
+      - 'experiments/tests/**'
+      - 'experiments/tools/compare-l3-reference-v2.9.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-and-regression:
+    name: Technical regression (no anatomical approval)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check 3D mesh regressions and no automatic anatomical approval
+        run: |
+          node experiments/tests/l3-v2.5-regression.cjs
+          node experiments/tests/l3-v2.6-regression.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install technical comparison dependencies
+        run: |
+          python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
+      - name: Check registration via synthetic geometry, no CT data downloaded
+        run: |
+          python experiments/tools/compare-l3-reference-v2.9.py --self-test

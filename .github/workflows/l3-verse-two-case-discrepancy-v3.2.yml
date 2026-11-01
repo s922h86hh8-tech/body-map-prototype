@@ -1,0 +1,94 @@
+name: L3 two-case CT discrepancy localization (not clinical)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths:
+      - '.github/workflows/l3-verse-two-case-discrepancy-v3.2.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare-two-l3-segmentations:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_id: verse005
+            sha256: d56af4e19b21f1335b156e66ef3f7d487be11fb3e2b545496f0675050a30f2b5
+          - case_id: verse008
+            sha256: 00cb18b24858f9984c98a0379e4e0e9e063b26848ac9ce96c7fa637856fcc8f3
+    env:
+      CASE_ID: ${{ matrix.case_id }}
+      EXPECTED_SHA: ${{ matrix.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install local technical dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
+      - name: Export exact prior v2.4 author-created L3 shape
+        run: node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/l3-v24.obj" high
+      - name: Download and checksum one public mask; never store in repo
+        run: |
+          curl --fail --location --retry 2 --connect-timeout 20 --max-time 120 --silent --show-error \
+            "https://huggingface.co/datasets/MedOtter/VERSE20/resolve/main/VERSE20/01_training/$CASE_ID/${CASE_ID}_seg.nii.gz" \
+            --output "$RUNNER_TEMP/l3-reference.nii.gz"
+          echo "$EXPECTED_SHA  $RUNNER_TEMP/l3-reference.nii.gz" | sha256sum -c -
+      - name: Compare unrestricted vs anatomical-axis-first alignment
+        run: |
+          python experiments/tools/compare-l3-reference-v3.2.py \
+            --model "$RUNNER_TEMP/l3-v24.obj" \
+            --seg "$RUNNER_TEMP/l3-reference.nii.gz" --label 22 \
+            --samples 6000 --out "$RUNNER_TEMP/private-report.json"
+      - name: Report aggregate diagnostic measurements, no clinical claims
+        run: |
+          python -c "import json,os;d=json.load(open(os.environ['RUNNER_TEMP']+'/private-report.json')); a=d['anatomically_constrained_orientation_candidate']; b=d['registration']; print(json.dumps({'case':os.environ['CASE_ID'],'unrestricted_p95_mm':d['bidirectional_surface_error']['p95_mm'],'unrestricted_rms_mm':d['bidirectional_surface_error']['rms_mm'],'unrestricted_rotation_degrees':b['rotation_from_model_axes_degrees'],'orientation_ambiguous':b['possible_orientation_ambiguity'],'ras_axis_initialization_p95_mm':a['p95_mm'],'ras_axis_initialization_rms_mm':a['rms_mm'],'ras_candidate_rotation_degrees':a['rotation_degrees'],'ras_candidate_exceeds_30deg':a['orientation_over_30_degrees'],'ras_region_proxies':a['model_coordinate_roi_errors'],'expert_verified':False,'educational_anatomy_approval':False},ensure_ascii=False))"
+      - name: Isolate geometry versus mask volume and directional surface errors
+        run: |
+          python - <<'PY'
+          import json,os,math,trimesh
+          folder=os.environ['RUNNER_TEMP']
+          report=json.load(open(folder+'/private-report.json'))
+          model=trimesh.load(folder+'/l3-v24.obj',force='mesh',process=False)
+          ref=report['reference']
+          voxel_volume=math.prod(ref['voxel_spacing_mm'])
+          reference_volume=ref['label_voxels']*voxel_volume
+          model_volume=abs(float(model.volume))
+          print(json.dumps({
+            'diagnostic':'UNVALIDATED SINGLE REFERENCE CASE',
+            'case':os.environ['CASE_ID'],
+            'reference_label_voxels':ref['label_voxels'],
+            'reference_volume_mm3':round(reference_volume),
+            'model_volume_mm3':round(model_volume),
+            'reference_to_model_volume_ratio':round(reference_volume/model_volume,3),
+            'model_to_reference_p95_mm':report['model_to_reference_error']['p95_mm'],
+            'reference_to_model_p95_mm':report['reference_to_model_error']['p95_mm'],
+            'model_to_reference_rms_mm':report['model_to_reference_error']['rms_mm'],
+            'reference_to_model_rms_mm':report['reference_to_model_error']['rms_mm'],
+            'expert_registration_verified':False,
+            'anatomical_approval':False
+          }))
+          PY
+      - name: Identify broad CT reference surface discrepancy locations
+        run: |
+          python - <<'PY'
+          import json,os
+          r=json.load(open(os.environ['RUNNER_TEMP']+'/private-report.json'))
+          p=r['reference_surface_missing_region_proxies']
+          print(json.dumps({
+            'case':os.environ['CASE_ID'],
+            'spatial_bins_not_anatomical_regions':p['regions'],
+            'xyz_percentile_extent_comparison_mm':p['extent_percentiles'],
+            'registration_expert_verified':False,
+            'anatomical_approval':False
+          },ensure_ascii=False))
+          PY
+      - name: Erase data and private report (no data artifacts)
+        if: always()
+        run: rm -f "$RUNNER_TEMP/l3-v24.obj" "$RUNNER_TEMP/l3-reference.nii.gz" "$RUNNER_TEMP/private-report.json"

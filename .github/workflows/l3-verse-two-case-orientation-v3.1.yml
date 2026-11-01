@@ -49,6 +49,32 @@ jobs:
       - name: Report aggregate diagnostic measurements, no clinical claims
         run: |
           python -c "import json,os;d=json.load(open(os.environ['RUNNER_TEMP']+'/private-report.json')); a=d['anatomically_constrained_orientation_candidate']; b=d['registration']; print(json.dumps({'case':os.environ['CASE_ID'],'unrestricted_p95_mm':d['bidirectional_surface_error']['p95_mm'],'unrestricted_rms_mm':d['bidirectional_surface_error']['rms_mm'],'unrestricted_rotation_degrees':b['rotation_from_model_axes_degrees'],'orientation_ambiguous':b['possible_orientation_ambiguity'],'ras_axis_initialization_p95_mm':a['p95_mm'],'ras_axis_initialization_rms_mm':a['rms_mm'],'ras_candidate_rotation_degrees':a['rotation_degrees'],'ras_candidate_exceeds_30deg':a['orientation_over_30_degrees'],'ras_region_proxies':a['model_coordinate_roi_errors'],'expert_verified':False,'educational_anatomy_approval':False},ensure_ascii=False))"
+      - name: Isolate geometry versus mask volume and directional surface errors
+        run: |
+          python - <<'PY'
+          import json,os,math,trimesh
+          folder=os.environ['RUNNER_TEMP']
+          report=json.load(open(folder+'/private-report.json'))
+          model=trimesh.load(folder+'/l3-v24.obj',force='mesh',process=False)
+          ref=report['reference']
+          voxel_volume=math.prod(ref['voxel_spacing_mm'])
+          reference_volume=ref['label_voxels']*voxel_volume
+          model_volume=abs(float(model.volume))
+          print(json.dumps({
+            'diagnostic':'UNVALIDATED SINGLE REFERENCE CASE',
+            'case':os.environ['CASE_ID'],
+            'reference_label_voxels':ref['label_voxels'],
+            'reference_volume_mm3':round(reference_volume),
+            'model_volume_mm3':round(model_volume),
+            'reference_to_model_volume_ratio':round(reference_volume/model_volume,3),
+            'model_to_reference_p95_mm':report['model_to_reference_error']['p95_mm'],
+            'reference_to_model_p95_mm':report['reference_to_model_error']['p95_mm'],
+            'model_to_reference_rms_mm':report['model_to_reference_error']['rms_mm'],
+            'reference_to_model_rms_mm':report['reference_to_model_error']['rms_mm'],
+            'expert_registration_verified':False,
+            'anatomical_approval':False
+          }))
+          PY
       - name: Erase data and private report (no data artifacts)
         if: always()
         run: rm -f "$RUNNER_TEMP/l3-v24.obj" "$RUNNER_TEMP/l3-reference.nii.gz" "$RUNNER_TEMP/private-report.json"

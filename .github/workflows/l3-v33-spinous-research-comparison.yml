@@ -4,6 +4,8 @@ on:
     branches: [cleanroom-pelvis-v0.1]
     paths:
       - '.github/workflows/l3-v33-spinous-research-comparison.yml'
+      - 'experiments/cleanroom-lumbar-mesh-worker-v3.3-research.js'
+      - 'experiments/tools/export-l3-model-v3.3-research.cjs'
   workflow_dispatch:
 permissions:
   contents: read

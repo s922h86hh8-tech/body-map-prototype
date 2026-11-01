@@ -1,0 +1,13 @@
+# Locally held anatomical reference data and generated validation outputs.
+# Patient/CT files, reference-derived surfaces, and internal audit results MUST NOT be committed.
+# Scripts in experiments/tools operate on local paths only.
+experiments/local-validation-data/
+experiments/local-validation-results/
+experiments/generated-reference-comparison/
+*.nii
+*.nii.gz
+*.nrrd
+*.mha
+*.mhd
+*.dcm
+.DS_Store

@@ -12,6 +12,7 @@ on:
       - 'experiments/cleanroom-l3-anatomical-review-v2.7.html'
       - 'experiments/tests/**'
       - 'experiments/tools/compare-l3-reference-v2.9.py'
+      - 'experiments/tools/compare-l3-reference-v3.0.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -37,4 +38,5 @@ jobs:
           python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
       - name: Check registration via synthetic geometry, no CT data downloaded
         run: |
-          python experiments/tools/compare-l3-reference-v2.9.py --self-test
+          python experiments/tools/compare-l3-reference-v3.0.py --self-test
+          python experiments/tools/compare-l3-reference-v3.0.py --self-test-mask

@@ -1,0 +1,48 @@
+name: L3 single-reference comparison (diagnostic only)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths:
+      - '.github/workflows/l3-verse-single-case-diagnostic.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verse20-subject-008:
+    name: One public segmented L3 vs authored model
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install offline analysis dependencies (no CT is committed)
+        run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
+      - name: Export existing L3 v2.4 geometry (no shape changes)
+        run: node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/l3-v24-authored.obj" high
+      - name: Download exactly one published VerSe20 vertebra segmentation mask
+        env:
+          DATA_SOURCE: https://huggingface.co/datasets/MedOtter/VERSE20/resolve/main/VERSE20/01_training/verse008/verse008_seg.nii.gz
+          SHA256_EXPECTED: 00cb18b24858f9984c98a0379e4e0e9e063b26848ac9ce96c7fa637856fcc8f3
+        run: |
+          curl --fail --location --retry 2 --connect-timeout 20 --max-time 120 --silent --show-error "$DATA_SOURCE" --output "$RUNNER_TEMP/verse008_seg.nii.gz"
+          echo "$SHA256_EXPECTED  $RUNNER_TEMP/verse008_seg.nii.gz" | sha256sum -c -
+          # No source or derived surface mesh may be committed or published to GitHub Pages.
+      - name: Diagnose registration against L3 label 22
+        run: |
+          python experiments/tools/compare-l3-reference-v3.0.py \
+            --model "$RUNNER_TEMP/l3-v24-authored.obj" \
+            --seg "$RUNNER_TEMP/verse008_seg.nii.gz" \
+            --label 22 \
+            --samples 6000 \
+            --out "$RUNNER_TEMP/l3-verse008-private.json"
+      - name: Show non-identifying technical summary only
+        run: |
+          python -c "import json,os; p=os.environ['RUNNER_TEMP']+'/l3-verse008-private.json';r=json.load(open(p));print(json.dumps({'diagnostic':'ONE CASE ONLY / NO ANATOMICAL APPROVAL','p95_mm':r['bidirectional_surface_error']['p95_mm'],'rms_mm':r['bidirectional_surface_error']['rms_mm'],'voxel_spacing_mm':r['reference']['voxel_spacing_mm'],'label_voxels':r['reference']['label_voxels'],'registration_ambiguous':r['registration']['possible_orientation_ambiguity'],'specimen_aligned_by_expert':False},ensure_ascii=False))"
+      - name: Delete temporary reference files
+        if: always()
+        run: rm -f "$RUNNER_TEMP/verse008_seg.nii.gz" "$RUNNER_TEMP/l3-v24-authored.obj" "$RUNNER_TEMP/l3-verse008-private.json"

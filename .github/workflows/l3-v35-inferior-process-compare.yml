@@ -1,0 +1,87 @@
+name: L3 v3.5 inferior process CT differential (RESEARCH ONLY)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-v35-inferior-process-compare.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  paired-reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_id: verse005
+            sha256: d56af4e19b21f1335b156e66ef3f7d487be11fb3e2b545496f0675050a30f2b5
+          - case_id: verse008
+            sha256: 00cb18b24858f9984c98a0379e4e0e9e063b26848ac9ce96c7fa637856fcc8f3
+    env:
+      CASE_ID: ${{ matrix.case_id }}
+      EXPECTED_SHA: ${{ matrix.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
+      - name: Produce three project-authored meshes
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/v24.obj" high
+          node experiments/tools/export-l3-model-v3.3-research.cjs "$RUNNER_TEMP/v33.obj" high
+          node experiments/tools/export-l3-model-v3.5-research.cjs "$RUNNER_TEMP/v35.obj" high
+      - name: Download public CT reference, verify SHA, never commit data
+        run: |
+          curl --fail --location --retry 2 --connect-timeout 20 --max-time 120 --silent --show-error \
+            "https://huggingface.co/datasets/MedOtter/VERSE20/resolve/main/VERSE20/01_training/$CASE_ID/${CASE_ID}_seg.nii.gz" \
+            --output "$RUNNER_TEMP/ref.nii.gz"
+          echo "$EXPECTED_SHA  $RUNNER_TEMP/ref.nii.gz" | sha256sum -c -
+      - name: v3.3 from v2.4 baseline with fixed position
+        run: |
+          python experiments/tools/localize-l3-discrepancy-v3.4.py \
+            --baseline "$RUNNER_TEMP/v24.obj" --candidate "$RUNNER_TEMP/v33.obj" \
+            --seg "$RUNNER_TEMP/ref.nii.gz" --label 22 --samples 6000 \
+            --out "$RUNNER_TEMP/base-versus-33.json"
+      - name: v3.5 from SAME v2.4 baseline and alignment
+        run: |
+          python experiments/tools/localize-l3-discrepancy-v3.4.py \
+            --baseline "$RUNNER_TEMP/v24.obj" --candidate "$RUNNER_TEMP/v35.obj" \
+            --seg "$RUNNER_TEMP/ref.nii.gz" --label 22 --samples 6000 \
+            --out "$RUNNER_TEMP/base-versus-35.json"
+      - name: Print controlled differential without anatomic labels or patient data
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          folder=Path(os.environ['RUNNER_TEMP'])
+          a=json.loads((folder/'base-versus-33.json').read_text())
+          b=json.loads((folder/'base-versus-35.json').read_text())
+          if a['registration']!=b['registration'] or a['source']!=b['source']:
+              raise ValueError('Not a controlled baseline/registration comparison')
+          selected=['entire_ct_surface','anterior_y_gt_0','posterior_y_lt_minus8',
+                    'posterior_and_upper','posterior_and_middle','posterior_and_lower',
+                    'lower_z_lt_minus8','lower_z_lt_minus15',
+                    'upper_z_gt_8','lateral_abs_x_gt22']
+          result={}
+          for name in selected:
+              av=a['spatial_bins_not_anatomical_regions'].get(name,{}).get('candidate',{})
+              bv=b['spatial_bins_not_anatomical_regions'].get(name,{}).get('candidate',{})
+              if not av or not bv: continue
+              result[name]={'v33_p95_mm':av['p95_mm'],'v35_p95_mm':bv['p95_mm'],
+                            'v35_minus_v33_p95_mm':round(bv['p95_mm']-av['p95_mm'],3),
+                            'v33_over10_fraction':av['over_10mm_fraction'],
+                            'v35_over10_fraction':bv['over_10mm_fraction']}
+          print(json.dumps({'case':os.environ['CASE_ID'],
+                'experimental_change':'inferior articular process axial extent only',
+                'candidate_comparison':result,
+                'CT_alignment':'fixed at authored v2.4 baseline',
+                'anatomical_regions_segmented':False,
+                'registration_expert_approved':False,'clinical_or_anatomy_approved':False},
+                ensure_ascii=False))
+          PY
+      - name: Remove CT mask and generated meshes and local reports
+        if: always()
+        run: rm -f "$RUNNER_TEMP/ref.nii.gz" "$RUNNER_TEMP/v24.obj" "$RUNNER_TEMP/v33.obj" "$RUNNER_TEMP/v35.obj" "$RUNNER_TEMP/base-versus-33.json" "$RUNNER_TEMP/base-versus-35.json"

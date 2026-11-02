@@ -1,0 +1,84 @@
+name: L3 v4.6 CT axis-consistent pose screen (RESEARCH ONLY)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-v46-axis-constrained-comparison.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
+      - run: python experiments/tools/compare-l3-pose-constrained-v4.6.py --self-test
+  real-mask-screen:
+    needs: synthetic
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        case_index: [0, 54, 65, 87]
+    env:
+      CASE_INDEX: ${{ matrix.case_index }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip
+      - name: Export three preserved project-authored mesh variants
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/v24.obj" high
+          node experiments/tools/export-l3-model-v3.3-research.cjs "$RUNNER_TEMP/v33.obj" high
+          node experiments/tools/export-l3-model-v3.5-research.cjs "$RUNNER_TEMP/v35.obj" high
+      - name: Read selected public L3 mask by HTTP ranges; no CT image
+        run: |
+          python - <<'PY'
+          import os,requests,re,hashlib,json
+          from remotezip import RemoteZip
+          rec=requests.get('https://zenodo.org/api/records/7181338',timeout=35).json()
+          file=next(x for x in rec['files'] if x['key']=='L1-L5FineSegMix-663case.zip')
+          if file['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('source archive checksum metadata changed')
+          with RemoteZip(file['links'].get('self') or file['links'].get('content')) as z:
+              entries=sorted([x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                     and not x.filename.startswith('__MACOSX/')],key=lambda x:(x.file_size,x.filename))
+              if len(entries)!=108:raise ValueError('unexpected archive inventory')
+              data=z.read(entries[int(os.environ['CASE_INDEX'])])
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'mask.nii.gz'),'wb') as out:out.write(data)
+          print('MASK_CHECKSUM',json.dumps({'archive_size_sorted_index':os.environ['CASE_INDEX'],
+                 'sha256':hashlib.sha256(data).hexdigest(),'name_map_verified':False}))
+          PY
+      - name: Compare with prior-constrained CT/model RAS axes, keeping 180-degree as negative control
+        run: |
+          python experiments/tools/compare-l3-pose-constrained-v4.6.py \
+            --mask "$RUNNER_TEMP/mask.nii.gz" \
+            --v24 "$RUNNER_TEMP/v24.obj" --v33 "$RUNNER_TEMP/v33.obj" \
+            --v35 "$RUNNER_TEMP/v35.obj" --samples 5000 \
+            --out "$RUNNER_TEMP/v46-private.json"
+      - name: Print aggregate non-identifying audit and warnings only
+        run: |
+          python - <<'PY'
+          import os,json
+          from pathlib import Path
+          x=json.loads((Path(os.environ['RUNNER_TEMP'])/'v46-private.json').read_text())
+          metrics=x.get('metrics',{})
+          print('L3_V46_SUMMARY',json.dumps({
+            'case_index':os.environ['CASE_INDEX'],
+            'status':x['status'],
+            'source_axis_codes':x['header']['voxel_array_axis_codes'],
+            'pose':x.get('pose'),
+            'border_contact':x['crop']['touches_original_crop_boundary'],
+            'ct_to_model_p95_mm':{k:v['all']['p95_mm'] for k,v in metrics.items()},
+            'numeric_label_5_p95_mm':{k:v['numeric_only']['5'].get('p95_mm') for k,v in metrics.items()},
+            'expert_approval':False,'anatomy_approved':False},ensure_ascii=False))
+          PY
+      - name: Erase all temporary CT segmentation and derived meshes
+        if: always()
+        run: rm -f "$RUNNER_TEMP/mask.nii.gz" "$RUNNER_TEMP/v24.obj" "$RUNNER_TEMP/v33.obj" "$RUNNER_TEMP/v35.obj" "$RUNNER_TEMP/v46-private.json"

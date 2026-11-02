@@ -1,0 +1,95 @@
+name: L3 v4.0 crop-cap sensitivity (four LumASe cases; research only)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-cropcap-effect-v4.0.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  four-case-cropcap-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        case_index: [0, 54, 65, 87]
+    env:
+      CASE_INDEX: ${{ matrix.case_index }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install local comparison dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip
+      - name: Export original and both research shapes
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/v24.obj" high
+          node experiments/tools/export-l3-model-v3.3-research.cjs "$RUNNER_TEMP/v33.obj" high
+          node experiments/tools/export-l3-model-v3.5-research.cjs "$RUNNER_TEMP/v35.obj" high
+      - name: Read indexed L3 segmentation only, by HTTP byte range
+        run: |
+          python - <<'PY'
+          import os,requests,re,hashlib,json
+          from remotezip import RemoteZip
+          metadata=requests.get('https://zenodo.org/api/records/7181338',timeout=40).json()
+          archive=next(x for x in metadata['files'] if x['key']=='L1-L5FineSegMix-663case.zip')
+          if archive['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('Archive checksum metadata mismatch')
+          url=archive['links'].get('self') or archive['links'].get('content')
+          with RemoteZip(url) as z:
+              files=sorted([x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                             and not x.filename.startswith('__MACOSX/')],
+                           key=lambda f:(f.file_size,f.filename))
+              if len(files)!=108:raise ValueError('Archive mask count changed')
+              item=files[int(os.environ['CASE_INDEX'])]
+              if item.file_size>40_000_000:raise ValueError('Unexpected large file')
+              blob=z.read(item)
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'reference.nii.gz'),'wb') as f:f.write(blob)
+          print('MASK_HASH',json.dumps({'selected_index':os.environ['CASE_INDEX'],
+                         'SHA256':hashlib.sha256(blob).hexdigest(), 'size_bytes':len(blob)}))
+          PY
+      - name: Previous v3.8 unfiltered-crop comparison
+        run: |
+          python experiments/tools/compare-l3-numeric-subregions-v3.8.py \
+            --mask "$RUNNER_TEMP/reference.nii.gz" --v24 "$RUNNER_TEMP/v24.obj" \
+            --v33 "$RUNNER_TEMP/v33.obj" --v35 "$RUNNER_TEMP/v35.obj" \
+            --samples 7000 --out "$RUNNER_TEMP/v38.json"
+      - name: v4.0 border triangle filtered-crop comparison
+        run: |
+          python experiments/tools/compare-l3-numeric-subregions-v4.0.py \
+            --mask "$RUNNER_TEMP/reference.nii.gz" --v24 "$RUNNER_TEMP/v24.obj" \
+            --v33 "$RUNNER_TEMP/v33.obj" --v35 "$RUNNER_TEMP/v35.obj" \
+            --samples 7000 --out "$RUNNER_TEMP/v40.json"
+      - name: Print grouped errors and filter effect without personal data
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          temp=Path(os.environ['RUNNER_TEMP'])
+          old=json.loads((temp/'v38.json').read_text())
+          new=json.loads((temp/'v40.json').read_text())
+          def collect(d):
+              out={}
+              for k in ['v24','v33','v35']:
+                  out[k]={'whole_p95_mm':d['results'][k]['all'].get('p95_mm'),
+                          'labels_p95_mm':{str(i):d['results'][k]['by_numeric_label_only'][str(i)].get('p95_mm')
+                          for i in range(1,8)}}
+              return out
+          oldall=old['results']['v24']['all']['p95_mm']
+          newall=new['results']['v24']['all']['p95_mm']
+          print('L3_CROPCAP_SENSITIVITY '+json.dumps({
+             'case_index':os.environ['CASE_INDEX'],
+             'crop_boundary_touched':new['reference_crop_diagnostic']['touches_original_crop_boundary'],
+             'excluded_mesh_triangle_fraction':new['reference_crop_diagnostic']['fraction_of_reference_triangles_excluded'],
+             'v38_unfiltered':collect(old),
+             'v40_filtered':collect(new),
+             'v24_absolute_P95_change_mm':round(newall-oldall,3),
+             'expert_anatomy_registered':False,
+             'numeric_to_anatomy_legend_verified':False,
+             'anatomy_approved':False},ensure_ascii=False))
+          PY
+      - name: Remove temporary segmentation, meshes and full local reports
+        if: always()
+        run: rm -f "$RUNNER_TEMP/reference.nii.gz" "$RUNNER_TEMP/v24.obj" "$RUNNER_TEMP/v33.obj" "$RUNNER_TEMP/v35.obj" "$RUNNER_TEMP/v38.json" "$RUNNER_TEMP/v40.json"

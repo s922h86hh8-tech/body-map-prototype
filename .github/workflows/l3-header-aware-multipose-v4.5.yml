@@ -2,7 +2,7 @@ name: L3 v4.5 source-header-aware pose audit (two contrasting cases)
 on:
   push:
     branches: [cleanroom-pelvis-v0.1]
-    paths: ['.github/workflows/l3-multi-pose-numeric-v4.5.yml']
+    paths: ['.github/workflows/l3-header-aware-multipose-v4.5.yml']
   workflow_dispatch:
 permissions:
   contents: read

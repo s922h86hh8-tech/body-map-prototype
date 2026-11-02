@@ -1,0 +1,24 @@
+name: L3 v3.6 labeled-region screen (synthetic only, NOT clinical)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths:
+      - '.github/workflows/l3-subregion-screen-v3.6.yml'
+      - 'experiments/tools/compare-l3-labeled-regions-v3.6.py'
+      - 'experiments/tools/compare-l3-reference-v3.2.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-seven-region-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install inspection dependencies (no CT data)
+        run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
+      - name: Verify 7 labeled exterior regions, fixed baseline registration, and fail-closed mappings
+        run: python experiments/tools/compare-l3-labeled-regions-v3.6.py --self-test

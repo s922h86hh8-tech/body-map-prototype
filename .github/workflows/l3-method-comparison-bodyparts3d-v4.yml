@@ -1,0 +1,22 @@
+name: L3 method C official BodyParts3D v4 metadata and OBJ audit (not anatomy approved)
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths:
+      - '.github/workflows/l3-method-comparison-bodyparts3d-v4.yml'
+      - 'experiments/tools/probe-bodyparts3d-v4-l3-reference.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  official-source-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install source mesh inspection utilities
+        run: python -m pip install --disable-pip-version-check numpy scipy trimesh remotezip requests
+      - name: Inspect L3 official version 4 dataset index and reduced OBJ mesh, temporary only
+        run: python experiments/tools/probe-bodyparts3d-v4-l3-reference.py

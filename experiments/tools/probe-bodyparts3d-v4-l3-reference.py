@@ -30,7 +30,7 @@ print('L3_ATOMIC_ELEMENT_IDS',json.dumps(sorted(ids),ensure_ascii=False))
 source_reps=ids
 with RemoteZip(zip_url) as z:
     all_members=z.infolist()
-    matches=[x for x in all_members if any(re.search(r'[/]'+re.escape(str(id))+r'[.]obj
+    matches=[x for x in all_members if any(x.filename.lower().endswith('/'+element_id.lower()+'.obj') for element_id in ids)]
     print('ARCHIVE_INDEX',json.dumps({'file_entries':len(all_members),
       'candidate_entries':[{'name':x.filename,'size_bytes':x.file_size} for x in matches[:30]],
       'matched_official_index':any(any(id+'.obj' in x.filename for id in source_reps) for x in matches),

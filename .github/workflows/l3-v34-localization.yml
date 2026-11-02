@@ -1,0 +1,89 @@
+name: L3 v3.4 fixed-registration spatial discrepancy (research only)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths:
+      - '.github/workflows/l3-v34-localization.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
+      - run: python experiments/tools/localize-l3-discrepancy-v3.4.py --self-test
+  compare-two-references:
+    needs: synthetic-check
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_id: verse005
+            sha256: d56af4e19b21f1335b156e66ef3f7d487be11fb3e2b545496f0675050a30f2b5
+          - case_id: verse008
+            sha256: 00cb18b24858f9984c98a0379e4e0e9e063b26848ac9ce96c7fa637856fcc8f3
+    env:
+      CASE_ID: ${{ matrix.case_id }}
+      EXPECTED_SHA: ${{ matrix.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh
+      - name: Export baseline and trial meshes
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/base.obj" high
+          node experiments/tools/export-l3-model-v3.3-research.cjs "$RUNNER_TEMP/trial.obj" high
+      - name: Obtain checksum-verified public CT segmentation in temporary storage
+        run: |
+          curl --fail --location --retry 2 --connect-timeout 20 --max-time 120 --silent --show-error \
+            "https://huggingface.co/datasets/MedOtter/VERSE20/resolve/main/VERSE20/01_training/$CASE_ID/${CASE_ID}_seg.nii.gz" \
+            --output "$RUNNER_TEMP/reference.nii.gz"
+          echo "$EXPECTED_SHA  $RUNNER_TEMP/reference.nii.gz" | sha256sum -c -
+      - name: Run same-registration region audit
+        run: |
+          python experiments/tools/localize-l3-discrepancy-v3.4.py \
+            --baseline "$RUNNER_TEMP/base.obj" --candidate "$RUNNER_TEMP/trial.obj" \
+            --seg "$RUNNER_TEMP/reference.nii.gz" --label 22 --samples 6000 \
+            --out "$RUNNER_TEMP/private-v34.json"
+      - name: Print only non-identifying aggregate region statistics
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          p=Path(os.environ['RUNNER_TEMP'])/'private-v34.json'
+          d=json.loads(p.read_text())
+          keys=['entire_ct_surface','anterior_y_gt_0','mid_y_minus8_to_0','posterior_y_lt_minus8',
+                'far_posterior_y_lt_minus20','upper_z_gt_8','upper_z_gt_15',
+                'middle_z_minus8_to_8','lower_z_lt_minus8','lower_z_lt_minus15',
+                'posterior_and_upper','posterior_and_middle','posterior_and_lower',
+                'anterior_and_upper','anterior_and_middle','anterior_and_lower',
+                'lateral_abs_x_gt22','central_abs_x_le22']
+          reg=d['spatial_bins_not_anatomical_regions']
+          selected={k:{'n':reg[k]['baseline']['n'],
+                       'base_p95_mm':reg[k]['baseline'].get('p95_mm'),
+                       'trial_p95_mm':reg[k].get('candidate',{}).get('p95_mm'),
+                       'delta_p95_mm':reg[k].get('difference_candidate_minus_baseline_p95_mm'),
+                       'base_over10_frac':reg[k]['baseline'].get('over_10mm_fraction'),
+                       'trial_over10_frac':reg[k].get('candidate',{}).get('over_10mm_fraction')} for k in keys if k in reg}
+          print(json.dumps({'case':os.environ['CASE_ID'],'orientation':d['registration'],
+                            'spatial_proxy_regions_not_anatomical':selected,
+                            'model_extents':d['baseline_surface_coordinates_mm'],
+                            'ct_extents':d['reference_surface_in_model_coordinates_mm'],
+                            'no_expert_anatomy_approval':True},ensure_ascii=False))
+          PY
+      - name: Erase local data and unredacted reports
+        if: always()
+        run: rm -f "$RUNNER_TEMP/base.obj" "$RUNNER_TEMP/trial.obj" "$RUNNER_TEMP/reference.nii.gz" "$RUNNER_TEMP/private-v34.json"

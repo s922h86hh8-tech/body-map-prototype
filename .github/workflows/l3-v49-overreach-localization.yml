@@ -1,0 +1,80 @@
+name: L3 v4.9 localize overreach vs CT in authored XYZ bins (NOT anatomy)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-v49-overreach-localization.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  localize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_index: 20
+            sha256: 9a40214e92c50804af98263efc5fdb3ef66ef9871eb7ad6509218c0b1adcf7a5
+          - case_index: 48
+            sha256: bd18fe33b3dc94c0c2cd8bbe7ac0ef83797c8a150e733ba4b6c2f7a700424971
+    env:
+      CASE_INDEX: ${{ matrix.case_index }}
+      EXPECTED_SHA: ${{ matrix.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip
+      - name: Build preserved authored model variants
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/v24.obj" high
+          node experiments/tools/export-l3-model-v3.3-research.cjs "$RUNNER_TEMP/v33.obj" high
+          node experiments/tools/export-l3-model-v3.5-research.cjs "$RUNNER_TEMP/v35.obj" high
+      - name: Read and verify public LumASe numeric segmentation mask
+        run: |
+          python - <<'PY'
+          import requests,re,os,hashlib
+          from remotezip import RemoteZip
+          rec=requests.get('https://zenodo.org/api/records/7181338',timeout=30).json()
+          f=next(x for x in rec['files'] if x['key']=='L1-L5FineSegMix-663case.zip')
+          if f['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('archive changed')
+          with RemoteZip(f['links'].get('self') or f['links'].get('content')) as z:
+              items=sorted((x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                   and not x.filename.startswith('__MACOSX/')),key=lambda x:(x.file_size,x.filename))
+              if len(items)!=108:raise ValueError('mask inventory changed')
+              blob=z.read(items[int(os.environ['CASE_INDEX'])])
+          if hashlib.sha256(blob).hexdigest()!=os.environ['EXPECTED_SHA']:raise ValueError('mask hash mismatch')
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'mask.nii.gz'),'wb') as file:file.write(blob)
+          print('SOURCE_VERIFIED index='+os.environ['CASE_INDEX'])
+          PY
+      - name: Calculate model-side distance by authored XYZ regions
+        run: |
+          python experiments/tools/localize-l3-model-overreach-v4.9.py \
+            --mask "$RUNNER_TEMP/mask.nii.gz" \
+            --v24 "$RUNNER_TEMP/v24.obj" --v33 "$RUNNER_TEMP/v33.obj" \
+            --v35 "$RUNNER_TEMP/v35.obj" --samples 12000 \
+            --out "$RUNNER_TEMP/private-localize.json"
+      - name: Print only aggregated spatial proxy P95 by variant
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads((Path(os.environ['RUNNER_TEMP'])/'private-localize.json').read_text())
+          print('L3_V49_LOCALIZATION '+json.dumps({
+            'case_index':int(os.environ['CASE_INDEX']),
+            'pose':d['pose'],
+            'model_coordinate_spatial_bins_not_anatomic_labels':True,
+            'v35_minus_v24_model_to_ct_p95_mm':d['v35_minus_v24_model_to_ct_p95_mm'],
+            'region_diagnostics':{key:{
+                  shape:d['counts_and_p95_by_shape'][shape][key]
+                  for shape in ('v24','v33','v35')}
+              for key in d['v35_minus_v24_model_to_ct_p95_mm']},
+            'independent_anatomic_review':False,
+            'anatomy_approved':False},ensure_ascii=False))
+          PY
+      - name: Remove source mask and all derived comparison assets
+        if: always()
+        run: rm -f "$RUNNER_TEMP/mask.nii.gz" "$RUNNER_TEMP/v24.obj" "$RUNNER_TEMP/v33.obj" "$RUNNER_TEMP/v35.obj" "$RUNNER_TEMP/private-localize.json"

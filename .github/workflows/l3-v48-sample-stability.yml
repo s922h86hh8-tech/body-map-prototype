@@ -1,0 +1,76 @@
+name: L3 v4.8 fixed-registration sampling stability (RESEARCH ONLY)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-v48-sample-stability.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  repeat-five-seeds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_index: 20
+            sha256: 9a40214e92c50804af98263efc5fdb3ef66ef9871eb7ad6509218c0b1adcf7a5
+          - case_index: 48
+            sha256: bd18fe33b3dc94c0c2cd8bbe7ac0ef83797c8a150e733ba4b6c2f7a700424971
+          - case_index: 83
+            sha256: 1828b70ab75c212d7787d9a945661ccd2743ec39de2a0eeab8eb641b6f9b7d16
+          - case_index: 102
+            sha256: ff1d466ecd98d5ca7998c6b849beb0050aa8fc9df5bec63afa8df4dc4aaef827
+    env:
+      CASE_INDEX: ${{ matrix.case_index }}
+      EXPECTED_SHA: ${{ matrix.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip
+      - name: Export original and candidate shapes
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/v24.obj" high
+          node experiments/tools/export-l3-model-v3.5-research.cjs "$RUNNER_TEMP/v35.obj" high
+      - name: Read one public source mask with previously audited SHA256
+        run: |
+          python - <<'PY'
+          import requests,re,os,hashlib
+          from remotezip import RemoteZip
+          rec=requests.get('https://zenodo.org/api/records/7181338',timeout=30).json()
+          file=next(f for f in rec['files'] if f['key']=='L1-L5FineSegMix-663case.zip')
+          if file['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('Archive changed')
+          with RemoteZip(file['links'].get('self') or file['links'].get('content')) as z:
+              items=sorted([x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                        and not x.filename.startswith('__MACOSX/')],key=lambda x:(x.file_size,x.filename))
+              if len(items)!=108:raise ValueError('Dataset inventory changed')
+              blob=z.read(items[int(os.environ['CASE_INDEX'])])
+          if hashlib.sha256(blob).hexdigest()!=os.environ['EXPECTED_SHA']:raise ValueError('Source mask checksum mismatch')
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'mask.nii.gz'),'wb') as f:f.write(blob)
+          print('CHECKSUM_OK case='+os.environ['CASE_INDEX'])
+          PY
+      - name: Repeat surface nearest-point distance 5 times with a fixed baseline pose
+        run: |
+          python experiments/tools/audit-l3-surface-sampling-v4.8.py \
+            --mask "$RUNNER_TEMP/mask.nii.gz" \
+            --v24 "$RUNNER_TEMP/v24.obj" --v35 "$RUNNER_TEMP/v35.obj" \
+            --points 5000 --repeats 5 --out "$RUNNER_TEMP/private-sampling.json"
+      - name: Print non-identifying sample stability only
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads((Path(os.environ['RUNNER_TEMP'])/'private-sampling.json').read_text())
+          print('L3_V48_STABILITY '+json.dumps({'case_index':int(os.environ['CASE_INDEX']),
+              'repeats':d['repeats'],
+              'pose':d.get('initial_registration'),
+              'delta_p95':d['delta_p95_v35_minus_v24_mm'],
+              'anatomical_approval':False},ensure_ascii=False))
+          PY
+      - name: Remove temporary source segmentation, OBJ files and private report
+        if: always()
+        run: rm -f "$RUNNER_TEMP/mask.nii.gz" "$RUNNER_TEMP/v24.obj" "$RUNNER_TEMP/v35.obj" "$RUNNER_TEMP/private-sampling.json"

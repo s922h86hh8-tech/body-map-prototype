@@ -1,0 +1,49 @@
+name: L3 LumASe range-only archive index (no CT image download)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-lumase-index-inspection.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect-index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check requests remotezip
+      - name: Read only ZIP central directory through byte-range HTTP
+        run: |
+          python - <<'PY'
+          import requests, json, collections, re
+          from remotezip import RemoteZip
+          record=requests.get('https://zenodo.org/api/records/7181338',timeout=30).json()
+          archive=next(f for f in record['files'] if f['key']=='L1-L5FineSegMix-663case.zip')
+          url=archive['links'].get('self') or archive['links'].get('content')
+          print('SOURCE_RECORD',json.dumps({'id':record['id'],
+            'license':record['metadata'].get('license'),
+            'size_bytes':archive.get('size'),
+            'checksum':archive.get('checksum')},ensure_ascii=False))
+          with RemoteZip(url) as z:
+              entries=[i for i in z.infolist() if not i.is_dir()]
+              suffix=collections.Counter('.'.join(i.filename.lower().split('.')[-2:]) for i in entries)
+              topdirs=collections.Counter(i.filename.split('/')[0] for i in entries)
+              examples=[]
+              for i in entries:
+                  # redacted structural templates, not individual patient/case identifiers
+                  name=re.sub(r'\d','0',i.filename)
+                  if name not in examples:
+                      examples.append(name)
+                  if len(examples)>=18: break
+              print('ARCHIVE_INDEX',json.dumps({
+                'file_count':len(entries),
+                'total_uncompressed_size_gb':round(sum(i.file_size for i in entries)/1e9,3),
+                'file_type_counts':suffix.most_common(15),
+                'top_level_directory_count':len(topdirs),
+                'filename_templates':examples,
+                'L3_marker_count':sum(bool(re.search(r'(^|[/_-])l3([/_.-]|$)',i.filename,re.I)) for i in entries),
+                'downloaded_CT_contents':False},ensure_ascii=False))
+          PY

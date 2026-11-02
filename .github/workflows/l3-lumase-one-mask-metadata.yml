@@ -28,7 +28,7 @@ jobs:
           info=next(f for f in record['files'] if f['key']=='L1-L5FineSegMix-663case.zip')
           url=info['links'].get('self') or info['links'].get('content')
           with RemoteZip(url) as z:
-              members=[i for i in z.infolist() if re.search(r'_L3_seg\.nii\.gz,i.filename,re.I) and not i.filename.startswith('__MACOSX/')]
+              members=[i for i in z.infolist() if re.search(r'_L3_seg\.nii\.gz$',i.filename,re.I) and not i.filename.startswith('__MACOSX/')]
               print('MATCHING_L3_MASKS',len(members))
               if len(members)<1:raise ValueError('No L3 masks in ZIP')
               selected=sorted(members,key=lambda f:(f.file_size,f.filename))[0]

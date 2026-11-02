@@ -1,0 +1,52 @@
+name: L3 method B CT-native RAS surface to GLB comparison (technical only)
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths:
+      - '.github/workflows/l3-method-b-ct-surface-format.yml'
+      - 'experiments/tools/probe-l3-ct-surface-format-v1.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-segmentation-surface-roundtrip:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_index: 20
+            sha256: 9a40214e92c50804af98263efc5fdb3ef66ef9871eb7ad6509218c0b1adcf7a5
+          - case_index: 48
+            sha256: bd18fe33b3dc94c0c2cd8bbe7ac0ef83797c8a150e733ba4b6c2f7a700424971
+    env:
+      CASE_INDEX: ${{ matrix.case_index }}
+      EXPECTED_SHA: ${{ matrix.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip
+      - name: Checksum-verify one publicly released LumASe L3 segmented mask in temporary memory
+        run: |
+          python - <<'PY'
+          import requests,re,os,hashlib
+          from remotezip import RemoteZip
+          record=requests.get('https://zenodo.org/api/records/7181338',timeout=30).json()
+          f=next(x for x in record['files'] if x['key']=='L1-L5FineSegMix-663case.zip')
+          if f['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('Archive changed')
+          with RemoteZip(f['links'].get('self') or f['links'].get('content')) as z:
+              names=sorted((x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                 and not x.filename.startswith('__MACOSX/')),key=lambda x:(x.file_size,x.filename))
+              if len(names)!=108:raise ValueError('L3 case inventory changed')
+              raw=z.read(names[int(os.environ['CASE_INDEX'])])
+          if hashlib.sha256(raw).hexdigest()!=os.environ['EXPECTED_SHA']:raise ValueError('Mask hash changed')
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'mask.nii.gz'),'wb') as p:p.write(raw)
+          print('VERIFIED_SOURCE_L3_INDEX '+os.environ['CASE_INDEX'])
+          PY
+      - name: Generate original RAS-mm open surface and test GLB round trip
+        run: python experiments/tools/probe-l3-ct-surface-format-v1.py --mask "$RUNNER_TEMP/mask.nii.gz"
+      - name: Remove source mask and geometries; no outputs or artifacts uploaded
+        if: always()
+        run: rm -f "$RUNNER_TEMP/mask.nii.gz"

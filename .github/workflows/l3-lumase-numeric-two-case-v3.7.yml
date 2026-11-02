@@ -1,0 +1,91 @@
+name: L3 LumASe two numerical-mask cases (NO region-name guessing)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-lumase-numeric-two-case-v3.7.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  two-unlabeled-subregion-cases:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        case_index: [0, 54]
+    env:
+      CASE_INDEX: ${{ matrix.case_index }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install local-only numeric-mask comparison dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip
+      - name: Export three authored shapes, never change public v2.4
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/v24.obj" high
+          node experiments/tools/export-l3-model-v3.3-research.cjs "$RUNNER_TEMP/v33.obj" high
+          node experiments/tools/export-l3-model-v3.5-research.cjs "$RUNNER_TEMP/v35.obj" high
+      - name: Read exactly one publicly released L3 segmentation mask from ZIP byte ranges
+        run: |
+          python - <<'PY'
+          import requests,re,os,json,hashlib
+          from remotezip import RemoteZip
+          rec=requests.get('https://zenodo.org/api/records/7181338',timeout=30).json()
+          f=next(x for x in rec['files'] if x['key']=='L1-L5FineSegMix-663case.zip')
+          url=f['links'].get('self') or f['links'].get('content')
+          with RemoteZip(url) as z:
+              masks=sorted([i for i in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',i.filename,re.I) and not i.filename.startswith('__MACOSX/')],
+                           key=lambda i:(i.file_size,i.filename))
+              idx=int(os.environ['CASE_INDEX'])
+              if len(masks)!=108 or idx>=len(masks):
+                  raise ValueError('Dataset L3 inventory has changed; refuse untracked mask selection')
+              chosen=masks[idx]
+              if chosen.file_size>40_000_000:
+                  raise ValueError('Unexpectedly large mask')
+              data=z.read(chosen)
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'L3-reference.nii.gz'),'wb') as out:
+              out.write(data)
+          print('PUBLIC_MASK_PROVENANCE',json.dumps({
+              'dataset_record':rec['id'],'license':rec['metadata']['license']['id'],
+              'case_index_by_archive_size':idx,'case_sha256':hashlib.sha256(data).hexdigest(),
+              'member_size_bytes':len(data),'all_cases_L3':len(masks),
+              'no_CT_image_downloaded':True,'no_data_committed':True}))
+          PY
+      - name: Compare numerical IDs ONLY with a shared baseline registration
+        run: |
+          python experiments/tools/compare-l3-numeric-subregions-v3.7.py \
+            --mask "$RUNNER_TEMP/L3-reference.nii.gz" \
+            --v24 "$RUNNER_TEMP/v24.obj" \
+            --v33 "$RUNNER_TEMP/v33.obj" \
+            --v35 "$RUNNER_TEMP/v35.obj" \
+            --samples 7000 --out "$RUNNER_TEMP/private-numeric-report.json"
+      - name: Print aggregate class ID metrics, NEVER guess anatomical region names
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads((Path(os.environ['RUNNER_TEMP'])/'private-numeric-report.json').read_text())
+          metrics={}
+          for label in d['numeric_labels_observed']:
+              k=str(label)
+              metrics[k]={name:d['results'][name]['by_numeric_label_only'][k].get('p95_mm')
+                          for name in ['v24','v33','v35']}
+              metrics[k]['v35_minus_v24_mm']=d['delta_candidate_minus_v24_p95_mm']['v35'][k]
+          print('NUMERIC_ONLY_COMPARISON',json.dumps({
+            'case_index':os.environ['CASE_INDEX'],
+            'baseline_fixed':d['registration']['baseline_fixed_for_all'],
+            'registration_rotation_deg':d['registration']['rotation_degrees'],
+            'registration_expert_verified':False,
+            'whole_surface_P95':{name:d['results'][name]['all'].get('p95_mm')
+                                 for name in ['v24','v33','v35']},
+            'numeric_class_p95_mm':metrics,
+            'class_ids_not_mapped_to_anatomy':True,
+            'anatomy_approved':False},ensure_ascii=False))
+          PY
+      - name: Erase every temporary reference and generated file
+        if: always()
+        run: rm -f "$RUNNER_TEMP/L3-reference.nii.gz" "$RUNNER_TEMP/v24.obj" "$RUNNER_TEMP/v33.obj" "$RUNNER_TEMP/v35.obj" "$RUNNER_TEMP/private-numeric-report.json"

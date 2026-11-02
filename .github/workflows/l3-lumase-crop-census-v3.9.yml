@@ -1,0 +1,22 @@
+name: L3 v3.9 full LumASe 108-mask crop census (metadata only)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths:
+      - '.github/workflows/l3-lumase-crop-census-v3.9.yml'
+      - 'experiments/tools/audit-lumase-l3-crop-v3.9.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  crop-census:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install minimal temporary segmentation readers
+        run: python -m pip install --disable-pip-version-check numpy nibabel requests remotezip
+      - name: Audit all 108 L3 labeled masks, with no CT image download or saved patient data
+        run: python experiments/tools/audit-lumase-l3-crop-v3.9.py --limit 108 --selection 12

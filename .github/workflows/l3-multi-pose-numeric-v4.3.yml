@@ -1,0 +1,71 @@
+name: L3 v4.3 fix CT pose-screen comparison (two contrasting cases)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-multi-pose-numeric-v4.3.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare-pose-case:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        case_index: [0, 54]
+    env:
+      CASE_INDEX: ${{ matrix.case_index }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip
+      - name: Generate preserved baseline and two research variants
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/v24.obj" high
+          node experiments/tools/export-l3-model-v3.3-research.cjs "$RUNNER_TEMP/v33.obj" high
+          node experiments/tools/export-l3-model-v3.5-research.cjs "$RUNNER_TEMP/v35.obj" high
+      - name: Read one public LumASe mask by byte-range and fingerprint
+        run: |
+          python - <<'PY'
+          import os,requests,re,hashlib,json
+          from remotezip import RemoteZip
+          d=requests.get('https://zenodo.org/api/records/7181338',timeout=35).json()
+          f=next(x for x in d['files'] if x['key']=='L1-L5FineSegMix-663case.zip')
+          if f['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('Unexpected source archive')
+          with RemoteZip(f['links'].get('self') or f['links'].get('content')) as z:
+              files=sorted([x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                            and not x.filename.startswith('__MACOSX/')],
+                           key=lambda x:(x.file_size,x.filename))
+              if len(files)!=108:raise ValueError('Changed source inventory')
+              blob=z.read(files[int(os.environ['CASE_INDEX'])])
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'mask.nii.gz'),'wb') as o:o.write(blob)
+          print('SOURCE_HASH '+json.dumps({'case_index':os.environ['CASE_INDEX'],'sha256':hashlib.sha256(blob).hexdigest()}))
+          PY
+      - name: Compare three model versions under best of four pose hypotheses, flag ambiguity
+        run: |
+          python experiments/tools/compare-l3-numeric-subregions-v4.3.py \
+            --mask "$RUNNER_TEMP/mask.nii.gz" --v24 "$RUNNER_TEMP/v24.obj" \
+            --v33 "$RUNNER_TEMP/v33.obj" --v35 "$RUNNER_TEMP/v35.obj" \
+            --samples 7000 --out "$RUNNER_TEMP/posecomparison.json"
+      - name: Print pose diagnostics and aggregate error (never anatomy approval)
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads((Path(os.environ['RUNNER_TEMP'])/'posecomparison.json').read_text())
+          print('L3_V43_RETEST '+json.dumps({
+             'case_index':os.environ['CASE_INDEX'],
+             'registration':d['registration'],
+             'whole_CT_to_model_P95_mm':{k:d['results'][k]['all'].get('p95_mm') for k in ['v24','v33','v35']},
+             'numeric_class5_p95_mm':{k:d['results'][k]['by_numeric_label_only']['5'].get('p95_mm') for k in ['v24','v33','v35']},
+             'numeric_class5_center_mm':d['numeric_label_spatial_signature_unverified_anatomy']['5'].get('centroid_xyz_mm'),
+             'crop_contact':d['reference_crop_diagnostic']['touches_original_crop_boundary'],
+             'expert_validated':False,'teaching_approved':False},ensure_ascii=False))
+          PY
+      - name: Delete temporary CT/reference and model data
+        if: always()
+        run: rm -f "$RUNNER_TEMP/mask.nii.gz" "$RUNNER_TEMP/v24.obj" "$RUNNER_TEMP/v33.obj" "$RUNNER_TEMP/v35.obj" "$RUNNER_TEMP/posecomparison.json"

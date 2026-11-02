@@ -1,0 +1,57 @@
+name: L3 LumASe metadata & partial ZIP access probe (no CT downloaded)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-lumase-metadata-probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  metadata-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Check Zenodo record metadata and supported partial requests without downloading dataset
+        run: |
+          python - <<'PY'
+          import json,urllib.request,urllib.error
+          api='https://zenodo.org/api/records/7181338'
+          request=urllib.request.Request(api,headers={'Accept':'application/json','User-Agent':'L3-Research-Metadata-Only/1.0'})
+          try:
+              with urllib.request.urlopen(request,timeout=25) as response:
+                  record=json.load(response)
+              files=record.get('files',[])
+              print('METADATA',json.dumps({'record_id':record.get('id'),
+                  'license':record.get('metadata',{}).get('license',{}),
+                  'files':[{'key':f.get('key'),'size_bytes':f.get('size'),
+                            'checksum':f.get('checksum')} for f in files]},ensure_ascii=False))
+              zips=[f for f in files if str(f.get('key','')).endswith('.zip')]
+              if not zips:
+                  print('NO_ZIP_FOUND');raise SystemExit(0)
+              url=zips[0].get('links',{}).get('self') or zips[0].get('links',{}).get('content')
+              if not url:
+                  print('NO_FILE_URL');raise SystemExit(0)
+              head=urllib.request.Request(url,method='HEAD',headers={'User-Agent':'L3-Research-Metadata-Only/1.0'})
+              with urllib.request.urlopen(head,timeout=25) as response:
+                  print('HEAD_ONLY',json.dumps({'status':response.status,
+                     'content_length':response.headers.get('Content-Length'),
+                     'accept_ranges':response.headers.get('Accept-Ranges'),
+                     'content_type':response.headers.get('Content-Type')}))
+              partial=urllib.request.Request(url,headers={'Range':'bytes=-65536','User-Agent':'L3-Research-Metadata-Only/1.0'})
+              with urllib.request.urlopen(partial,timeout=30) as response:
+                  status=response.status
+                  if status!=206:
+                      print('RANGE_NOT_SUPPORTED',json.dumps({'status':status,
+                       'content_range':response.headers.get('Content-Range')}))
+                  else:
+                      chunk=response.read(65536)
+                      print('RANGE_SUPPORTED',json.dumps({'status':status,'bytes_read':len(chunk),
+                         'content_range':response.headers.get('Content-Range'),
+                         'zip_end_directory_signature_present':b'PK\\x05\\x06' in chunk}))
+          except (urllib.error.URLError,TimeoutError) as error:
+              print('NETWORK_PROBE_FAILED',type(error).__name__,str(error)[:200])
+              raise
+          PY

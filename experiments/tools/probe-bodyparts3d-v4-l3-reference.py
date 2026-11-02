@@ -21,7 +21,7 @@ print('L3_SOURCE_ROWS',json.dumps(found[:15],ensure_ascii=False))
 # Official mapping: the table lists representation BP8227, while ZIP is atomic ELEMENT ID.
 # Resolve via isa_element_parts, NOT guessed ID conversion.
 ele=requests.get(ROOT+'isa_element_parts.txt',timeout=50);ele.raise_for_status()
-el_rows=list(csv.reader(ele.text.splitlines(),delimiter='\\t'))
+el_rows=list(csv.reader(ele.text.splitlines(),delimiter='\t'))
 concepts={row[0] for row in found if row and row[0]=='FMA13074'}
 ids={row[2] for row in el_rows if len(row)>=3 and row[0] in concepts}
 if not ids:

@@ -1,0 +1,52 @@
+name: L3 v4.2 orientation ambiguity diagnosis (four CT masks)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-orientation-sensitivity-v4.2.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  orientation-case:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        case_index: [0, 54, 65, 87]
+    env:
+      CASE_INDEX: ${{ matrix.case_index }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip
+      - name: Export baseline and research candidate
+        run: |
+          node experiments/tools/export-l3-model.cjs "$RUNNER_TEMP/v24.obj" high
+          node experiments/tools/export-l3-model-v3.5-research.cjs "$RUNNER_TEMP/v35.obj" high
+      - name: Retrieve one reference mask via HTTP ranges and check provenance
+        run: |
+          python - <<'PY'
+          import os,requests,re,hashlib,json
+          from remotezip import RemoteZip
+          src=requests.get('https://zenodo.org/api/records/7181338',timeout=35).json()
+          archive=next(i for i in src['files'] if i['key']=='L1-L5FineSegMix-663case.zip')
+          if archive['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('Source changed')
+          with RemoteZip(archive['links'].get('self') or archive['links'].get('content')) as z:
+              masks=sorted([f for f in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',f.filename,re.I) and not f.filename.startswith('__MACOSX/')],key=lambda f:(f.file_size,f.filename))
+              if len(masks)!=108:raise ValueError('Source L3 inventory changed')
+              b=z.read(masks[int(os.environ['CASE_INDEX'])])
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'mask.nii.gz'),'wb') as f:f.write(b)
+          print('CT_MASK_HASH '+json.dumps({'index':os.environ['CASE_INDEX'],'sha256':hashlib.sha256(b).hexdigest()}))
+          PY
+      - name: Four proper rotation initialization comparison, research only
+        run: |
+          python experiments/tools/audit-l3-orientation-sensitivity-v4.2.py \
+            --mask "$RUNNER_TEMP/mask.nii.gz" --baseline "$RUNNER_TEMP/v24.obj" \
+            --trial "$RUNNER_TEMP/v35.obj" --samples 7000 --out "$RUNNER_TEMP/rotation-report.json"
+      - name: Delete CT segmentation and local output
+        if: always()
+        run: rm -f "$RUNNER_TEMP/mask.nii.gz" "$RUNNER_TEMP/v24.obj" "$RUNNER_TEMP/v35.obj" "$RUNNER_TEMP/rotation-report.json"

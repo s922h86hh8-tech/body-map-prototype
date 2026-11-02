@@ -154,11 +154,11 @@ def self_test():
     mapping={name:i+1 for i,name in enumerate(REGION_NAMES)}
     mask=np.zeros(shape,dtype=np.uint8)
     for i,name in enumerate(REGION_NAMES):
-        lo=i*9
-        hi=(i+1)*9
+        lo=9+i*7
+        hi=9+(i+1)*7
         mask[union & (x>=lo)&(x<hi)]=mapping[name]
     # Ensure final slab covers all remaining union voxels.
-    mask[union & (x>=63)]=mapping[REGION_NAMES[-1]]
+    mask[union & (x>=58)]=mapping[REGION_NAMES[-1]]
     affine=np.diag([1.1,1.2,1.3,1.])
     ref,tree,classes,meta=reference_data(mask,affine,mapping)
     baseline=ref.copy()

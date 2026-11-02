@@ -30,6 +30,7 @@ jobs:
         run: |
           node experiments/tests/l3-v2.5-regression.cjs
           node experiments/tests/l3-v2.6-regression.cjs
+          node experiments/tests/l3-v3.5-research-regression.cjs
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

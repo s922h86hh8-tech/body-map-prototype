@@ -52,27 +52,3 @@ jobs:
                 'data_committed_to_repo':False,
                 'no_anatomical_approval':True},ensure_ascii=False))
           PY
-,i.filename,re.I) and not i.filename.startswith('__MACOSX/')]
-              print('MATCHING_L3_MASKS',len(members))
-              if len(members)<1:raise ValueError('No L3 masks in ZIP')
-              selected=sorted(members,key=lambda f:(f.file_size,f.filename))[0]
-              if selected.file_size>40_000_000:raise ValueError('L3 mask too large for range probe')
-              data=z.read(selected)
-          with tempfile.TemporaryDirectory() as folder:
-              path=os.path.join(folder,'one_L3_seg.nii.gz')
-              with open(path,'wb') as f:f.write(data)
-              img=nib.load(path)
-              mask=np.asarray(img.dataobj)
-              unique,counts=np.unique(mask,return_counts=True)
-              print('L3_MASK_METADATA',json.dumps({
-                'member_sha256':hashlib.sha256(data).hexdigest(),
-                'member_bytes':len(data),
-                'shape':list(mask.shape),
-                'voxel_spacing_mm':np.linalg.norm(img.affine[:3,:3],axis=0).round(4).tolist(),
-                'labels_numeric_only_no_semantic_mapping':{str(int(a)):int(b) for a,b in zip(unique,counts)},
-                'seven_anatomical_label_names_verified':False,
-                'actual_labeled_L3_mask_read':True,
-                'CT_image_file_read':False,
-                'data_committed_to_repo':False,
-                'no_anatomical_approval':True},ensure_ascii=False))
-          PY

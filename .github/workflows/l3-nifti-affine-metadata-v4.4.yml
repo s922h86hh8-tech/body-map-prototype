@@ -1,0 +1,56 @@
+name: L3 v4.4 NIfTI source affine orientation inspection (metadata only)
+on:
+  push:
+    branches: [cleanroom-pelvis-v0.1]
+    paths: ['.github/workflows/l3-nifti-affine-metadata-v4.4.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inspect-affines:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy nibabel requests remotezip
+      - name: Compare 4 LumASe source NIfTI orientations, no pixel/image output
+        run: |
+          python - <<'PY'
+          import os,re,json,tempfile,pathlib,hashlib,requests
+          from remotezip import RemoteZip
+          import numpy as np
+          import nibabel as nib
+          from nibabel.orientations import aff2axcodes
+          rec=requests.get('https://zenodo.org/api/records/7181338',timeout=40).json()
+          f=next(x for x in rec['files'] if x['key']=='L1-L5FineSegMix-663case.zip')
+          if f['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('Unknown source')
+          with RemoteZip(f['links'].get('self') or f['links'].get('content')) as z:
+              masks=sorted([x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                            and not x.filename.startswith('__MACOSX/')],
+                           key=lambda x:(x.file_size,x.filename))
+              if len(masks)!=108:raise ValueError('Changed L3 inventory')
+              for idx in [0,54,65,87]:
+                  data=z.read(masks[idx])
+                  with tempfile.TemporaryDirectory() as tmp:
+                      p=pathlib.Path(tmp)/'mask.nii.gz';p.write_bytes(data)
+                      img=nib.load(str(p))
+                      h=img.header
+                      mat=img.affine
+                      code=aff2axcodes(mat)
+                      vox=np.asarray(img.dataobj)
+                      if not np.isin(vox,np.arange(8)).all():raise ValueError('Unexpected mask labels')
+                      fifth=np.column_stack(np.where(vox==5))
+                      c=np.mean(fifth,axis=0) if len(fifth) else np.zeros(3)
+                      origin_world=nib.affines.apply_affine(mat,c)
+                      print('L3_SOURCE_AFFINE '+json.dumps({
+                        'case_index':idx,'sha256':hashlib.sha256(data).hexdigest(),
+                        'axcodes':code,
+                        'affine_3x3':mat[:3,:3].round(5).tolist(),
+                        'qform_code':int(h['qform_code']),'sform_code':int(h['sform_code']),
+                        'determinant':round(float(np.linalg.det(mat[:3,:3])),6),
+                        'numeric_label5_world_centroid_xyz_mm':origin_world.round(3).tolist(),
+                        'label5_does_not_imply_anatomical_structure':True,
+                        'expert_orientation_verified':False},ensure_ascii=False))
+          PY

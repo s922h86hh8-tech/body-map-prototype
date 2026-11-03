@@ -1,0 +1,79 @@
+name: L3 v6.3 original CT class crop boundary audit, no inferred anatomy
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths:
+      - '.github/workflows/l3-v63-original-ct-class-crop-census.yml'
+      - 'experiments/tools/l3-pedicle-axis-sweep-v6.py'
+      - 'experiments/tests/l3-pedicle-axis-sweep-v6.test.py'
+      - 'experiments/tools/l3-numeric-class-crop-census-v6.3.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-constriction-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install numpy, scipy, nibabel and Pillow
+        run: python -m pip install --disable-pip-version-check numpy scipy nibabel Pillow
+      - name: Compile and test both RAS/LPS artificial tubes, unlabeled and tampering rejections
+        run: |
+          python -m py_compile experiments/tools/l3-pedicle-axis-sweep-v6.py experiments/tests/l3-pedicle-axis-sweep-v6.test.py
+          python experiments/tests/l3-pedicle-axis-sweep-v6.test.py
+  two-source-CT-tests:
+    needs: synthetic-constriction-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - index: 20
+            maskhash: 9a40214e92c50804af98263efc5fdb3ef66ef9871eb7ad6509218c0b1adcf7a5
+            cthash: 2d3a8b26fdd27340cc73c7385ac558874e380880e64be30c45ad9a2c6dcf4665
+          - index: 48
+            maskhash: bd18fe33b3dc94c0c2cd8bbe7ac0ef83797c8a150e733ba4b6c2f7a700424971
+            cthash: a1eacb437d62bcd8c90a770c26392c282cbc5c07b68ebd1e641df29122782705
+    env:
+      CASE_INDEX: ${{ matrix.index }}
+      MASK_SHA: ${{ matrix.maskhash }}
+      CT_SHA: ${{ matrix.cthash }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install --disable-pip-version-check numpy scipy nibabel Pillow requests remotezip
+      - name: Read original CT and source L3 numeric mask by exact checksum into temporary disk
+        run: |
+          python - <<'PY'
+          import hashlib,os,re,requests
+          from remotezip import RemoteZip
+          d=requests.get('https://zenodo.org/api/records/7181338',timeout=35).json()
+          archive=next(x for x in d['files'] if x['key']=='L1-L5FineSegMix-663case.zip')
+          if archive['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('Dataset archive changed')
+          with RemoteZip(archive['links'].get('self') or archive['links'].get('content')) as z:
+            matches=sorted([x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                           and not x.filename.startswith('__MACOSX/')],key=lambda x:(x.file_size,x.filename))
+            if len(matches)!=108:raise ValueError('Source inventory changed')
+            mp=matches[int(os.environ['CASE_INDEX'])].filename
+            cp=mp.replace('_L3_seg.nii.gz','_L3.nii.gz')
+            if cp not in z.namelist():raise ValueError('CT pair absent')
+            values=[(z.read(mp),os.environ['MASK_SHA'],'mask.nii.gz'),
+                    (z.read(cp),os.environ['CT_SHA'],'ct.nii.gz')]
+          for data,sha,name in values:
+            if hashlib.sha256(data).hexdigest()!=sha:raise ValueError('Unexpected source SHA256')
+            with open(os.path.join(os.environ['RUNNER_TEMP'],name),'wb') as f:f.write(data)
+          print('L3_V6_SOURCE_PAIRS_VERIFIED '+os.environ['CASE_INDEX'])
+          PY
+      - name: Audit each source numeric class on six original CT crop faces
+        run: |
+          python experiments/tools/l3-numeric-class-crop-census-v6.3.py --mask "$RUNNER_TEMP/mask.nii.gz"
+      - name: Delete source medical images and all derived private results
+        if: always()
+        run: rm -f "$RUNNER_TEMP/ct.nii.gz" "$RUNNER_TEMP/mask.nii.gz"

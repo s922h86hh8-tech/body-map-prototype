@@ -1,0 +1,133 @@
+name: L3 v5 provisional-axis orthogonal CT MPR (NOT anatomy pass)
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths:
+      - '.github/workflows/l3-v5-ct-pedicle-axis-mpr.yml'
+      - 'experiments/tools/build-l3-axis-orthogonal-mpr-v5.py'
+      - 'experiments/tests/l3-axis-mpr-v5.test.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-math:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy nibabel Pillow
+      - run: python experiments/tests/l3-axis-mpr-v5.test.py
+  source-ct-technical-only:
+    needs: synthetic-math
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - index: 20
+            maskhash: 9a40214e92c50804af98263efc5fdb3ef66ef9871eb7ad6509218c0b1adcf7a5
+            cthash: 2d3a8b26fdd27340cc73c7385ac558874e380880e64be30c45ad9a2c6dcf4665
+          - index: 48
+            maskhash: bd18fe33b3dc94c0c2cd8bbe7ac0ef83797c8a150e733ba4b6c2f7a700424971
+            cthash: a1eacb437d62bcd8c90a770c26392c282cbc5c07b68ebd1e641df29122782705
+    env:
+      CASE_INDEX: ${{ matrix.index }}
+      MASK_SHA: ${{ matrix.maskhash }}
+      CT_SHA: ${{ matrix.cthash }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy nibabel Pillow requests remotezip
+      - name: Read exact CT and mask source pair into disposable runner only
+        run: |
+          python - <<'PY'
+          import hashlib,os,re,requests
+          from remotezip import RemoteZip
+          record=requests.get('https://zenodo.org/api/records/7181338',timeout=35).json()
+          a=next(f for f in record['files'] if f['key']=='L1-L5FineSegMix-663case.zip')
+          if a['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':raise ValueError('Archive changed')
+          with RemoteZip(a['links'].get('self') or a['links'].get('content')) as z:
+              files=sorted((x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                            and not x.filename.startswith('__MACOSX/')),
+                          key=lambda x:(x.file_size,x.filename))
+              if len(files)!=108:raise ValueError('L3 dataset inventory changed')
+              seg=files[int(os.environ['CASE_INDEX'])].filename
+              ct=seg.replace('_L3_seg.nii.gz','_L3.nii.gz')
+              if ct not in z.namelist():raise ValueError('Missing paired source CT')
+              m=z.read(seg);c=z.read(ct)
+          for data,sha,name in [(m,os.environ['MASK_SHA'],'mask.nii.gz'),
+                                (c,os.environ['CT_SHA'],'ct.nii.gz')]:
+              if hashlib.sha256(data).hexdigest()!=sha:raise ValueError('Source hash mismatch')
+              with open(os.path.join(os.environ['RUNNER_TEMP'],name),'wb') as f:f.write(data)
+          print('V5_SOURCE_INTEGRITY_OK index='+os.environ['CASE_INDEX'])
+          PY
+      - name: Make TWO explicitly fictional axis candidate points on original CT grid
+        run: |
+          python - <<'PY'
+          import json,os,hashlib
+          from pathlib import Path
+          import nibabel as nib,numpy as np
+          temp=Path(os.environ['RUNNER_TEMP'])
+          mask=nib.load(str(temp/'mask.nii.gz'));ct=nib.load(str(temp/'ct.nii.gz'))
+          if mask.shape!=ct.shape or np.max(np.abs(mask.affine-ct.affine))>1e-4:raise ValueError('CT+mask mismatch')
+          nz=np.array(np.where(np.asanyarray(mask.dataobj)>0))
+          voxel=np.rint(np.median(nz,axis=1)).astype(int)
+          if voxel[1]<8 or voxel[1]+8>=mask.shape[1]:raise ValueError('Demo axis not in scan')
+          pts=[voxel+np.array([0,-6,0]),voxel+np.array([0,6,0])]
+          entries=[]
+          for kind,point in zip(('pedicle_axis_right_body','pedicle_axis_right_posterior'),pts):
+              entries.append({'kind':kind,'voxel_ijk':point.tolist(),
+                   'world_ras_mm':nib.affines.apply_affine(ct.affine,point).tolist(),
+                   'reviewer_confirmation':'unverified_candidate',
+                   'authority':'unreviewed_manual_click'})
+          record={'schema':'L3_LOCAL_LANDMARK_REVIEW_V1',
+                  'source_CT_sha256':hashlib.sha256((temp/'ct.nii.gz').read_bytes()).hexdigest(),
+                  'source_mask_sha256':hashlib.sha256((temp/'mask.nii.gz').read_bytes()).hexdigest(),
+                  'ready_for_anatomical_approval':False,
+                  'synthetic_technical_demo_not_anatomy':True,'items':entries}
+          (temp/'axis-fake-demo.json').write_text(json.dumps(record))
+          print('V5_FALSE_AXIS_CANDIDATES only-technical-test, never original anatomical picks')
+          PY
+      - name: Construct axis-orthogonal CT reformat using source image only, no anatomy claims
+        run: |
+          python experiments/tools/build-l3-axis-orthogonal-mpr-v5.py \
+            --ct "$RUNNER_TEMP/ct.nii.gz" --mask "$RUNNER_TEMP/mask.nii.gz" \
+            --landmarks "$RUNNER_TEMP/axis-fake-demo.json" --side right \
+            --out "$RUNNER_TEMP/private-mpr.json" --fraction 0.5
+      - name: Verify CT-to-grid inverse and plane normal in output
+        run: |
+          python - <<'PY'
+          import base64,io,json,os
+          from pathlib import Path
+          import numpy as np,nibabel as nib
+          from PIL import Image
+          p=Path(os.environ['RUNNER_TEMP'])
+          x=json.loads((p/'private-mpr.json').read_text())
+          assert x['medical_anatomy_approved'] is False
+          assert x['input_demo_points'] is True
+          assert x['plane_is_pedicle_isthmus_verified'] is False
+          assert x['not_a_pedicle_width_or_height_measurement'] is True
+          frame=np.stack([x['plane_horizontal_world_ras'],x['plane_vertical_world_ras'],x['plane_normal_world_ras']],axis=1)
+          assert np.allclose(frame.T@frame,np.eye(3),atol=2e-6)
+          ct=nib.load(str(p/'ct.nii.gz'))
+          center=np.asarray(x['plane_center_world_ras_mm'])
+          cijk=nib.affines.apply_affine(np.linalg.inv(ct.affine),center)
+          assert np.all(cijk>=0) and np.all(cijk<ct.shape)
+          for name in ['image_ct_base64_png','image_overlay_base64_png']:
+              z=Image.open(io.BytesIO(base64.b64decode(x[name])))
+              assert z.size==(101,101)
+          print('L3_REAL_CT_MPR_TECHNICAL_ONLY '+json.dumps({
+           'case_index':int(os.environ['CASE_INDEX']),
+           'original_CT_grid_verified':True,
+           'orthogonal_RAS_plane_verified':True,
+           'section_images':2,
+           'plane_fraction_inside_CT':x['plane_points_inside_source_CT_fraction'],
+           'actual_pedicle_axis_verified':False,'isthmus_identified':False,'anatomical_approval':False}))
+          PY
+      - name: Delete source medical images and derived files
+        if: always()
+        run: rm -f "$RUNNER_TEMP/ct.nii.gz" "$RUNNER_TEMP/mask.nii.gz" "$RUNNER_TEMP/private-mpr.json" "$RUNNER_TEMP/axis-fake-demo.json"

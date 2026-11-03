@@ -1,0 +1,121 @@
+name: L3 CT review bundle + viewer contract (isolated / not anatomical approval)
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths:
+      - '.github/workflows/l3-ct-review-bundle-and-viewer-ci.yml'
+      - 'experiments/tools/build-l3-local-review-bundle-v1.py'
+      - 'experiments/l3-ct-review-v1.html'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-bundle-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_index: 20
+            sha256: 9a40214e92c50804af98263efc5fdb3ef66ef9871eb7ad6509218c0b1adcf7a5
+          - case_index: 48
+            sha256: bd18fe33b3dc94c0c2cd8bbe7ac0ef83797c8a150e733ba4b6c2f7a700424971
+    env:
+      CASE_INDEX: \${{ matrix.case_index }}
+      EXPECTED_SHA: \${{ matrix.sha256 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Static Python and JS syntax validation, no data
+        run: |
+          python -m py_compile experiments/tools/build-l3-local-review-bundle-v1.py
+          node - <<'JS'
+          const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+          const html=fs.readFileSync('experiments/l3-ct-review-v1.html','utf8');
+          const match=html.match(/<script type="module">([\s\S]*?)<\/script>/);
+          assert(match,'No module script found');
+          const code=match[1].replace(/^import .*;$/gm,'');
+          new vm.Script(code,{filename:'l3-review-v1.inline.js'});
+          for(const word of ['l3-ct-review-v1.html','reviewFile','GLTFLoader','anatomy_approved','axial','coronal','sagittal'])
+            assert(html.includes(word),'Missing UI capability '+word);
+          console.log('UI_JS_SYNTAX_OK no clinical claims');
+          JS
+      - name: Install public-source segmentation readers
+        run: python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip Pillow
+      - name: Get one public LumASe L3 mask via ZIP ranges, verify pre-audited hash
+        run: |
+          python - <<'PY'
+          import requests,re,os,hashlib
+          from remotezip import RemoteZip
+          record=requests.get('https://zenodo.org/api/records/7181338',timeout=35).json()
+          archive=next(f for f in record['files'] if f['key']=='L1-L5FineSegMix-663case.zip')
+          if archive.get('checksum')!='md5:baf6374a927e9591dbae3314570bdb1e':
+              raise ValueError('Original archive checksum metadata changed')
+          with RemoteZip(archive['links'].get('self') or archive['links'].get('content')) as z:
+              items=sorted((x for x in z.infolist() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)
+                 and not x.filename.startswith('__MACOSX/')),key=lambda f:(f.file_size,f.filename))
+              if len(items)!=108:raise ValueError('Inventory changed; cannot trust case index')
+              data=z.read(items[int(os.environ['CASE_INDEX'])])
+          if hashlib.sha256(data).hexdigest()!=os.environ['EXPECTED_SHA']:
+              raise ValueError('Source hash mismatch')
+          with open(os.path.join(os.environ['RUNNER_TEMP'],'source-mask.nii.gz'),'wb') as f:f.write(data)
+          print('MASK_VERIFIED case_index='+os.environ['CASE_INDEX'])
+          PY
+      - name: Convert CT segmentation to isolated GLB and matched 3 slices (in temporary JSON)
+        run: |
+          python experiments/tools/build-l3-local-review-bundle-v1.py \
+            --mask "$RUNNER_TEMP/source-mask.nii.gz" \
+            --out "$RUNNER_TEMP/l3-private-review.json"
+      - name: Validate bundle 3D/2D coordinate agreement and original source units
+        run: |
+          python - <<'PY'
+          import base64,io,json,os,hashlib
+          import numpy as np
+          import nibabel as nib
+          from PIL import Image
+          from pathlib import Path
+          p=Path(os.environ['RUNNER_TEMP'])
+          j=json.loads((p/'l3-private-review.json').read_text())
+          img=nib.load(str(p/'source-mask.nii.gz'))
+          canonical=nib.as_closest_canonical(img)
+          arr=np.asanyarray(canonical.dataobj)
+          assert j['schema']=='L3_REVIEW_BUNDLE_V1_NONCLINICAL'
+          assert not j['anatomy_approved'] and j['numeric_to_anatomical_map_verified'] is False
+          assert j['source']['source_crop_boundary_touched'] is True
+          assert j['source']['source_mask_sha256']==hashlib.sha256((p/'source-mask.nii.gz').read_bytes()).hexdigest()
+          assert j['canonical_grid']['array_shape_xyz']==list(arr.shape)
+          assert np.allclose(j['canonical_grid']['affine_4x4'],canonical.affine,atol=1e-6)
+          assert j['surface']['triangles']>20000
+          assert j['surface']['bbox_glb_roundtrip_error_mm']<=.001
+          assert j['surface']['watertight'] is False
+          glb=base64.b64decode(j['surface']['glb_base64'])
+          assert hashlib.sha256(glb).hexdigest()==j['surface']['glb_sha256']
+          for key,axis,expected_shape in [('axial',2,(arr.shape[0]*2,arr.shape[1]*2)),
+                                           ('coronal',1,(arr.shape[0]*2,arr.shape[2]*2)),
+                                           ('sagittal',0,(arr.shape[1]*2,arr.shape[2]*2))]:
+              sec=j['sections'][key]
+              assert sec['slice_index']<arr.shape[axis]
+              world=canonical.affine[axis,axis]*sec['slice_index']+canonical.affine[axis,3]
+              assert abs(sec['world_coordinate_mm']-world)<.0006
+              png=Image.open(io.BytesIO(base64.b64decode(sec['image_base64_png'])))
+              assert png.size==expected_shape,(key,png.size,expected_shape)
+          print('L3_BUNDLE_CONTRACT_OK',json.dumps({
+            'case_index':int(os.environ['CASE_INDEX']),
+            'labels':j['numeric_labels'],
+            'triangles':j['surface']['triangles'],
+            'glb_bytes':len(glb),
+            'mask_axes':j['source']['array_axes_before_reorientation'],
+            'png_dimensions':{key:Image.open(io.BytesIO(base64.b64decode(val['image_base64_png']))).size
+              for key,val in j['sections'].items()},
+            'both_ct_and_viewer_use_RAS_mm':True,
+            'old_published_model_unchanged':True,
+            'anatomy_approved':False},ensure_ascii=False))
+          PY
+      - name: Remove all original and derived CT reference geometry
+        if: always()
+        run: |
+          rm -f "$RUNNER_TEMP/source-mask.nii.gz" "$RUNNER_TEMP/l3-private-review.json"

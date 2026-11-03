@@ -6,6 +6,8 @@ on:
       - '.github/workflows/l3-v5-ct-pedicle-axis-mpr.yml'
       - 'experiments/tools/build-l3-axis-orthogonal-mpr-v5.py'
       - 'experiments/tests/l3-axis-mpr-v5.test.py'
+      - 'experiments/tests/l3-pedicle-mpr-browser-v5.py'
+      - 'experiments/l3-ct-review-v5.html'
   workflow_dispatch:
 permissions:
   contents: read
@@ -41,7 +43,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.11'}
-      - run: python -m pip install --disable-pip-version-check numpy scipy nibabel Pillow requests remotezip
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - run: python -m pip install --disable-pip-version-check numpy scipy nibabel Pillow requests remotezip scikit-image trimesh playwright
+      - run: python -m playwright install --with-deps chromium
+      - run: python -m py_compile experiments/tools/build-l3-axis-orthogonal-mpr-v5.py experiments/tests/l3-pedicle-mpr-browser-v5.py
       - name: Read exact CT and mask source pair into disposable runner only
         run: |
           python - <<'PY'
@@ -128,6 +134,13 @@ jobs:
            'plane_fraction_inside_CT':x['plane_points_inside_source_CT_fraction'],
            'actual_pedicle_axis_verified':False,'isthmus_identified':False,'anatomical_approval':False}))
           PY
+      - name: Build private CT/3D numeric-color comparison bundle for browser audit
+        run: |
+          python experiments/tools/build-l3-numeric-colored-bundle-v3.py \
+            --mask "$RUNNER_TEMP/mask.nii.gz" --ct "$RUNNER_TEMP/ct.nii.gz" \
+            --out "$RUNNER_TEMP/private-source-bundle.json"
+      - name: Verify browser can read MPR and source CT, annotate axis and export unverified JSON
+        run: python experiments/tests/l3-pedicle-mpr-browser-v5.py "$RUNNER_TEMP/private-source-bundle.json" "$RUNNER_TEMP/private-mpr.json"
       - name: Delete source medical images and derived files
         if: always()
-        run: rm -f "$RUNNER_TEMP/ct.nii.gz" "$RUNNER_TEMP/mask.nii.gz" "$RUNNER_TEMP/private-mpr.json" "$RUNNER_TEMP/axis-fake-demo.json"
+        run: rm -f "$RUNNER_TEMP/ct.nii.gz" "$RUNNER_TEMP/mask.nii.gz" "$RUNNER_TEMP/private-mpr.json" "$RUNNER_TEMP/axis-fake-demo.json" "$RUNNER_TEMP/private-source-bundle.json"

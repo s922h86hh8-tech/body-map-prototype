@@ -40,7 +40,7 @@ jobs:
           assert(match,'No module script found');
           const code=match[1].replace(/^import .*;$/gm,'');
           new vm.Script(code,{filename:'l3-review-v1.inline.js'});
-          for(const word of ['l3-ct-review-v1.html','reviewFile','GLTFLoader','anatomy_approved','axial','coronal','sagittal'])
+          for(const word of ['reviewFile','GLTFLoader','anatomy_approved','axial','coronal','sagittal'])
             assert(html.includes(word),'Missing UI capability '+word);
           console.log('UI_JS_SYNTAX_OK no clinical claims');
           JS

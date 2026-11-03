@@ -1,0 +1,151 @@
+name: L3 v4 original CT / 3D provisional landmark review and source RAS consistency (private runner data)
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths:
+      - '.github/workflows/l3-v4-source-ct-landmark-audit.yml'
+      - 'experiments/tools/build-l3-numeric-colored-bundle-v3.py'
+      - 'experiments/l3-ct-review-v4.html'
+      - 'experiments/l3-landmark-coordinate-v4.mjs'
+      - 'experiments/tests/l3-landmark-coordinate-v4.test.mjs'
+      - 'experiments/tests/l3-landmark-browser-v4.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  paired-CT-slice-and-3d:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - index: 20
+            maskhash: 9a40214e92c50804af98263efc5fdb3ef66ef9871eb7ad6509218c0b1adcf7a5
+            cthash: 2d3a8b26fdd27340cc73c7385ac558874e380880e64be30c45ad9a2c6dcf4665
+          - index: 48
+            maskhash: bd18fe33b3dc94c0c2cd8bbe7ac0ef83797c8a150e733ba4b6c2f7a700424971
+            cthash: a1eacb437d62bcd8c90a770c26392c282cbc5c07b68ebd1e641df29122782705
+    env:
+      CASE_INDEX: ${{ matrix.index }}
+      MASK_SHA: ${{ matrix.maskhash }}
+      CT_SHA: ${{ matrix.cthash }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Check Python and browser JS static syntax
+        run: |
+          python -m py_compile experiments/tools/build-l3-numeric-colored-bundle-v3.py experiments/tests/l3-landmark-browser-v4.py
+          node experiments/tests/l3-landmark-coordinate-v4.test.mjs
+          node - <<'JS'
+          const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+          const html=fs.readFileSync('experiments/l3-ct-review-v4.html','utf8');
+          const js=html.match(/<script type="module">([\s\S]*?)<\/script>/);
+          assert(js);
+          new vm.Script(js[1].replace(/^import .*;$/gm,''),{filename:'l3-ct-review-v4.js'});
+          for(const id of ['reviewFile','data-image-mode','ct_overlay_base64_png',
+                           'ct_image_base64_png','L3_REVIEW_BUNDLE_V3_NUMERIC_COLORED_CT'])
+            assert(html.includes(id),id);
+          console.log('VIEWER_V2_JS_STATIC_OK');
+          JS
+      - name: Install image and browser audit tooling
+        run: |
+          python -m pip install --disable-pip-version-check numpy scipy scikit-image nibabel trimesh requests remotezip Pillow playwright
+          python -m playwright install --with-deps chromium
+      - name: Download only one original public CT and its mask through ZIP byte ranges, verify exact SHA256
+        run: |
+          python - <<'PY'
+          import requests,re,os,hashlib
+          from remotezip import RemoteZip
+          record=requests.get('https://zenodo.org/api/records/7181338',timeout=35).json()
+          file=next(f for f in record['files'] if f['key']=='L1-L5FineSegMix-663case.zip')
+          if file['checksum']!='md5:baf6374a927e9591dbae3314570bdb1e':
+              raise ValueError('Changed original dataset archive')
+          with RemoteZip(file['links'].get('self') or file['links'].get('content')) as z:
+              choices=sorted((i for i in z.infolist()
+                    if re.search(r'_L3_seg[.]nii[.]gz$',i.filename,re.I)
+                    and not i.filename.startswith('__MACOSX/')),
+                    key=lambda f:(f.file_size,f.filename))
+              if len(choices)!=108:raise ValueError('Dataset L3 inventory changed')
+              seg=choices[int(os.environ['CASE_INDEX'])]
+              ct=seg.filename.replace('_L3_seg.nii.gz','_L3.nii.gz')
+              names=z.namelist()
+              if ct not in names:raise ValueError('Original CT and label file do not match')
+              m=z.read(seg)
+              c=z.read(ct)
+          for raw,sha,name in [(m,os.environ['MASK_SHA'],'mask.nii.gz'),
+                               (c,os.environ['CT_SHA'],'ct.nii.gz')]:
+              if hashlib.sha256(raw).hexdigest()!=sha:
+                  raise ValueError('Source mask/CT hash mismatch: '+name)
+              with open(os.path.join(os.environ['RUNNER_TEMP'],name),'wb') as f:f.write(raw)
+          print('PAIR_SOURCE_SHA256_OK case_index='+os.environ['CASE_INDEX'])
+          PY
+      - name: Create 3D L3 and matching original CT + numeric segmentation images (temp only)
+        run: |
+          python experiments/tools/build-l3-numeric-colored-bundle-v3.py \
+            --mask "$RUNNER_TEMP/mask.nii.gz" --ct "$RUNNER_TEMP/ct.nii.gz" \
+            --out "$RUNNER_TEMP/private-original-ct-review.json"
+      - name: Independently verify section PNGs derived from correct CT plane voxels
+        run: |
+          python - <<'PY'
+          import base64,hashlib,io,json,os
+          from pathlib import Path
+          import nibabel as nib,numpy as np
+          from PIL import Image
+          folder=Path(os.environ['RUNNER_TEMP'])
+          j=json.loads((folder/'private-original-ct-review.json').read_text())
+          ct=nib.as_closest_canonical(nib.load(str(folder/'ct.nii.gz')))
+          mask=nib.as_closest_canonical(nib.load(str(folder/'mask.nii.gz')))
+          assert j['schema']=='L3_REVIEW_BUNDLE_V3_NUMERIC_COLORED_CT'
+          assert j['anatomy_approved'] is False
+          assert j['numeric_to_anatomical_map_verified'] is False
+          assert j['paired_source']['ct_sha256']==hashlib.sha256((folder/'ct.nii.gz').read_bytes()).hexdigest()
+          assert np.max(np.abs(ct.affine-mask.affine))<1e-4
+          orig=np.asarray(ct.dataobj,dtype=float)
+          seg=np.asarray(mask.dataobj,dtype=int)
+          low=j['paired_source']['visualization_lo']
+          high=j['paired_source']['visualization_hi']
+          # JSON rounds contrast endpoints to 3 decimals; permit a 1-grey-level difference.
+          for key,axis in [('axial',2),('coronal',1),('sagittal',0)]:
+              idx=j['sections'][key]['slice_index']
+              if key=='axial': plane=orig[:,:,idx];classes=seg[:,:,idx]
+              elif key=='coronal': plane=orig[:,idx,:];classes=seg[:,idx,:]
+              else: plane=orig[idx,:,:];classes=seg[idx,:,:]
+              gray=Image.open(io.BytesIO(base64.b64decode(j['sections'][key]['ct_image_base64_png']))).convert('RGBA')
+              overlay=Image.open(io.BytesIO(base64.b64decode(j['sections'][key]['ct_overlay_base64_png']))).convert('RGBA')
+              label=Image.open(io.BytesIO(base64.b64decode(j['sections'][key]['image_base64_png']))).convert('RGBA')
+              expected_size=(plane.shape[0]*2,plane.shape[1]*2)
+              assert gray.size==overlay.size==label.size==expected_size
+              points=[(int(plane.shape[0]//2),int(plane.shape[1]//2)),
+                      (int(plane.shape[0]//3),int(plane.shape[1]//3)),
+                      (int(plane.shape[0]*2//3),int(plane.shape[1]*2//3))]
+              for x,y in points:
+                  pix=gray.getpixel((x*2,(plane.shape[1]-1-y)*2))
+                  approx=int(np.clip((plane[x,y]-low)/(high-low),0,1)*255)
+                  assert abs(pix[0]-approx)<=2,(key,x,y,pix,approx)
+                  if classes[x,y]==0:
+                      assert gray.getpixel((x*2,(plane.shape[1]-1-y)*2))==overlay.getpixel((x*2,(plane.shape[1]-1-y)*2))
+          assert j['paired_source']['CT_intensity_units'].startswith('SOURCE')
+          assert j['surface']['vertex_numeric_labels_colorized'] is True
+          assert j['source_label_to_anatomical_name_verified'] is False
+          assert j['surface']['color_error_max_8bit']<=1
+          counts=j['surface']['numeric_class_vertex_counts']
+          assert set(counts)==set(map(str,range(1,8)))
+          assert all(counts[str(i)]>50 for i in range(1,8))
+          assert j['source']['source_crop_boundary_touched']
+          print('CT_VOXEL_OVERLAY_ALIGNMENT_PASS '+json.dumps({
+              'case':int(os.environ['CASE_INDEX']),
+              'source_grid_agreement':True,
+              '3_orthogonal_planes_with_original_CT':True,
+              '3_overlay_images':True,
+              'CT_intensity_HU_assumed':False,
+              'anatomy_approved':False},ensure_ascii=False))
+          PY
+      - name: Open actual WebGL desktop/mobile-sized viewer and exercise overlay controls
+        run: python experiments/tests/l3-landmark-browser-v4.py "$RUNNER_TEMP/private-original-ct-review.json"
+      - name: Remove temporary source images, GLB and JSON; never upload artifacts
+        if: always()
+        run: rm -f "$RUNNER_TEMP/mask.nii.gz" "$RUNNER_TEMP/ct.nii.gz" "$RUNNER_TEMP/private-original-ct-review.json"

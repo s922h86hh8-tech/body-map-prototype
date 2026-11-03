@@ -19,7 +19,7 @@ def make(root,affine):
     r=(4.8+0.012*(yy-43)**2).astype(float)
     section=((xx-35)**2+(zz-34)**2<r*r)
     seg=np.where(section,3,0).astype(np.uint8)
-    ct=(seg*620+np.broadcast_to((xx*2+yy+zz),shape)).astype(np.float32)
+    ct=(seg.astype(np.float32)*620+np.broadcast_to((xx*2+yy+zz),shape)).astype(np.float32)
     cp=root/'ct.nii.gz';mp=root/'mask.nii.gz';lp=root/'landmarks.json';op=root/'result.json'
     nib.save(nib.Nifti1Image(ct,affine),str(cp))
     nib.save(nib.Nifti1Image(seg,affine),str(mp))

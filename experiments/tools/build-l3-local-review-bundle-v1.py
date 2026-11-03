@@ -86,6 +86,12 @@ def build(mask_file,out_file):
     if len(mesh.faces)!=len(reloaded.faces):raise ValueError('GLB reimport changed triangle count')
     extent_delta=float(np.max(np.abs(mesh.extents-reloaded.extents)))
     if extent_delta>1e-3:raise ValueError('GLB extent changed')
+    # The slice images are generated from the very same canonical RAS grid.
+    # Grid transform and orthogonal section coordinates permit independent 3D overlay verification.
+    grid={'array_shape_xyz':list(arr.shape),
+          'affine_4x4':aff.round(9).tolist(),
+          'positive_spacings_mm':mm.round(6).tolist(),
+          'world_image_center_mm':nib.affines.apply_affine(aff,(np.array(arr.shape)-1)/2).round(4).tolist()}
     sections={
       'axial':{'slice_index':int(center[2]),'world_coordinate_mm':round(float(aff[2,2]*center[2]+aff[2,3]),3),
                'image_base64_png':encode_image(arr[:,:,center[2]])},
@@ -99,6 +105,7 @@ def build(mask_file,out_file):
          'coordinate_system':'RAS','units':'mm',
          'numeric_labels':label_ids,'numeric_to_anatomical_map_verified':False,
          'source':metadata,
+         'canonical_grid':grid,
          'surface':{'glb_base64':base64.b64encode(glb).decode('ascii'),
                     'glb_sha256':hashlib.sha256(glb).hexdigest(),
                     'vertices':len(mesh.vertices),'triangles':len(mesh.faces),

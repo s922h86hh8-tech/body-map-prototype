@@ -1,0 +1,32 @@
+name: L3 v6.4 audit 108 masks for numeric class crop-free CT candidates (not anatomy)
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths:
+      - '.github/workflows/l3-v64-108-source-crop-inventory.yml'
+      - 'experiments/tools/l3-108-source-numeric-crop-census-v6.4.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  chunk-of-27:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [0, 27, 54, 81]
+    env:
+      SOURCE_START: ${{ matrix.start }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - name: Install L3 NIfTI metadata readers
+        run: python -m pip install --disable-pip-version-check numpy nibabel remotezip requests
+      - name: Check script compilation and inspect 27 labeled L3 images without CT download
+        run: |
+          python -m py_compile experiments/tools/l3-108-source-numeric-crop-census-v6.4.py
+          python experiments/tools/l3-108-source-numeric-crop-census-v6.4.py --start "$SOURCE_START" --limit 27
+      - name: Do not save or upload any source image
+        run: echo "All NIfTI source masks were temporary; no dataset files committed or exported."

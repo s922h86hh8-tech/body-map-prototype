@@ -25,9 +25,9 @@ jobs:
             maskhash: bd18fe33b3dc94c0c2cd8bbe7ac0ef83797c8a150e733ba4b6c2f7a700424971
             cthash: a1eacb437d62bcd8c90a770c26392c282cbc5c07b68ebd1e641df29122782705
     env:
-      CASE_INDEX: *{{ matrix.index }}
-      MASK_SHA: *{{ matrix.maskhash }}
-      CT_SHA: *{{ matrix.cthash }}
+      CASE_INDEX: ${{ matrix.index }}
+      MASK_SHA: ${{ matrix.maskhash }}
+      CT_SHA: ${{ matrix.cthash }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

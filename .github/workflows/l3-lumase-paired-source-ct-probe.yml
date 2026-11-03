@@ -1,0 +1,75 @@
+name: L3 source CT and segmentation exact-pair integrity check (metadata only)
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths: ['.github/workflows/l3-lumase-paired-source-ct-probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  paired-ct-mask:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - index: 20
+            hash: 9a40214e92c50804af98263efc5fdb3ef66ef9871eb7ad6509218c0b1adcf7a5
+          - index: 48
+            hash: bd18fe33b3dc94c0c2cd8bbe7ac0ef83797c8a150e733ba4b6c2f7a700424971
+    env:
+      CASE_INDEX: ${{ matrix.index }}
+      EXPECTED_MASK_SHA: ${{ matrix.hash }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: python -m pip install --disable-pip-version-check numpy nibabel requests remotezip
+      - name: Inspect original source CT+seg exact filename and affine, no data committed
+        run: |
+          python - <<'PY'
+          import hashlib,os,re,tempfile,json
+          import numpy as np,nibabel as nib,requests
+          from remotezip import RemoteZip
+          record=requests.get('https://zenodo.org/api/records/7181338',timeout=35).json()
+          f=next(x for x in record['files'] if x['key']=='L1-L5FineSegMix-663case.zip')
+          assert f['checksum']=='md5:baf6374a927e9591dbae3314570bdb1e'
+          with RemoteZip(f['links'].get('self') or f['links'].get('content')) as z:
+              allfiles={x.filename:x for x in z.infolist() if not x.filename.startswith('__MACOSX/')}
+              masks=sorted((x for x in allfiles.values() if re.search(r'_L3_seg[.]nii[.]gz$',x.filename,re.I)),
+                  key=lambda x:(x.file_size,x.filename))
+              assert len(masks)==108
+              mask=masks[int(os.environ['CASE_INDEX'])]
+              ctname=mask.filename.replace('_L3_seg.nii.gz','_L3.nii.gz')
+              if ctname not in allfiles:raise ValueError('The original CT pair does not exist by exact basename')
+              data=z.read(mask)
+              if hashlib.sha256(data).hexdigest()!=os.environ['EXPECTED_MASK_SHA']:
+                  raise ValueError('Mask checksum mismatch')
+              ct=z.read(allfiles[ctname])
+          with tempfile.TemporaryDirectory() as d:
+              mp=os.path.join(d,'seg.nii.gz');cp=os.path.join(d,'ct.nii.gz')
+              open(mp,'wb').write(data);open(cp,'wb').write(ct)
+              a=nib.load(mp);b=nib.load(cp)
+              same_shape=a.shape==b.shape
+              affine_err=float(np.max(np.abs(a.affine-b.affine)))
+              im=np.asarray(b.dataobj,dtype=np.float32)
+              seg=np.asarray(a.dataobj,dtype=np.int16)
+              tissue=im[seg>0]
+              if not same_shape or affine_err>1e-4:
+                  raise ValueError('Paired CT and mask grid mismatch; do not assume alignment')
+              vals=np.percentile(im,[0,1,5,50,95,99,100]).round(1).tolist()
+              inside=np.percentile(tissue,[1,50,99]).round(1).tolist()
+              print('L3_PAIRED_CT_METADATA '+json.dumps({
+                  'case_index':int(os.environ['CASE_INDEX']),
+                  'pair_filename_correspondence_verified':True,
+                  'CT_sha256':hashlib.sha256(ct).hexdigest(),
+                  'CT_bytes':len(ct),
+                  'mask_shape_matches_ct':same_shape,
+                  'affine_max_abs_error':affine_err,
+                  'image_axis_codes':list(nib.aff2axcodes(b.affine)),
+                  'image_intensity_percentiles':vals,
+                  'segmented_bone_intensity_percentiles':inside,
+                  'CT_voxel_value_is_HU_verified':False,
+                  'source_files_committed':False,'anatomy_approved':False},ensure_ascii=False))
+          PY

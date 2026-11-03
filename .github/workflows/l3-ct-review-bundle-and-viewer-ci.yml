@@ -115,6 +115,12 @@ jobs:
             'old_published_model_unchanged':True,
             'anatomy_approved':False},ensure_ascii=False))
           PY
+      - name: Install Playwright Chromium for end-to-end renderer smoke test
+        run: |
+          python -m pip install --disable-pip-version-check playwright
+          python -m playwright install --with-deps chromium
+      - name: Test Three.js rendering, 3D mesh and matched sections on desktop and mobile viewport
+        run: python experiments/tests/l3-local-viewer-browser-v1.py "$RUNNER_TEMP/l3-private-review.json"
       - name: Remove all original and derived CT reference geometry
         if: always()
         run: |

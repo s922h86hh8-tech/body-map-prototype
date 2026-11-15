@@ -1,0 +1,29 @@
+name: L3 VerSe v7.3 local orientation UI synthetic browser smoke
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths:
+      - 'experiments/l3-verse-orientation-review-v7.3.html'
+      - 'experiments/l3-verse-orientation-coordinates-v7.3.js'
+      - 'experiments/tests/test-verse-l3-orientation-browser-v7.3.py'
+      - '.github/workflows/l3-verse-orientation-browser-v7.3.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  chromium-synthetic-private-screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install synthetic browser test libraries
+        run: python -m pip install --disable-pip-version-check pillow playwright
+      - name: Install Chromium test browser (iPhone Safari is NOT tested)
+        run: python -m playwright install --with-deps chromium
+      - name: Verify 320/390/768px local UI using only generated synthetic imagery
+        run: python experiments/tests/test-verse-l3-orientation-browser-v7.3.py
+      - name: No source images or browser downloads uploaded as actions artifacts
+        run: echo "Only synthetic images were created and kept in a temporary directory."

@@ -54,10 +54,10 @@ def main():
             assert page.evaluate('document.documentElement.scrollWidth <= innerWidth+1'),f'overflow {width}'
             rect=page.locator('#sagittalImg').bounding_box()
             assert rect
-            page.mouse.click(rect['x']+rect['width']*.75,rect['y']+rect['height']*.50)
+            page.locator('#sagittalImg').click(position={'x':rect['width']*.75,'y':rect['height']*.50})
             page.locator('#landmarkKind').select_option('spinous_posterior')
-            page.mouse.click(rect['x']+rect['width']*.25,rect['y']+rect['height']*.50)
-            assert '数値上の前後順序は＋A方向と一致' in page.locator('#result').inner_text()
+            page.locator('#sagittalImg').click(position={'x':rect['width']*.25,'y':rect['height']*.50})
+            assert '数値上の前後順序は＋A方向と一致' in page.locator('#result').inner_text(), (width,page.locator('#result').inner_text(),page.locator('#marks').inner_text())
             assert page.locator('#sagittalMarks .marker').count()==2
             page.locator('#showCT').click()
             assert page.locator('#showCT').get_attribute('aria-pressed')=='true'

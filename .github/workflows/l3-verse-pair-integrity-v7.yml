@@ -1,0 +1,59 @@
+name: L3 VerSe reference pair v7 source-integrity screen (NOT anatomical approval)
+
+on:
+  push:
+    branches: [l3-reference-method-evaluation-v1]
+    paths:
+      - 'experiments/tools/audit-verse-l3-pair-v7.py'
+      - 'experiments/tests/test-verse-l3-pair-v7.py'
+      - '.github/workflows/l3-verse-pair-integrity-v7.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-guards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install numerical libraries
+        run: python -m pip install --disable-pip-version-check numpy scipy
+      - name: Compile and execute synthetic rejection tests
+        run: |
+          python -m py_compile experiments/tools/audit-verse-l3-pair-v7.py experiments/tests/test-verse-l3-pair-v7.py
+          python experiments/tests/test-verse-l3-pair-v7.py -v
+
+  screen-one-public-source-pair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: synthetic-guards
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install NIfTI and numerical readers
+        run: python -m pip install --disable-pip-version-check numpy scipy nibabel
+      - name: Download exactly one matched-name public VerSe20 mirror CT and mask into temporary storage
+        env:
+          BASE: https://huggingface.co/datasets/MedOtter/VERSE20/resolve/main/VERSE20/01_training/verse008
+          EXPECTED_SEG_SHA256: 00cb18b24858f9984c98a0379e4e0e9e063b26848ac9ce96c7fa637856fcc8f3
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 2 --connect-timeout 25 --max-time 180 --silent --show-error "$BASE/verse008.nii.gz" --output "$RUNNER_TEMP/verse008_ct.nii.gz"
+          curl --fail --location --retry 2 --connect-timeout 25 --max-time 180 --silent --show-error "$BASE/verse008_seg.nii.gz" --output "$RUNNER_TEMP/verse008_seg.nii.gz"
+          echo "$EXPECTED_SEG_SHA256  $RUNNER_TEMP/verse008_seg.nii.gz" | sha256sum -c -
+      - name: Screen CT grid alignment and source L3 mask boundary without anatomical assertions
+        run: |
+          python experiments/tools/audit-verse-l3-pair-v7.py \
+            --ct "$RUNNER_TEMP/verse008_ct.nii.gz" \
+            --seg "$RUNNER_TEMP/verse008_seg.nii.gz" \
+            --case-id verse008-mirror             --out "$RUNNER_TEMP/verse008_private_report.json"
+      - name: Delete all CT and derived temporary files
+        if: always()
+        run: rm -f "$RUNNER_TEMP/verse008_ct.nii.gz" "$RUNNER_TEMP/verse008_seg.nii.gz" "$RUNNER_TEMP/verse008_private_report.json"

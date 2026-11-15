@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="referrer" content="no-referrer">
+<title>施術者からだの地図｜L3 前後方向のCT独立監査 v7.3（研究専用）</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;color:#e9f1f4;background:#10212b;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0}header,main,footer{max-width:1260px;margin:auto;padding:15px}
+header{border-bottom:1px solid #3c5461}h1{font-size:clamp(20px,4vw,28px);margin:8px 0}h2{font-size:17px;margin:0 0 8px}
+p,li{font-size:13px;line-height:1.7;color:#c1d0d7}small{color:#b7c7cf}
+.pill{display:inline-flex;font-size:12px;font-weight:700;color:#ffe2a4;border:1px solid #b18c60;padding:5px 9px;border-radius:8px}
+.box{margin:12px 0;padding:15px;border:1px solid #46616e;border-radius:12px;background:#1a303b}
+.alert{border-color:#a17a54;background:#302c28}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{min-width:0}
+button,.file{font:inherit;font-size:13px;min-height:44px;padding:10px 13px;border:1px solid #698994;border-radius:9px;background:#234652;color:#edf7fa;cursor:pointer}
+button[disabled]{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f5d795}
+select{font-size:14px;max-width:100%;background:#17333e;border:1px solid #738a97;border-radius:8px;color:#eef5f8;padding:10px}
+input[type=file]{max-width:100%;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.panel{border:1px solid #4a6370;border-radius:11px;background:#142c39;padding:12px;min-width:0}
+.panel h3{font-size:15px;margin:0 0 6px}
+.viewer{position:relative;background:#081720;border:1px solid #354b58;border-radius:10px;overflow:hidden;aspect-ratio:1}
+.viewer img{width:100%;height:100%;object-fit:fill;display:block;touch-action:manipulation;cursor:crosshair}
+.viewer .empty{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-size:13px;color:#a6b8c0;text-align:center;padding:16px}
+.viewer .marker{position:absolute;width:17px;height:17px;border-radius:50%;border:2px solid #ffd888;background:#be6e3a66;pointer-events:none;transform:translate(-50%,-50%);box-shadow:0 0 0 2px #101b24}
+.axes{display:flex;gap:10px;justify-content:space-between;font-size:12px;font-weight:700;color:#b6e5eb;margin:6px 0}
+.detail{white-space:pre-wrap;overflow-wrap:anywhere;color:#e8f0f4;background:#0f2731;border-radius:9px;padding:10px;font-size:12px;line-height:1.6}
+#status,#result{min-height:22px}
+@media(max-width:850px){.grid{grid-template-columns:1fr 1fr}}
+@media(max-width:580px){.grid{grid-template-columns:1fr}header,main,footer{padding:12px}}
+</style>
+</head>
+<body>
+<header>
+  <span class="pill">研究専用｜解剖学的合格：未承認</span>
+  <h1>L3｜CTで前後方向を確認する v7.3</h1>
+  <p>実物由来のCTの位置関係を調べる独立監査画面。画像上の方向はCTのRAS物理座標です。医学的な形状認定には使用できません。</p>
+</header>
+<main>
+<section class="box alert">
+ <h2>元のCTは公開しません</h2>
+ <p>検証用のCT断面JSONを<strong>この端末で選択</strong>して表示します。画像や選択座標をサーバーへ送信する機能はありません。読み込むJSONにはCT断面画像が含まれるため、公開GitHubや共有チャットへアップロードしないでください。ブラウザー拡張や端末自体の安全性を保証するものではありません。</p>
+ <p><strong>注意：</strong>「前・後」の印は人が選ぶ仮候補です。+A側に印があるだけで、椎体や棘突起を解剖学的に同定できたことにはなりません。</p>
+</section>
+<section class="box">
+ <div class="row">
+  <label for="localFile"><strong>ローカルCT断面JSON</strong></label>
+  <input id="localFile" type="file" accept=".json,application/json">
+  <button id="clear" type="button">読み込み解除</button>
+ </div>
+ <p id="status" aria-live="polite">未読込。CTの画像は表示していません。</p>
+ <div id="sourceInfo" class="detail">研究用 JSON: L3_VERSE_ORIENTATION_REVIEW_V7_3_LOCAL_ONLY</div>
+</section>
+<div class="box">
+ <h2>1. 仮ランドマークを選んで画像をタップ</h2>
+ <p>椎体前方輪郭と棘突起後端を同じCTで選びます。中心断面に必要な部位が写らない場合は無理に選択せず、次の工程で複数スライスを作成します。</p>
+ <div class="row">
+  <select id="landmarkKind" aria-label="仮登録する骨の場所">
+   <option value="body_anterior">椎体前方輪郭の仮候補</option>
+   <option value="spinous_posterior">棘突起後端の仮候補</option>
+   <option value="body_superior">上終板の仮候補</option>
+   <option value="body_inferior">下終板の仮候補</option>
+   <option value="canal_border">椎孔輪郭の仮候補</option>
+  </select>
+  <button id="undo" type="button" disabled>最後の印を戻す</button>
+  <button id="export" type="button" disabled>仮登録だけ保存</button>
+ </div>
+</div>
+<section class="grid" aria-label="CTの3断面">
+ <article class="panel">
+  <h3>水平断面（Axial）</h3>
+  <div class="axes"><span>上 ＋A（前）</span><span>右 ＋R（右）</span></div>
+  <div class="viewer"><img id="axialImg" alt="RAS基準のCT水平断面。画面の右が患者右、上が患者前。未読込。" tabindex="0"><span id="axialEmpty" class="empty">CT未読込</span><div id="axialMarks"></div></div>
+  <p>数値22を水色で強調。色はデータセットのラベルであり形状の合格ではありません。</p>
+ </article>
+ <article class="panel">
+  <h3>前額断面（Coronal）</h3>
+  <div class="axes"><span>上 ＋S（上）</span><span>右 ＋R（右）</span></div>
+  <div class="viewer"><img id="coronalImg" alt="RAS基準のCT前額断面。画面の右が患者右、上が患者上。未読込。" tabindex="0"><span id="coronalEmpty" class="empty">CT未読込</span><div id="coronalMarks"></div></div>
+  <p>椎体の上下方向を確認するための中央断面です。</p>
+ </article>
+ <article class="panel">
+  <h3>矢状断面（Sagittal）</h3>
+  <div class="axes"><span>上 ＋S（上）</span><span>右 ＋A（前）</span></div>
+  <div class="viewer"><img id="sagittalImg" alt="RAS基準のCT矢状断面。画面の右が患者前、上が患者上。未読込。" tabindex="0"><span id="sagittalEmpty" class="empty">CT未読込</span><div id="sagittalMarks"></div></div>
+  <p>椎体・椎孔・棘突起候補の前後関係を見る中心断面です。</p>
+ </article>
+</section>
+<section class="box">
+ <div class="row">
+  <button id="showCT" type="button" disabled aria-pressed="false">元CTのみ</button>
+  <button id="showOverlay" type="button" disabled aria-pressed="true">CT＋ラベル22</button>
+ </div>
+ <h2>2. RAS前後座標の技術的照合</h2>
+ <p id="result" aria-live="polite">ランドマーク未登録。前後方向の独立解剖学監査はまだ行われていません。</p>
+ <div id="marks" class="detail">仮ランドマークなし</div>
+ <p>前側の印のRAS+A座標が後ろ側の印より大きいかを調べるだけです。どちらの印が本当に椎体と棘突起なのかを検証するには、原CT上の構造同定・別の断面・独立レビューが必要です。</p>
+</section>
+</main>
+<footer>研究ブランチ限定の検証用HTML。既存のv2.4公開版、v5ビューアー、CT参照データおよび医学的な合否判定は変更しません。</footer>
+<script src="./l3-verse-orientation-coordinates-v7.3.js"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const planes=['axial','coronal','sagittal'];
+const kinds={body_anterior:'椎体前方輪郭（仮）',spinous_posterior:'棘突起後端（仮）',
+  body_superior:'上終板（仮）',body_inferior:'下終板（仮）',canal_border:'椎孔輪郭（仮）'};
+let data=null,marks=[],mode='overlay';
+const coord=globalThis.L3V73_COORDS;
+function safeStatus(message){$('status').textContent=message}
+function safeSlice(data,plane){
+ const s=data.screens?.[plane];const b=coord.basis[plane];
+ if(!s||!Array.isArray(s.pixel_right_ras)||!Array.isArray(s.pixel_up_ras)||
+    s.pixel_right_ras.some((x,i)=>x!==b.right[i])||s.pixel_up_ras.some((x,i)=>x!==b.up[i])||
+    ![s.ct_png_base64,s.ct_l3_overlay_png_base64].every(x=>typeof x==='string'&&/^[A-Za-z0-9+/=]+$/.test(x))) {
+    throw Error('断面の物理軸または画像の形式が不正です');
+ }
+ return s;
+}
+function validate(d){
+ if(d?.schema!=='L3_VERSE_ORIENTATION_REVIEW_V7_3_LOCAL_ONLY'||d.anatomy_approved!==false||
+   !Number.isInteger(d.view_pixels_each_side)||d.view_pixels_each_side<25||d.view_pixels_each_side>401||
+   d.view_pixels_each_side%2!==1||!Number.isFinite(d.pitch_mm_per_pixel)||d.pitch_mm_per_pixel<=0||
+   !Array.isArray(d.center_world_ras_mm)||d.center_world_ras_mm.length!==3||
+   d.center_world_ras_mm.some(x=>!Number.isFinite(x))||
+   !/^[a-f0-9]{64}$/.test(d.source_CT_sha256)||!/^[a-f0-9]{64}$/.test(d.source_mask_sha256)){
+   throw Error('研究用JSONの必要項目が不足しています');
+ }
+ for(const p of planes)safeSlice(d,p);
+ return d;
+}
+function imgSrc(p){const s=safeSlice(data,p);return 'data:image/png;base64,'+
+ (mode==='ct'?s.ct_png_base64:s.ct_l3_overlay_png_base64)}
+function render(){
+ for(const p of planes){
+  const img=$(p+'Img');
+  if(data){img.src=imgSrc(p);$(p+'Empty').hidden=true}
+  else{img.removeAttribute('src');$(p+'Empty').hidden=false}
+  const layer=$(p+'Marks');layer.replaceChildren();
+  for(const item of marks.filter(x=>x.plane===p)){
+   const el=document.createElement('span');el.className='marker';
+   el.title=kinds[item.kind];el.style.left=((item.pixel_xy[0]+.5)/data.view_pixels_each_side*100)+'%';
+   el.style.top=((item.pixel_xy[1]+.5)/data.view_pixels_each_side*100)+'%';
+   layer.append(el)
+  }
+ }
+ $('undo').disabled=!marks.length;$('export').disabled=!marks.length;
+ $('showCT').disabled=!data;$('showOverlay').disabled=!data;
+ $('showCT').setAttribute('aria-pressed',String(mode==='ct'));
+ $('showOverlay').setAttribute('aria-pressed',String(mode==='overlay'));
+ if(data){
+  const desc={case_id_local:data.case_id_local,label22_source_voxels:data.label22_source_voxels,
+     source_sha256_CT:data.source_CT_sha256,source_sha256_mask:data.source_mask_sha256,
+     source_orientation:'RAS world: R patient right, A anterior, S superior',
+     expert_anatomy_approved:false};
+  $('sourceInfo').textContent=JSON.stringify(desc,null,2);
+ }else $('sourceInfo').textContent='研究用JSON: L3_VERSE_ORIENTATION_REVIEW_V7_3_LOCAL_ONLY';
+ $('marks').textContent=marks.length?marks.map((m,i)=>
+   (i+1)+'. '+kinds[m.kind]+'｜'+m.plane+'｜RAS(mm) '+m.world_ras_mm.join(', ')+'｜専門家未承認').join('\n'):'仮ランドマークなし';
+ const check=coord.provisionalAPCheck(marks);
+ $('result').textContent=check.status==='incomplete'?'前方・後方の候補点の両方が必要です。':
+ check.status==='invalid_source'?'元CT／マスクの出典情報が一致しません。':
+ check.status==='numeric_expected_order'?('数値上の前後順序は＋A方向と一致（差 '+check.ap_ras_mm+' mm）。ただし解剖学的な同定は未承認です。'):
+ ('前後候補のRAS+A座標が逆転または区別困難（差 '+check.ap_ras_mm+' mm）。再確認が必要です。');
+}
+function onClick(p,event){
+ if(!data)return safeStatus('先にローカルのCT断面を読み込んでください。');
+ try{
+  const rect=$(p+'Img').getBoundingClientRect();
+  const pt=coord.pixelFromClick(p,{x:event.clientX,y:event.clientY},rect,data.view_pixels_each_side);
+  const world=coord.pointFromPixel(p,pt.x,pt.y,data.view_pixels_each_side,
+    data.pitch_mm_per_pixel,data.center_world_ras_mm);
+  const kind=$('landmarkKind').value;
+  if(!Object.prototype.hasOwnProperty.call(kinds,kind))throw Error('不明な位置候補です');
+  marks=marks.filter(i=>i.kind!==kind);
+  marks.push({kind,plane:p,pixel_xy:[pt.x,pt.y],world_ras_mm:world,
+    source_ct_sha256:data.source_CT_sha256,source_seg_sha256:data.source_mask_sha256,
+    reviewer_confirmation:'unverified_candidate',authority:'unreviewed_manual_click'});
+  safeStatus(kinds[kind]+'の仮位置を記録しました。解剖学的には未承認です。');
+  render();
+ }catch(e){safeStatus('記録を中止：'+e.message)}
+}
+for(const p of planes)$(p+'Img').addEventListener('click',e=>onClick(p,e));
+$('localFile').addEventListener('change',async()=>{
+ const file=$('localFile').files?.[0];if(!file)return;
+ try{
+  if(file.size>30000000)throw Error('30MBを超えるJSONは読み込めません');
+  const d=validate(JSON.parse(await file.text()));
+  data=d;marks=[];mode='overlay';
+  safeStatus('端末内のCT断面を読み込みました。仮ランドマークを選択してください。');
+  render();
+ }catch(e){data=null;marks=[];$('localFile').value='';render();safeStatus('読み込みを中止：'+e.message)}
+});
+$('clear').addEventListener('click',()=>{data=null;marks=[];$('localFile').value='';render();safeStatus('ローカルCT画像の表示を解除しました。')});
+$('undo').addEventListener('click',()=>{marks.pop();render()});
+$('showCT').addEventListener('click',()=>{mode='ct';render()});
+$('showOverlay').addEventListener('click',()=>{mode='overlay';render()});
+$('export').addEventListener('click',()=>{
+ if(!data||!marks.length)return;
+ const result=coord.provisionalAPCheck(marks);
+ const out={schema:'L3_VERSE_V73_UNVERIFIED_LANDMARKS_LOCAL',
+   case_id_local:data.case_id_local,
+   source_CT_sha256:data.source_CT_sha256,source_mask_sha256:data.source_mask_sha256,
+   center_world_ras_mm:[...data.center_world_ras_mm],pitch_mm_per_pixel:data.pitch_mm_per_pixel,
+   items:marks.map(x=>({...x})),numeric_ap_screen:result,
+   front_back_anatomical_direction_verified:false,expert_anatomy_approved:false,
+   warning:'Human candidate marks only; local file may identify source imagery, do not publish.'};
+ const url=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)+'\n'],{type:'application/json'}));
+ const a=document.createElement('a');a.href=url;a.download='l3-v7.3-unverified-landmarks-LOCAL.json';
+ document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500)
+});
+render();
+</script>
+</body>
+</html>
